@@ -1,1 +1,35 @@
+= Palimpsest Plasma
+:toc:
+:toc-placement!:
 
+image:assets/badges/svg/badge-standard.svg[Palimpsest License v1.0]
+
+toc::[]
+
+== Overview
+
+Palimpsest Plasma is a Palimpsest ecosystem repository. See `ROADMAP.adoc` and
+the `docs/` directory for project details.
+
+== License
+
+This project is licensed under the **Palimpsest-MPL License 1.0 (PMPL-1.0)**.
+Use SPDX identifier **PMPL-1.0-or-later** in file headers and metadata.
+
+See `LICENSE` for the full legal text.
+
+== MVP v1 Focus
+
+Palimpsest Plasma is now delivering the **MVP v1** bundle for creators who want a
+deployable PMPL-1.0 experience:
+
+* **Canonical license tooling** – keep the shared `LICENSE` text, ECOSYSTEM mapping,
+  and badges aligned with the Palimpsest Stewardship Council’s PMPL-1.0 release.
+* **Badge & documentation assets** – ship the `assets/badges/` pack and the
+  `docs/mvp-v1.adoc` roadmap so integrations can adopt the v1.0 brand.
+* **Compliance readiness** – capture SPDX metadata, automated checks, and audit
+  command examples in `docs/mvp-v1.adoc` and `STATE.scm`.
+* **Audit/playback support** – use `pmpl-verify`/`pmpl-audit` to confirm the repo
+  meets the provenance expectations described in `palimpsest-license/VERSIONING.adoc`.
+
+See `docs/mvp-v1.adoc` for the full deliverables checklist and compliance commands.

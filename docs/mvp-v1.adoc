@@ -1,0 +1,81 @@
+= Palimpsest Plasma MVP v1 Roadmap
+:toc:
+:toclevels: 3
+
+== Purpose
+
+Palimpsest Plasma MVP v1 packages the minimal combination of assets, tooling, and
+audit guidance that lets creative projects adopt **PMPL-1.0 (SPDX: PMPL-1.0-or-later)**
+with confidence. It bundles the canonical license text, adaptive badge designs, and
+compliance checklists together with governance guidance from *Palimpsest License*.
+
+== Deliverables
+
+* **Legal alignment** – keep a single `LICENSE` file referencing PMPL-1.0, with badge
+  references sourced from `assets/badges/svg/badge-standard.svg`.
+* **Badge & embed pack** – publish the complete badge asset set plus Markdown/HTML
+  snippets (see `assets/badges/` and `palimpsest-license/embed/license-blocks/`) for
+  reuse by downstream repos.
+* **Roadmap & documentation** – describe MVP v1 goals, milestones, and compliance steps
+  in this file and link back to `palimpsest-license/VERSIONING.adoc`.
+* **Compliance automation** – add `STATE.scm` metadata, `Justfile` hints, and an audit
+  script description so the repository can be validated automatically.
+* **Audit readiness** – verify the repository with Palimpsest tooling (`pmpl-verify`,
+  `pmpl-audit`) and capture the commands/output below.
+
+== Milestones
+
+The MVP v1 release targets the following milestones:
+
+* **1.0.0 license release** – PMPL-1.0 text finalized, SPDX headers standardized,
+  README badges updated, and `LICENSE` / `ECOSYSTEM.scm` reflecting the canonical
+  stewarding council guidance.
+* **Badge & compliance pack** – `assets/badges/` holds the v1.0 badge family, while
+  `docs/mvp-v1.adoc` documents where to place badges, license blocks, and metadata.
+* **Audit & release artifacts** – `STATE.scm` lists release artifacts (docs, badges,
+  audit log, compliance checklist) so the repo can ship as a cohesive MVP bundle.
+
+== Compliance & Audit
+
+Run the Palimpsest compliance tools from the canonical license repo:
+
+--
+```bash
+cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-verify
+cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma --recursive --existence-only
+```
+--
+
+Summary from the latest run: 0 verified, 85 missing, 0 failed (signatures not yet published). Update this log as provenance metadata is generated.
+
+This command checks every file for an accompanying `.sig` block and reports the
+verified/missing counts. Replace `--existence-only` with an empty flag once quantum-safe
+signatures are available.
+
+For a deeper compliance sweep, use:
+
+--
+```bash
+cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-audit
+cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma
+```
+--
+
+Ensure your environment has the same Rust toolchain as the Palimpsest toolkit before
+running these commands.
+
+== Release Artifacts
+
+Palimpsest Plasma MVP v1 ships the following artifacts:
+
+* Consolidated `LICENSE`/`STATE.scm` metadata describing the PMPL-1.0 release.
+* Badge/README assets in `assets/badges/` and `docs/mvp-v1.adoc` with embed guidance.
+* Audit log from the `pmpl-verify`/`pmpl-audit` runs above (copy the CLI output into
+  `docs/audit-report.adoc` or `ROADMAP.adoc` if needed).
+
+Include this document in your release notes, linking to:
+
+* `palimpsest-license/VERSIONING.adoc` for version policy.
+* `palimpsest-license/assets/badges/README.md` and `embed/license-blocks/README.md` for
+  badge usage.
+* `palimpsest-license/legal/README.adoc` for jurisdictional/governance context.

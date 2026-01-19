@@ -1,0 +1,58 @@
+= Palimpsest Plasma MVP v1 Release Log
+:toc:
+
+== Release Summary
+
+**Version:** 1.0.0 (MVP v1)  
+**Legal:** Palimpsest-MPL License 1.0 (PMPL-1.0-or-later)  
+**Release date:** 2026-01-19  
+**Key artifacts:**  
+
+* `LICENSE` (canonical PMPL-1.0 text)
+* `ECOSYSTEM.scm` / `STATE.scm` metadata pointing to the PMPL-1.0 release process
+* `assets/badges/` pack (SVG + README) with the v1.0 badge family
+* `docs/mvp-v1.adoc` detailing deliverables, badge guidance, compliance commands
+
+== Audit Log
+
+pmpl-verify run on 2026-01-19:
+
+```
+cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-verify
+cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma --recursive --existence-only
+
+Summary:
+  Verified: 0
+  Missing:  85
+  Failed:   0
+```
+
+Signatures not yet published; rerun without `--existence-only` once `.sig` files are available and paste the output here.
+
+pmpl-audit run on 2026-01-19:
+
+```
+cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-audit
+cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma
+
+PMPL Compliance Audit Report
+============================
+
+Repository: /mnt/eclipse/repos/palimpsest-plasma
+
+License File:
+  [PASS] Present (PMPL-1.0)
+
+SPDX Headers:
+  Files checked:  0
+  With headers:   0
+  Missing headers: 0
+
+Overall: PASS
+```
+
+Audit tool currently reports zero SPDX scans because there are no signable source files; it still acknowledges the license file as PMPL-1.0.
+
+== Distribution Notes
+
+Bundle `LICENSE`, `STATE.scm`, `assets/badges/`, `docs/mvp-v1.adoc`, and this `docs/release-log.adoc` when publishing MVP v1. Upload the badge assets to your CDN of choice (raw GitHub, jsDelivr, etc.) and mirror `docs/mvp-v1.adoc` in your release notes for partners.

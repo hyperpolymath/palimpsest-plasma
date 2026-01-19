@@ -1,0 +1,22 @@
+<!-- Standard Palimpsest License Badge -->
+<svg width="128" height="32" viewBox="0 0 128 32" xmlns="http://www.w3.org/2000/svg" aria-label="Palimpsest License v1.0 Badge">
+  <title>Palimpsest License v1.0</title>
+  <style>
+    .bg { fill: #f6f8fa; }
+    .border { stroke: #d1d5da; stroke-width: 1; }
+    .icon { fill: #0366d6; }
+    .text { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif; font-size: 11px; fill: #24292e; font-weight: 600; }
+    @media (prefers-color-scheme: dark) {
+      .bg { fill: #21262d; }
+      .border { stroke: #444c56; }
+      .icon { fill: #58a6ff; }
+      .text { fill: #c9d1d9; }
+    }
+  </style>
+  <rect class="bg border" x="0.5" y="0.5" width="127" height="31" rx="6" fill="none"/>
+  <g transform="translate(8, 8)">
+    <circle class="icon" cx="8" cy="8" r="7"/>
+    <circle class="icon" cx="8" cy="8" r="4.5" opacity="0.5"/>
+  </g>
+  <text x="30" y="20" class="text">Palimpsest v1.0</text>
+</svg>

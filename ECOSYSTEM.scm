@@ -1,20 +1,25 @@
-;; SPDX-License-Identifier: PMPL-1.0
+;; SPDX-License-Identifier: PMPL-1.0-or-later
 ;; ECOSYSTEM.scm - Project relationship mapping
 
 (ecosystem
   (version "1.0")
-  (name "rsr-template-repo")
+  (name "palimpsest-plasma")
   (type "project")
-  (purpose "image:https://img.shields.io/badge/license-Palimpsest--MPL--1.0-purple.svg[Palim")
+  (purpose "Palimpsest ecosystem component")
 
   (position-in-ecosystem
     (role "component")
     (layer "application")
-    (description "image:https://img.shields.io/badge/license-Palimpsest--MPL--1.0-purple.svg[Palim"))
+    (description "Palimpsest ecosystem component"))
 
-  (related-projects . ())
+  (related-projects
+    ("palimpsest-license"))
+
+  (badges
+    ("image:assets/badges/svg/badge-standard.svg[Palimpsest License v1.0]"))
 
   (what-this-is
-    "image:https://img.shields.io/badge/license-Palimpsest--MPL--1.0-purple.svg[Palim")
+    "Palimpsest Plasma repository for ongoing development.")
 
-  (what-this-is-not . ()))
+  (what-this-is-not
+    "Not the reference license repository (see palimpsest-license)."))

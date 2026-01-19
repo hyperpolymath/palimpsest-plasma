@@ -1,0 +1,26 @@
+= Palimpsest Plasma MVP v1 Release Notes
+:toc:
+
+== Summary
+
+Palimpsest Plasma MVP v1 packages the canonical Palimpsest-MPL License 1.0 tooling,
+badge assets, compliance documentation, and audit logs so projects can adopt PMPL-1.0
+with confidence. Key deliverables:
+
+* `LICENSE` – PMPL-1.0-or-later text
+* `ECOSYSTEM.scm`, `STATE.scm` – metadata describing release state and milestones
+* `assets/badges/` – v1 badge family and README
+* `docs/mvp-v1.adoc` – roadmap, compliance guidance, audit commands
+* `docs/release-log.adoc` – audit output from `pmpl-verify`/`pmpl-audit`
+* `mvp-v1-release.tar.gz` – bundle containing the above assets
+
+== Audit Highlights
+
+* `pmpl-verify` (existence-only) – Verified: 0, Missing: 85, Failed: 0  
+  Signatures not yet published; rerun without `--existence-only` once `.sig` files exist.
+* `pmpl-audit` – PASS; license file recognized as PMPL-1.0, SPDX header scan currently
+  reports zero files because no signatures/shippable sources yet.
+
+== Distribution
+
+Upload `mvp-v1-release.tar.gz` plus this release notes doc to your release channel (GitHub release, CDN, etc.). Mention the audit commands/output so partners see the compliance readiness. If you need me to help craft the GitHub release description or confirm the upload, let me know.
