@@ -1,4 +1,4 @@
-= Palimpsest Plasma MVP v1 Release Notes
+= Palimpsest Plasma MVP v1 Release Notes (v1.1)
 :toc:
 
 == Summary

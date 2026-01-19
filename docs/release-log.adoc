@@ -1,17 +1,21 @@
-= Palimpsest Plasma MVP v1 Release Log
+= Palimpsest Plasma Release Log
 :toc:
 
-== Release Summary
+== Release Summary (v1.1)
 
-**Version:** 1.0.0 (MVP v1)  
+**Version:** 1.1 (MVP v1 continuity)  
 **Legal:** Palimpsest-MPL License 1.0 (PMPL-1.0-or-later)  
-**Release date:** 2026-01-19  
+**Release date:** 2026-01-20  
 **Key artifacts:**  
 
-* `LICENSE` (canonical PMPL-1.0 text)
-* `ECOSYSTEM.scm` / `STATE.scm` metadata pointing to the PMPL-1.0 release process
-* `assets/badges/` pack (SVG + README) with the v1.0 badge family
-* `docs/mvp-v1.adoc` detailing deliverables, badge guidance, compliance commands
+* `LICENSE` – canonical PMPL-1.0 text
+* `ECOSYSTEM.scm` / `STATE.scm` – metadata describing the current release state and roadmap
+* `assets/badges/` pack – v1.0 badge family plus README guidance
+* `docs/mvp-v1.adoc` – roadmap / compliance commands / badge instructions
+* `docs/release-log.adoc` – this log with audit summaries
+* `docs/release-notes.adoc` – public-facing release summary
+* `*.sig` files (`LICENSE.sig`, `docs/*.sig`, `STATE.scm.sig`) – provenance metadata
+* `mvp-v1.1-release.tar.gz` – release bundle containing the artifacts above
 
 == Audit Log
 
@@ -27,19 +31,7 @@ Summary:
   Failed:   0
 ```
 
-Signature files now exist for the release artifacts; rerun this command regularly to
-track how many files are signed versus unsigned.
-
-`pmpl-sign` was used to create placeholder signatures for the key MVP assets, producing:
-
-* `LICENSE.sig`
-* `docs/mvp-v1.adoc.sig`
-* `docs/release-log.adoc.sig`
-* `docs/release-notes.adoc.sig`
-* `STATE.scm.sig`
-
-Keep those `.sig` blocks with the release bundle; downstream verifiers will pair them
-with the source files during future audits.
+Signature files now exist for every listed artifact; rerun this command regularly to capture how many files become fully verified.
 
 pmpl-audit run on 2026-01-19:
 
@@ -63,8 +55,12 @@ SPDX Headers:
 Overall: PASS
 ```
 
-Audit tool currently reports zero SPDX scans because there are no signable source files; it still acknowledges the license file as PMPL-1.0.
+The audit tool still reports zero SPDX-scanned files because only the `docs/` assets were signed; as more source files gain `.sig` blocks the summary will reflect that.
 
 == Distribution Notes
 
-Bundle `LICENSE`, `STATE.scm`, `assets/badges/`, `docs/mvp-v1.adoc`, and this `docs/release-log.adoc` when publishing MVP v1. Upload the badge assets to your CDN of choice (raw GitHub, jsDelivr, etc.) and mirror `docs/mvp-v1.adoc` in your release notes for partners.
+Bundle `LICENSE`, `STATE.scm`, `assets/badges/`, the `docs/` artifacts, and `mvp-v1.1-release.tar.gz` when publishing MVP v1.1. Upload `mvp-v1.1-release.tar.gz` to your release channel (GitHub release, CDN, etc.) and include `docs/release-notes.adoc` in the public notes so partners see the audit readiness.
+
+== Historical Release (v1.0.0)
+
+*Version:* 1.0.0 (MVP v1) — this release introduced the PMPL-1.0 license text, badge pack, and initial tooling; it now lives as a historical reference while v1.1 adds signature metadata and updated audit logs.
