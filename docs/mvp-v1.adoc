@@ -52,6 +52,25 @@ This command checks every file for an accompanying `.sig` block and reports the
 verified/missing counts. Replace `--existence-only` with an empty flag once quantum-safe
 signatures are available.
 
+Before rerunning `pmpl-verify`/`pmpl-audit`, use `pmpl-sign` to generate placeholder
+`*.sig` descendants for the MVP artifacts:
+
+--
+```bash
+cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-sign
+for file in /mnt/eclipse/repos/palimpsest-plasma/LICENSE \
+            /mnt/eclipse/repos/palimpsest-plasma/docs/mvp-v1.adoc \
+            /mnt/eclipse/repos/palimpsest-plasma/docs/release-log.adoc \
+            /mnt/eclipse/repos/palimpsest-plasma/docs/release-notes.adoc \
+            /mnt/eclipse/repos/palimpsest-plasma/STATE.scm; do
+  cargo run --manifest-path Cargo.toml -- "$file" --signer palimpsest-council --force
+done
+```
+--
+
+Each command writes `<file>.sig`; keep those alongside the release so auditors can see
+cryptographic metadata is attached even if the actual signature is placeholder.
+
 For a deeper compliance sweep, use:
 
 --

@@ -12,6 +12,7 @@ with confidence. Key deliverables:
 * `assets/badges/` – v1 badge family and README
 * `docs/mvp-v1.adoc` – roadmap, compliance guidance, audit commands
 * `docs/release-log.adoc` – audit output from `pmpl-verify`/`pmpl-audit`
+* `*.sig` files (`LICENSE.sig`, `docs/*.sig`, `STATE.scm.sig`) – provenance metadata
 * `mvp-v1-release.tar.gz` – bundle containing the above assets
 
 == Audit Highlights
