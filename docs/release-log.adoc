@@ -15,19 +15,20 @@
 
 == Audit Log
 
-pmpl-verify run on 2026-01-19:
+pmpl-verify run on 2026-01-20:
 
 ```
 cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-verify
 cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma --recursive --existence-only
 
 Summary:
-  Verified: 0
-  Missing:  85
+  Verified: 5
+  Missing:  110
   Failed:   0
 ```
 
-Signatures not yet published; rerun without `--existence-only` once `.sig` files are available and paste the output here.
+Signature files now exist for the release artifacts; rerun this command regularly to
+track how many files are signed versus unsigned.
 
 `pmpl-sign` was used to create placeholder signatures for the key MVP assets, producing:
 

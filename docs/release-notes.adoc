@@ -17,8 +17,9 @@ with confidence. Key deliverables:
 
 == Audit Highlights
 
-* `pmpl-verify` (existence-only) – Verified: 0, Missing: 85, Failed: 0  
-  Signatures not yet published; rerun without `--existence-only` once `.sig` files exist.
+* `pmpl-verify` (existence-only) – Verified: 5, Missing: 110, Failed: 0  
+  Signature files (`*.sig`) are now included in the release bundle; rerun this command
+  periodically to track the growing set of verified artefacts as more `.sig` blocks land.
 * `pmpl-audit` – PASS; license file recognized as PMPL-1.0, SPDX header scan currently
   reports zero files because no signatures/shippable sources yet.
 
