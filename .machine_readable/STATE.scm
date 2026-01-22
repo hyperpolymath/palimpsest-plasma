@@ -1,39 +1,44 @@
-;; SPDX-License-Identifier: AGPL-3.0-or-later
-;; STATE.scm - Project state for rsr-template-repo
-;; Media-Type: application/vnd.state+scm
+;; SPDX-License-Identifier: PMPL-1.0-or-later
+;; STATE.scm - Current project state
 
-(state
-  (metadata
-    (version "0.0.1")
-    (schema-version "1.0")
-    (created "2026-01-03")
-    (updated "2026-01-03")
-    (project "rsr-template-repo")
-    (repo "github.com/hyperpolymath/rsr-template-repo"))
+(define project-state
+  `((metadata
+      ((version . "1.0.0")
+       (schema-version . "1")
+       (created . "2026-01-10T13:50:48+00:00")
+       (updated . "2026-01-19T12:00:00+00:00")
+       (project . "palimpsest-plasma")
+       (repo . "palimpsest-plasma")))
 
-  (project-context
-    (name "rsr-template-repo")
-    (tagline "")
-    (tech-stack ()))
+    (current-position
+      ((phase . "Release Preparation")
+       (overall-completion . 75)
+       (working-features . ("canonical-license" "badge-pack" "compliance-docs" "audit-ready"))))
 
-  (current-position
-    (phase "initial")
-    (overall-completion 0)
-    (components ())
-    (working-features ()))
+    (route-to-mvp
+      ((milestones
+        ((v1.0.0 . ((items . ("Finalize PMPL-1.0 license text and README"
+                            "Ship badge + embed documentation from docs/mvp-v1.adoc"
+                            "Update ECOSYSTEM/STATE metadata and release log"))
+                    (status . "complete")))
+         (audit-log . ((items . ("Run pmpl-verify --recursive --existence-only"
+                                "Run pmpl-audit CLI to capture provenance status"))
+                       (status . "in-progress")))
+         (release . ((items . ("Bundle docs/assets for MVP v1 release"
+                               "Publish audit summary and compliance checklist"
+                               "Announce PMPL-1.0-or-later readiness"))
+                     (status . "pending"))))))
 
-  (route-to-mvp
-    (milestones ()))
+    (blockers-and-issues
+      ((critical . ())
+       (high . ())
+       (medium . ())
+       (low . ())))
 
-  (blockers-and-issues
-    (critical)
-    (high)
-    (medium)
-    (low))
+    (critical-next-actions
+      ((immediate . ("Document pmpl-verify output in docs/mvp-v1.adoc"
+                     "Capture pmpl-audit observations for release notes"))
+       (this-week . ("Publish MVP v1 release assets" "Confirm badge CDN links"))
+       (this-month . ("Gather feedback from Palimpsest Council" "Plan v1.1 follow-up"))))
 
-  (critical-next-actions
-    (immediate)
-    (this-week)
-    (this-month))
-
-  (session-history ()))
+    (session-history . ())))
