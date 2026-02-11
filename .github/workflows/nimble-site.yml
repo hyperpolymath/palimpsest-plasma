@@ -1,0 +1,44 @@
+name: NimblePublisher Site
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/setup-beam@v1
+        with:
+          elixir-version: "1.15"
+          otp-version: "26"
+      - name: Fetch dependencies
+        run: |
+          cd site
+          mix deps.get
+      - name: Build site
+        run: |
+          cd site
+          mix site.build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site/_site
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      contents: read
+    steps:
+      - name: Deploy to GitHub Pages
+        uses: actions/deploy-pages@v4

@@ -33,3 +33,13 @@ deployable PMPL-1.0 experience:
   meets the provenance expectations described in `palimpsest-license/VERSIONING.adoc`.
 
 See `docs/mvp-v1.adoc` for the full deliverables checklist and compliance commands.
+
+== Static site (NimblePublisher)
+
+Compliance guidance now builds through a local Elixir mix project at `site/`. Run `mix site.build` from that folder to regenerate `site/_site`; the GitHub Actions workflow defined in `.github/workflows/nimble-site.yml` mirrors the same steps and deploys the generated pages. Keep `site/_site/` ignored so the HTML remains an output artifact.
+
+== Static site (Serum)
+
+Project news and compliance guidance are rendered through a lightweight Serum site under `site/`. Serum is a Rust-based static site generator, so there is no Ruby tooling or Bundler dependency.
+
+To rebuild the site, install Serum CLI once with `cargo install --locked serum-cli`, then run `cd site && serum build`. The generated HTML lands in `site/_site`, which is what the CI workflow uploads as `serum-site`. Remove `site/_site` from git if you prefer to keep the repo clean.

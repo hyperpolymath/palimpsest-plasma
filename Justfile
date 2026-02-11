@@ -19,6 +19,7 @@ set positional-arguments := true
 project := "RSR-template-repo"
 version := "0.1.0"
 tier := "infrastructure"  # 1 | 2 | infrastructure
+state := ".machine_readable/STATE.scm"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DEFAULT & HELP
@@ -47,7 +48,7 @@ info:
     @echo "Version: {{version}}"
     @echo "RSR Tier: {{tier}}"
     @echo "Recipes: $(just --summary | wc -w)"
-    @[ -f STATE.scm ] && grep -oP '\(phase\s+\.\s+\K[^)]+' STATE.scm | head -1 | xargs -I{} echo "Phase: {}" || true
+    @[ -f {{state}} ] && grep -oP '\(phase\s+\.\s+\K[^)]+' {{state}} | head -1 | xargs -I{} echo "Phase: {}" || true
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # BUILD & COMPILE
@@ -341,8 +342,8 @@ validate-rsr:
 
 # Validate STATE.scm syntax
 validate-state:
-    @if [ -f "STATE.scm" ]; then \
-        guile -c "(primitive-load \"STATE.scm\")" 2>/dev/null && echo "STATE.scm: valid" || echo "STATE.scm: INVALID"; \
+    @if [ -f "{{state}}" ]; then \
+        guile -c "(primitive-load \"{{state}}\")" 2>/dev/null && echo "{{state}}: valid" || echo "{{state}}: INVALID"; \
     else \
         echo "No STATE.scm found"; \
     fi
@@ -357,14 +358,14 @@ validate: validate-rsr validate-state
 
 # Update STATE.scm timestamp
 state-touch:
-    @if [ -f "STATE.scm" ]; then \
-        sed -i 's/(updated . "[^"]*")/(updated . "'"$(date -Iseconds)"'")/' STATE.scm && \
-        echo "STATE.scm timestamp updated"; \
+    @if [ -f "{{state}}" ]; then \
+        sed -i 's/(updated . "[^"]*")/(updated . "'"$(date -Iseconds)"'")/' {{state}} && \
+        echo "{{state}} timestamp updated"; \
     fi
 
 # Show current phase from STATE.scm
 state-phase:
-    @grep -oP '\(phase\s+\.\s+\K[^)]+' STATE.scm 2>/dev/null | head -1 || echo "unknown"
+    @grep -oP '\(phase\s+\.\s+\K[^)]+' {{state}} 2>/dev/null | head -1 || echo "unknown"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # GUIX & NIX

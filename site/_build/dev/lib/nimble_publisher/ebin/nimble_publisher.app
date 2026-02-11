@@ -1,0 +1,1 @@
+{application,nimble_publisher,[{modules,['Elixir.NimblePublisher','Elixir.NimblePublisher.Highlighter']},{optional_applications,[]},{applications,[kernel,stdlib,elixir,logger,earmark,makeup]},{description,"A minimal filesystem-based publishing engine with Markdown support and code highlighting"},{registered,[]},{vsn,"0.1.3"}]}.

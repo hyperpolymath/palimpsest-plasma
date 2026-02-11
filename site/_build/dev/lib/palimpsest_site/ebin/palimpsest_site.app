@@ -1,0 +1,1 @@
+{application,palimpsest_site,[{modules,['Elixir.PalimpsestSite','Elixir.PalimpsestSite.Page']},{optional_applications,[]},{applications,[kernel,stdlib,elixir,logger,nimble_publisher,earmark]},{description,"palimpsest_site"},{registered,[]},{vsn,"0.1.0"}]}.

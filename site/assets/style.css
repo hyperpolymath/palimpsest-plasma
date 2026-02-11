@@ -1,0 +1,54 @@
+:root {
+  font-family: "Inter", "Segoe UI", system-ui, sans-serif;
+  color: #0f172a;
+  background: #f5f7fb;
+  line-height: 1.7;
+}
+body {
+  margin: 0;
+  background-image: radial-gradient(circle at top right, #e0f2fe, transparent);
+}
+header, main {
+  max-width: 860px;
+  margin: 0 auto;
+}
+header {
+  text-align: center;
+  padding: 4rem 1.5rem 2rem;
+}
+header .eyebrow {
+  letter-spacing: 0.4rem;
+  text-transform: uppercase;
+  color: #2563eb;
+  margin-bottom: 0.5rem;
+  font-size: 0.8rem;
+}
+header nav {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: center;
+  gap: 1.25rem;
+}
+header nav a {
+  color: #0f172a;
+  text-decoration: none;
+  font-weight: 600;
+}
+main {
+  background: white;
+  border-radius: 1.25rem;
+  padding: 3rem 2rem;
+  margin-bottom: 3rem;
+  box-shadow: 0 25px 70px rgba(15, 23, 42, 0.12);
+}
+main h2 {
+  margin-top: 1rem;
+}
+main ul {
+  padding-left: 1.1rem;
+}
+footer {
+  text-align: center;
+  color: #475569;
+  padding-bottom: 3rem;
+}
