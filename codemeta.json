@@ -1,17 +1,35 @@
 {
-  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@context": "https://w3id.org/codemeta/3.0",
   "@type": "SoftwareSourceCode",
-  "name": "Palimpsest Plasma",
-  "version": "1.1.0",
-  "dateCreated": "2026-01-15",
-  "dateModified": "2026-01-20",
-  "author": [{
-    "@type": "Person",
-    "givenName": "Jonathan D.A.",
-    "familyName": "Jewell",
-    "email": "jonathan.jewell@open.ac.uk"
-  }],
-  "license": "https://spdx.org/licenses/PMPL-1.0-or-later",
-  "codeRepository": "https://github.com/hyperpolymath/palimpsest-plasma",
-  "programmingLanguage": ["Elixir", "Scheme"]
+  "authors": [
+    {
+      "@type": "Person",
+      "givenName": "Gemini",
+      "familyName": "CLI",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Google"
+      }
+    }
+  ],
+  "identifier": "https://doi.org/YOUR-DOI-HERE",
+  "codeRepository": "https://github.com/your-username/palimpsest-plasma",
+  "datePublished": "2026-02-12",
+  "dateModified": "2026-02-12",
+  "description": "A comprehensive framework for creating dynamic, self-modifying software systems, focusing on resilience and adaptability.",
+  "keywords": [
+    "plasma",
+    "framework",
+    "palimpsest",
+    "self-modifying",
+    "adaptive"
+  ],
+  "license": "https://spdx.org/licenses/MIT",
+  "name": "palimpsest-plasma",
+  "programmingLanguage": [],
+  "version": "0.1.0",
+  "url": "https://your-project-website.com/palimpsest-plasma",
+  "readme": "https://github.com/your-username/palimpsest-plasma/blob/main/README.md",
+  "issueTracker": "https://github.com/your-username/palimpsest-plasma/issues",
+  "developmentStatus": "active"
 }
