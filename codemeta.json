@@ -1,0 +1,17 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Palimpsest Plasma",
+  "version": "1.1.0",
+  "dateCreated": "2026-01-15",
+  "dateModified": "2026-01-20",
+  "author": [{
+    "@type": "Person",
+    "givenName": "Jonathan D.A.",
+    "familyName": "Jewell",
+    "email": "jonathan.jewell@open.ac.uk"
+  }],
+  "license": "https://spdx.org/licenses/PMPL-1.0-or-later",
+  "codeRepository": "https://github.com/hyperpolymath/palimpsest-plasma",
+  "programmingLanguage": ["Elixir", "Scheme"]
+}

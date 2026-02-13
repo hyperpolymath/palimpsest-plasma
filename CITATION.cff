@@ -1,0 +1,19 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+cff-version: 1.2.0
+message: "If you use this software, please cite it as below."
+type: software
+title: "Palimpsest Plasma"
+version: 1.1.0
+date-released: 2026-01-20
+authors:
+  - family-names: Jewell
+    given-names: "Jonathan D.A."
+    email: jonathan.jewell@open.ac.uk
+repository-code: "https://github.com/hyperpolymath/palimpsest-plasma"
+license: PMPL-1.0-or-later
+keywords:
+  - license
+  - compliance
+  - PMPL
+  - palimpsest
