@@ -1,0 +1,208 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+= Palimpsest Plasma — Architecture
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
+
+== Purpose
+
+palimpsest-plasma is the PLASMA engine — the operational, programmable substrate
+that keeps the Palimpsest-MPL ecosystem correct, compliant, and narratively
+coherent over time.
+
+It interprets the licence, exhibits, and governance rules as typed,
+machine-readable policies, evaluates real-world repository states against those
+obligations, and produces findings, actions, and audit reports.
+
+== Design Principles
+
+* **Typed correctness** — OCaml's type system enforces structural soundness at
+  compile time; deontic operators (obligation, prohibition, permission) are
+  first-class values in the AST.
+* **Migratable schemas** — Every policy version carries a schema version; the
+  migration framework ensures prior audits remain interpretable as the policy
+  evolves.
+* **Narrative alignment** — Findings, actions, and audit logs carry rationale
+  fields that tie machine decisions back to human-readable governance intent.
+* **Composable surfaces** — The core engine is consumed by thin integration
+  wrappers (CLI, hooks, CI, daemon) that never embed policy logic.
+
+== Project Layout
+
+[source]
+----
+palimpsest-plasma/
+  dune-project
+  dune-workspace
+  plasma.opam
+
+  src/
+    core/
+      plasma_policy_ast.ml          -- Policy AST types
+      plasma_policy_ast.mli
+      plasma_policy_schema.ml       -- Schema versioning
+      plasma_policy_schema.mli
+      plasma_eval.ml                -- Evaluation engine
+      plasma_eval.mli
+      plasma_migration.ml           -- Schema migration framework
+      plasma_migration.mli
+      plasma_facts.ml               -- Fact collection types
+      plasma_facts.mli
+      plasma_findings.ml            -- Finding types and severity
+      plasma_findings.mli
+      plasma_actions.ml             -- Action planner
+      plasma_actions.mli
+      plasma_governance.ml          -- Governance runtime
+      plasma_governance.mli
+
+    integration/
+      plasma_cli.ml                 -- CLI entry point
+      plasma_cli.mli
+      plasma_git_hooks.ml           -- Git hook support
+      plasma_git_hooks.mli
+      plasma_ci_integration.ml      -- CI/CD integration
+      plasma_ci_integration.mli
+      plasma_daemon.ml              -- Daemon/cron mode
+      plasma_daemon.mli
+
+    adapters/
+      plasma_repo_scan.ml           -- Repository scanning
+      plasma_repo_scan.mli
+      plasma_spdx.ml                -- SPDX header parsing
+      plasma_spdx.mli
+      plasma_exhibits.ml            -- Exhibit parsing
+      plasma_exhibits.mli
+      plasma_metadata.ml            -- Governance metadata parsing
+      plasma_metadata.mli
+
+  bin/
+    main_cli.ml                     -- Binary entry point
+
+  test/
+    test_policy_ast.ml
+    test_eval_engine.ml
+    test_migration.ml
+    test_integration.ml
+
+  examples/
+    policies/
+      example_base_policy.json
+      example_exhibit_policy.json
+    repos/
+      minimal_compliant_repo/
+      drifting_repo/
+----
+
+=== Layer Descriptions
+
+**core/** — Canonical PLASMA substrate. Contains the Policy AST, schemas,
+evaluation engine, migration framework, fact types, findings, action planner,
+and governance runtime. No IO happens here; all functions are pure.
+
+**integration/** — Surfaces that orchestrate the core. The CLI, git hooks, CI
+integration, and daemon each call into the core and handle IO, configuration,
+and user interaction.
+
+**adapters/** — IO and environment-specific collectors and parsers. SPDX header
+detection, exhibit parsing, repository structure scanning, and governance
+metadata extraction. Adapters produce `fact_set` values consumed by the
+evaluation engine.
+
+== Data Flow
+
+[source]
+----
+Repository State
+       │
+       ▼
+  ┌─────────────┐
+  │  Adapters    │  Scan repo, parse SPDX, collect exhibits
+  │  (IO layer)  │
+  └──────┬──────┘
+         │ fact_set
+         ▼
+  ┌─────────────┐
+  │  Core Eval   │  Evaluate rules against facts
+  │  Engine      │  Produce findings
+  └──────┬──────┘
+         │ finding list
+         ▼
+  ┌─────────────┐
+  │  Action      │  Plan corrective/governance actions
+  │  Planner     │
+  └──────┬──────┘
+         │ planned_action list
+         ▼
+  ┌─────────────┐
+  │  Integration │  CLI output, audit logs, fixes
+  │  Surface     │
+  └─────────────┘
+----
+
+== Evaluation Loop
+
+At v0.1 the evaluation engine runs a crisp, deterministic loop:
+
+1. **Collect facts** from the repository via adapters.
+2. **Compile conditions** in each rule to predicates over the fact set.
+3. **Evaluate each rule** — check its condition, then based on modality
+   (obligation/prohibition/permission) and action kind, emit findings.
+4. **Feed findings** into the action planner.
+5. **Present planned actions** to the integration surface (suggest or apply).
+
+== Migration Framework
+
+Goal: allow policy schema and policy instances to evolve without breaking
+previous audits.
+
+* Each policy carries a `schema_version` (major.minor).
+* A `migration` record maps `from_version` -> `to_version` with a transform
+  function.
+* A `migration_plan` registers all known steps and a `latest_version`.
+* `migrate_to_latest` chains steps automatically.
+
+v0.1 ships with schema 0.1, no migrations yet, but the framework is present
+and tested with mock migrations so the upgrade path is baked in from day one.
+
+See link:policy-ast-v0.1.adoc[policy-ast-v0.1.adoc] for the full AST type
+definitions.
+
+== Governance Runtime
+
+The governance module handles:
+
+* **Council decisions** — accept a decision ID, look up its effects, apply as
+  policy overlays or exhibit modifications.
+* **Exhibit lifecycle** — track which exhibits are active, superseded, or
+  deprecated; enforce version constraints.
+* **Versioning rules** — validate that release tags follow the versioning
+  expectations described in `palimpsest-license/VERSIONING.adoc`.
+
+== Contractiles
+
+Contractiles are a governance-grade primitive representing reversible
+commitments within the PLASMA engine. See link:contractiles.adoc[contractiles.adoc]
+for the full design.
+
+Within the evaluation engine, a contractile is a typed structure representing a
+contracting rule — one that narrows the permissible state space as evaluation
+proceeds. They embody the tension, load, or narrative pressure exerted by a
+rule, a dependency, or a governance decision.
+
+== Integration with union-policy-parser
+
+The `union-policy-parser/` sub-project provides A2ML-based contract validation
+for union standards (NUJ, IWW, UCU). PLASMA integrates with it by:
+
+* Consuming A2ML-parsed documents as additional fact sources
+* Applying PMPL governance rules alongside union-specific validation
+* Sharing the exhibit and attestation model
+
+== Related Projects
+
+* `palimpsest-license` — The canonical PMPL-1.0 licence text and versioning
+* `palimpsest-governance` — Stewardship Council processes and artefacts
+* `union-policy-parser` — A2ML contract validation (sub-project within this repo)

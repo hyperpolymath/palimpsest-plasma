@@ -1,13 +1,16 @@
-# ⚠️ STOP - CRITICAL READING REQUIRED
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# STOP - CRITICAL READING REQUIRED
 
 **THIS FILE MUST BE READ FIRST BY ALL AI AGENTS**
 
 ## WHAT IS THIS?
 
-This is the AI manifest for **palimpsest-plasma**. It declares:
-- Canonical file locations (where things MUST be, and nowhere else)
-- Critical invariants (rules that must NEVER be violated)
-- Repository structure and organization
+This is the AI manifest for **palimpsest-plasma** — the governance automation
+engine for the Palimpsest-MPL ecosystem.
+
+PLASMA is an OCaml-based system that interprets licence, exhibits, and governance
+rules as typed, machine-readable policies, evaluates repository state against
+obligations, and produces findings, actions, and audit reports.
 
 ## CANONICAL LOCATIONS (UNIVERSAL RULE)
 
@@ -25,17 +28,12 @@ These 6 SCM files MUST exist in `.machine_readable/` directory ONLY:
 
 ### Bot Directives: `.bot_directives/` ONLY
 
-Bot-specific instructions for:
-- rhodibot - Git operations
-- echidnabot - Code quality
-- sustainabot - Dependency updates
-- glambot - Documentation
-- seambot - Integration
-- finishbot - Task completion
+Bot-specific instructions for rhodibot, echidnabot, sustainabot, glambot,
+seambot, finishbot.
 
 ### Agent Instructions
 
-- `.claude/CLAUDE.md` - Claude-specific patterns (if exists)
+- `.claude/CLAUDE.md` - Claude-specific patterns
 - `0-AI-MANIFEST.a2ml` - THIS FILE (universal entry point)
 
 ## CORE INVARIANTS
@@ -45,72 +43,88 @@ Bot-specific instructions for:
 3. **No stale metadata** - If root SCMs exist, they are OUT OF DATE
 4. **License consistency** - All code PMPL-1.0-or-later unless platform requires MPL-2.0
 5. **Author attribution** - Always "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"
+6. **OCaml core** - PLASMA engine is OCaml; do not rewrite in other languages
+7. **Deontic operators** - Obligation/Prohibition/Permission are first-class AST values
+8. **Immutable base policy** - Exhibits extend but never mutate the base policy
 
 ## REPOSITORY STRUCTURE
 
-<!-- CUSTOMIZE THIS SECTION FOR YOUR REPO -->
-
-This repo contains:
-
 ```
 palimpsest-plasma/
-├── 0-AI-MANIFEST.a2ml         # THIS FILE (start here)
-├── README.md                   # Project overview
-├── [your source files]         # Main code
-├── .machine_readable/          # SCM files (6 files)
-│   ├── STATE.scm
-│   ├── META.scm
-│   ├── ECOSYSTEM.scm
-│   ├── AGENTIC.scm
-│   ├── NEUROSYM.scm
-│   └── PLAYBOOK.scm
-└── .bot_directives/            # Bot instructions
+├── 0-AI-MANIFEST.a2ml           # THIS FILE (start here)
+├── README.adoc                   # Project overview
+├── ROADMAP.adoc                  # Implementation milestones
+├── TOPOLOGY.md                   # Architecture diagram + dashboard
+├── LICENSE                       # PMPL-1.0-or-later
+├── Justfile                      # Build automation
+│
+├── src/                          # PLASMA engine (OCaml) — TO BE BUILT
+│   ├── core/                     # Policy AST, eval, migration, findings
+│   ├── integration/              # CLI, git hooks, CI, daemon
+│   └── adapters/                 # Repo scan, SPDX, exhibits, metadata
+│
+├── union-policy-parser/          # Sub-project: A2ML contract validation (Rust)
+│   ├── src/rust/                 # Parser, validator, reporter, schemas
+│   ├── src/abi/                  # Idris2 ABI definitions
+│   ├── ffi/zig/                  # Zig FFI implementation
+│   ├── schemas/                  # Union policy schemas (A2ML)
+│   └── examples/                 # Example contracts
+│
+├── docs/                         # Documentation
+│   ├── architecture.adoc         # Full system architecture
+│   ├── policy-ast-v0.1.adoc     # Typed AST specification
+│   ├── cli-design.adoc          # CLI and integration design
+│   ├── contractiles.adoc        # Contractiles concept
+│   ├── mvp-v1.adoc              # MVP v1 deliverables
+│   └── release-log.adoc         # Release history
+│
+├── site/                         # Elixir/NimblePublisher static site
+├── assets/badges/                # Badge SVGs
+├── contractiles/                 # RSR operational contractiles (k9/dust/lust/must/trust)
+├── .machine_readable/            # SCM files (6 files)
+├── .bot_directives/              # Bot instructions
+└── .github/workflows/            # CI/CD workflows
 ```
+
+## KEY DOCUMENTS
+
+Read these for full context:
+
+- `docs/architecture.adoc` - Three-layer architecture, data flow, eval loop
+- `docs/policy-ast-v0.1.adoc` - Complete OCaml type definitions for the AST
+- `docs/cli-design.adoc` - CLI subcommands and integration surfaces
+- `docs/contractiles.adoc` - Contractiles: reversible governance primitives
+- `ROADMAP.adoc` - Implementation milestones from v1.0 through v3.x
 
 ## SESSION STARTUP CHECKLIST
 
-✅ Read THIS file (0-AI-MANIFEST.a2ml) first
-✅ Understand canonical locations (.machine_readable/, .bot_directives/)
-✅ Know the invariants (no SCM duplication, etc.)
-✅ Check for MCP enforcement (if applicable)
-✅ Read `.machine_readable/STATE.scm` for current status
-✅ Read `.machine_readable/AGENTIC.scm` for interaction patterns
+1. Read THIS file (0-AI-MANIFEST.a2ml) first
+2. Understand canonical locations (.machine_readable/, .bot_directives/)
+3. Know the invariants (no SCM duplication, OCaml core, deontic operators)
+4. Read `.machine_readable/STATE.scm` for current status
+5. Read `docs/architecture.adoc` for system design
+6. Check `ROADMAP.adoc` for current milestone
 
 ## LIFECYCLE HOOKS
 
 ### on-enter (Session Start)
 
-When starting a new session:
-
 1. Read and acknowledge this manifest
-2. Log session start (optional but recommended)
-   - Format: `[YYYY-MM-DD HH:MM:SS] Session started: [agent-name]`
-   - Location: `.machine_readable/session-log.txt`
-3. Read `.machine_readable/STATE.scm`
-4. Check for blockers
-5. State understanding of canonical locations
+2. Read `.machine_readable/STATE.scm`
+3. Check for blockers
+4. State understanding of canonical locations and invariants
 
 ### on-exit (Session End)
 
-When ending a session:
-
 1. Update `.machine_readable/STATE.scm` if changes made
-2. Log session end (optional but recommended)
-   - Format: `[YYYY-MM-DD HH:MM:SS] Session ended: [summary]`
-   - Location: `.machine_readable/session-log.txt`
-3. Document new blockers
-4. Summarize outcomes
-
-## ATTESTATION PROOF
-
-After reading this file, demonstrate understanding by stating:
-
-**"I have read the AI manifest. SCM files are located in `.machine_readable/` ONLY, bot directives in `.bot_directives/`, and I will not create duplicate files in the root directory."**
+2. Document new blockers
+3. Summarize outcomes
 
 ## META
 
-- **Format Version:** 1.0.0
-- **Created:** [DATE]
-- **Maintained By:** [YOUR-NAME/ORG]
+- **Format Version:** 2.0.0
+- **Created:** 2026-01-10
+- **Updated:** 2026-02-20
+- **Maintained By:** Jonathan D.A. Jewell (hyperpolymath)
 - **License:** PMPL-1.0-or-later
 - **Protocol:** https://github.com/hyperpolymath/0-ai-gatekeeper-protocol

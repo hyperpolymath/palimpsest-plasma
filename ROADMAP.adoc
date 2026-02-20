@@ -1,22 +1,110 @@
 // SPDX-License-Identifier: PMPL-1.0-or-later
-= Rsr Template Repo Roadmap
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+= Palimpsest Plasma — Roadmap
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
 
 == Current Status
 
-Initial development phase.
+The MVP v1 bundle (badges, compliance docs, SPDX metadata, audit commands) is
+**complete**. The union-policy-parser sub-project (Rust/A2ML) is functional.
+The core PLASMA engine (OCaml) is now in the design-to-implementation phase.
 
-== Milestones
+== Completed Milestones
 
-=== v0.1.0 - Foundation
-* [ ] Core functionality
-* [ ] Basic documentation
-* [ ] CI/CD pipeline
+=== v1.0.0 — MVP v1 Bundle [COMPLETE]
 
-=== v1.0.0 - Stable Release
-* [ ] Full feature set
-* [ ] Comprehensive tests
-* [ ] Production ready
+* [x] Finalise PMPL-1.0 licence text and README
+* [x] Ship badge + embed documentation from docs/mvp-v1.adoc
+* [x] Update ECOSYSTEM/STATE metadata and release log
+
+=== v1.1.0 — Metadata & Discoverability [COMPLETE]
+
+* [x] Add CITATION.cff for academic citation support
+* [x] Add codemeta.json for software metadata interoperability
+* [x] Add .well-known/security.txt and .well-known/ai.txt
+* [x] Update STATE.scm to reflect additions
+
+=== union-policy-parser v0.1 [COMPLETE]
+
+* [x] A2ML parser (nom-based, Rust)
+* [x] Union schema definitions (NUJ, IWW, UCU, BECTU, Equity, GMB)
+* [x] Contract validator with three modes (Lax, Checked, Attested)
+* [x] Grievance generator (JSON, Markdown, HTML output)
+* [x] Example contracts (good and bad)
+* [x] Idris2 ABI definitions and Zig FFI layer
+
+== Active Milestones
+
+=== v2.0.0 — PLASMA Engine Foundation
+
+* [ ] OCaml project layout (dune-project, opam, src/core)
+* [ ] Policy AST v0.1 implementation
+* [ ] Schema versioning and migration framework
+* [ ] Mock migration tests
+* [ ] Fact collection types and adapters
+* [ ] Finding types with severity and kind
+
+=== v2.1.0 — Evaluation Engine
+
+* [ ] Condition compiler (AST conditions -> fact predicates)
+* [ ] Rule evaluator (modality + action -> findings)
+* [ ] Policy evaluator (iterates rules, collects findings)
+* [ ] Integration tests with example policies and repos
+
+=== v2.2.0 — Action Planner
+
+* [ ] Action types (AddSpdxHeader, UpdateExhibitReference, etc.)
+* [ ] Suggest vs Apply modes
+* [ ] Planner: findings -> planned actions
+* [ ] Backup and rollback support
+
+=== v2.3.0 — CLI
+
+* [ ] `plasma check` — validate repo against policy
+* [ ] `plasma fix` — plan or apply corrective actions
+* [ ] `plasma audit` — generate structured audit logs
+* [ ] `plasma governance` — Council decision integration
+* [ ] `plasma migrate` — policy schema migration
+* [ ] Human and JSON output formats
+
+== Planned Milestones
+
+=== v2.4.0 — Integration Surfaces
+
+* [ ] Git hooks (pre-commit, pre-push)
+* [ ] GitHub Actions reference workflow
+* [ ] `.plasma.toml` configuration
+* [ ] Daemon/cron mode for periodic audits
+
+=== v2.5.0 — Governance Runtime
+
+* [ ] Council decision enforcement
+* [ ] Exhibit lifecycle tracking (active, superseded, deprecated)
+* [ ] Versioning rule validation
+* [ ] Policy overlay composition
+
+=== v3.0.0 — Contractiles
+
+* [ ] Contractile type definitions
+* [ ] Reversible commitment semantics
+* [ ] State-space narrowing evaluation
+* [ ] Integration with action planner
+* [ ] Constraint propagation across rules
+
+=== v3.1.0 — PLASMA + union-policy-parser Integration
+
+* [ ] A2ML documents as fact sources for PLASMA
+* [ ] Shared exhibit and attestation model
+* [ ] Combined compliance reporting
 
 == Future Directions
 
-_To be determined based on community feedback._
+* Formal verification of policy evaluation (Coq or Lean proofs)
+* WASM compilation target for browser-based policy checks
+* Visual policy editor
+* Multi-repo fleet evaluation (gitbot-fleet integration)
+* AI-assisted policy authoring

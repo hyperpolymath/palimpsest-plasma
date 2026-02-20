@@ -1,0 +1,127 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+= Palimpsest Plasma — Contractiles
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
+
+== What Are Contractiles?
+
+Contractiles are a governance-grade primitive within the PLASMA engine. The word
+sits between "contract" and "tensile" — a unit that contracts, binds, or
+tightens around a constraint or intention. Within the Palimpsest-MPL ecosystem,
+contractiles serve as the smallest unit of binding in governance: something that
+tightens obligations around a state, but can also relax or release under defined
+conditions.
+
+== Conceptual Roles
+
+Contractiles occupy four intersecting roles:
+
+=== 1. Reversible Governance Primitives
+
+A contractile is the smallest unit of "binding" in PMPL governance. It
+tightens obligations around a state (e.g., a repo must have an SPDX header
+after a certain version), but it can also relax or release under defined
+conditions (e.g., an exhibit exemption, a Council decision).
+
+This reversibility is what distinguishes contractiles from static rules — they
+have a lifecycle of tightening, holding, and releasing.
+
+=== 2. Symbolic Artefacts Representing Tension or Load
+
+In narratable systems, contractiles embody the pressure or pull exerted by a
+rule, a dependency, or a governance decision. A repo under multiple unfulfilled
+obligations has high contractile tension. Resolving findings reduces that
+tension.
+
+This gives the PLASMA engine a narrative quality: compliance is not just
+pass/fail, but a story of tension accumulation and resolution.
+
+=== 3. Constraint Propagation Elements
+
+In the evaluation engine, contractiles function as edges in a constraint
+network. As information accumulates (facts are collected, rules are evaluated),
+contractiles tighten — narrowing the permissible state space. When a contractile
+reaches full tension (all its conditions are met but its action is unfulfilled),
+it produces a finding.
+
+=== 4. Compliance Engine Building Blocks
+
+Inside the PLASMA core, a contractile is a typed structure representing a
+contracting rule — one that narrows the permissible state space as evaluation
+proceeds. It combines a rule with dynamic state: how much tension has
+accumulated, what conditions have been observed, and whether the rule is
+currently active, relaxed, or released.
+
+== Relationship to Existing Contractile Directories
+
+The `contractiles/` directories in both the parent repo and the
+union-policy-parser sub-project contain the five standard RSR contractile
+categories:
+
+* **k9** — K9-SVC validation (canary/sentinel checks)
+* **dust** — Disposable utility scripts and throwaway tooling
+* **lust** — Legal utility scripts and templates
+* **must** — Mandatory compliance checks
+* **trust** — Trust chain and provenance validation
+
+These are _operational_ contractiles — scripts and checks that execute during
+CI/CD. The PLASMA contractile concept described here is the _formal_ model that
+will eventually subsume and generalise these operational scripts into a typed,
+evaluable framework.
+
+== Proposed Type Definition
+
+[source,ocaml]
+----
+type contractile_state =
+  | Tightening     (** conditions accumulating, not yet fully bound *)
+  | Holding        (** fully bound, actively enforced *)
+  | Relaxing       (** exemption or override in effect *)
+  | Released       (** no longer active *)
+
+type contractile = {
+  rule        : rule;
+  state       : contractile_state;
+  tension     : float;           (** 0.0 = no tension, 1.0 = full *)
+  observed    : condition list;  (** conditions confirmed true *)
+  exemptions  : exhibit_id list; (** exhibits that relax this contractile *)
+}
+----
+
+== Evaluation Semantics
+
+During a PLASMA evaluation cycle:
+
+1. **Initialise** — each rule spawns a contractile in `Tightening` state with
+   tension 0.0.
+2. **Accumulate** — as facts are collected, conditions that match increase the
+   contractile's tension and move confirmed conditions to `observed`.
+3. **Bind** — when all conditions are met, the contractile moves to `Holding`.
+   If the action is unfulfilled, a finding is emitted.
+4. **Relax** — if an exhibit exemption applies, the contractile moves to
+   `Relaxing` and the finding is downgraded or suppressed.
+5. **Release** — when a Council decision or exhibit change removes the rule,
+   the contractile moves to `Released`.
+
+== Narrative Properties
+
+Contractiles give the PLASMA engine narratable qualities:
+
+* **Tension reports** — "This repo has 12 contractiles at full tension, 3
+  relaxing, and 45 released."
+* **Compliance arcs** — "Over the past month, contractile tension decreased
+  from 0.85 to 0.23 as findings were resolved."
+* **Governance pressure maps** — visualise which areas of a repo are under the
+  most governance pressure.
+
+== Future Work
+
+* Constraint propagation across dependent contractiles
+* Contractile aggregation (repo-level tension score)
+* Visual contractile maps
+* Integration with the action planner (prioritise high-tension contractiles)
+* Historical tension tracking in audit logs

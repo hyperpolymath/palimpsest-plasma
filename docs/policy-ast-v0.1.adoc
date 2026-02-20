@@ -1,0 +1,207 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+= Palimpsest Plasma — Policy AST v0.1
+:toc:
+:toc-placement!:
+:sectnums:
+:source-highlighter: rouge
+
+toc::[]
+
+== Purpose
+
+This document specifies the typed Abstract Syntax Tree (AST) for PLASMA policies
+at schema version 0.1. The AST is deliberately small, explicit, and designed for
+migration — the minimum substrate that can genuinely express Palimpsest-MPL
+obligations.
+
+== Core Identifiers and Versions
+
+[source,ocaml]
+----
+type policy_version = {
+  major : int;
+  minor : int;
+}
+
+type policy_id = string
+type exhibit_id = string
+type rule_id = string
+----
+
+== Subjects, Resources, and Contexts
+
+=== Subjects
+
+A subject is the entity being evaluated — a file, the repo itself, an exhibit,
+a release, or a governance metadata field.
+
+[source,ocaml]
+----
+type subject =
+  | S_File of string
+  | S_Repo
+  | S_Exhibit of exhibit_id
+  | S_Release of string        (** tag or version string *)
+  | S_Metadata of string       (** governance key *)
+----
+
+=== Resources
+
+A resource is the artefact being checked within or about a subject.
+
+[source,ocaml]
+----
+type resource =
+  | R_File of string
+  | R_Header of string
+  | R_Manifest of string
+  | R_ExhibitRef of exhibit_id
+  | R_GovernanceField of string
+  | R_Release
+----
+
+=== Conditions
+
+Conditions encode governance, repo structure, and lifecycle details. They
+compose with boolean operators and specific predicates.
+
+[source,ocaml]
+----
+type condition =
+  | C_True
+  | C_Not of condition
+  | C_And of condition list
+  | C_Or of condition list
+  | C_RepoHasFile of string
+  | C_FileMatchesPattern of string * string  (** path, regex or glob *)
+  | C_HasSpdxHeader
+  | C_HasProvenanceManifest
+  | C_HasExhibitReference of exhibit_id
+  | C_GovernanceFlagSet of string * string   (** key, expected value *)
+  | C_VersionAtLeast of string               (** semantic versioning string *)
+----
+
+== Deontic Operators
+
+The modality captures the deontic nature of a rule: what the system obligates,
+prohibits, or permits.
+
+[source,ocaml]
+----
+type modality =
+  | Obligation
+  | Prohibition
+  | Permission
+----
+
+== Action Kinds
+
+An action kind describes what the rule asserts about the subject-resource pair.
+
+[source,ocaml]
+----
+type action_kind =
+  | A_Present      (** resource must exist *)
+  | A_Absent       (** resource must not exist *)
+  | A_Valid        (** resource must be structurally valid *)
+  | A_ConsistentWith of string  (** exhibit id or council decision id *)
+----
+
+== Rules
+
+A rule is the fundamental unit of policy. It binds a deontic modality to a
+subject, resource, condition, and action kind, with optional narrative rationale
+and source provenance.
+
+[source,ocaml]
+----
+type rule = {
+  rule_id    : rule_id;
+  modality   : modality;
+  subject    : subject;
+  resource   : resource;
+  condition  : condition;
+  action     : action_kind;
+  rationale  : string option;   (** narrative explanation *)
+  source     : string option;   (** licence clause, exhibit reference, etc. *)
+}
+----
+
+== Exhibits
+
+Exhibits extend or modify the base policy. An exhibit can add new rules,
+modify existing rules, or override rules entirely.
+
+=== Exhibit Effects
+
+[source,ocaml]
+----
+type exhibit_effect =
+  | EE_AddRules of rule list
+  | EE_ModifyRules of rule_id list   (** more detailed diff later *)
+  | EE_OverrideRules of rule_id list
+----
+
+=== Exhibit Policy
+
+[source,ocaml]
+----
+type exhibit_policy = {
+  exhibit_id     : exhibit_id;
+  applies_to     : string list;       (** repo labels, paths, modules *)
+  effects        : exhibit_effect list;
+}
+----
+
+== Policies
+
+A policy bundles a version, base rules, and exhibit extensions.
+
+[source,ocaml]
+----
+type policy = {
+  policy_id      : policy_id;
+  version        : policy_version;
+  base_rules     : rule list;
+  exhibits       : exhibit_policy list;
+}
+----
+
+== Design Decisions
+
+=== Why Deontic Operators as First-Class Values
+
+Obligations, prohibitions, and permissions are the natural language of licence
+governance. Making them explicit in the AST means:
+
+* Rules can be mechanically evaluated against facts
+* Findings carry the deontic context (a missing obligation vs. a violated
+  prohibition)
+* Exhibit effects can target specific modalities
+
+=== Why Exhibits as Policy Extensions
+
+The Palimpsest-MPL licence uses exhibits to extend or modify the base licence.
+The AST mirrors this by allowing exhibit policies to add, modify, or override
+rules without mutating the base policy. This preserves auditability — every
+evaluation can trace which rules came from the base and which from exhibits.
+
+=== Why Conditions are Composable
+
+Real governance rules involve compound conditions: "if the repo has a manifest
+AND the version is at least 1.0 THEN the SPDX header is obligated." The
+condition type composes with `C_And`, `C_Or`, and `C_Not` to express arbitrarily
+complex predicates.
+
+== Schema Migration
+
+This AST is at schema version 0.1. Future versions may:
+
+* Add new condition types (e.g., `C_HasSignature`, `C_LicenseCompatibleWith`)
+* Add new subject types (e.g., `S_Workflow`, `S_Container`)
+* Extend action kinds (e.g., `A_SignedBy`, `A_VersionedAt`)
+* Add detailed diff semantics to `EE_ModifyRules`
+
+All changes will be handled by the migration framework described in
+link:architecture.adoc[architecture.adoc].

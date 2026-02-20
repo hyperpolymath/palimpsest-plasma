@@ -15,10 +15,10 @@ set shell := ["bash", "-uc"]
 set dotenv-load := true
 set positional-arguments := true
 
-# Project metadata - CUSTOMIZE THESE
-project := "RSR-template-repo"
-version := "0.1.0"
-tier := "infrastructure"  # 1 | 2 | infrastructure
+# Project metadata
+project := "palimpsest-plasma"
+version := "2.0.0-dev"
+tier := "infrastructure"
 state := ".machine_readable/STATE.scm"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -54,35 +54,29 @@ info:
 # BUILD & COMPILE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Build the project (debug mode)
+# Build the PLASMA engine (OCaml/dune)
 build *args:
     @echo "Building {{project}}..."
-    # TODO: Add build command for your language
-    # Rust: cargo build {{args}}
-    # ReScript: npm run build
-    # Elixir: mix compile
+    dune build {{args}}
 
 # Build in release mode with optimizations
 build-release *args:
     @echo "Building {{project}} (release)..."
-    # TODO: Add release build command
-    # Rust: cargo build --release {{args}}
+    dune build --force {{args}}
 
 # Build and watch for changes
 build-watch:
     @echo "Watching for changes..."
-    # TODO: Add watch command
-    # Rust: cargo watch -x build
-    # ReScript: npm run watch
+    dune build --watch
 
 # Clean build artifacts [reversible: rebuild with `just build`]
 clean:
     @echo "Cleaning..."
-    rm -rf target _build dist lib node_modules
+    dune clean
 
 # Deep clean including caches [reversible: rebuild]
 clean-all: clean
-    rm -rf .cache .tmp
+    rm -rf _opam .cache .tmp
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # TEST & QUALITY
@@ -91,21 +85,17 @@ clean-all: clean
 # Run all tests
 test *args:
     @echo "Running tests..."
-    # TODO: Add test command
-    # Rust: cargo test {{args}}
-    # ReScript: npm test
-    # Elixir: mix test
+    dune runtest {{args}}
 
 # Run tests with verbose output
 test-verbose:
     @echo "Running tests (verbose)..."
-    # TODO: Add verbose test
+    dune runtest --force --verbose
 
 # Run tests and generate coverage report
 test-coverage:
     @echo "Running tests with coverage..."
-    # TODO: Add coverage command
-    # Rust: cargo llvm-cov
+    dune runtest --instrument-with bisect_ppx --force
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # LINT & FORMAT
@@ -114,22 +104,17 @@ test-coverage:
 # Format all source files [reversible: git checkout]
 fmt:
     @echo "Formatting..."
-    # TODO: Add format command
-    # Rust: cargo fmt
-    # ReScript: npm run format
-    # Elixir: mix format
+    dune fmt
 
 # Check formatting without changes
 fmt-check:
     @echo "Checking format..."
-    # TODO: Add format check
-    # Rust: cargo fmt --check
+    dune fmt --preview
 
 # Run linter
 lint:
     @echo "Linting..."
-    # TODO: Add lint command
-    # Rust: cargo clippy -- -D warnings
+    dune build @lint
 
 # Run all quality checks
 quality: fmt-check lint test
@@ -143,23 +128,20 @@ fix: fmt
 # RUN & EXECUTE
 # ═══════════════════════════════════════════════════════════════════════════════
 
-# Run the application
+# Run the PLASMA CLI
 run *args:
     @echo "Running {{project}}..."
-    # TODO: Add run command
-    # Rust: cargo run {{args}}
+    dune exec -- plasma {{args}}
 
 # Run in development mode with hot reload
 dev:
     @echo "Starting dev mode..."
-    # TODO: Add dev command
+    dune build --watch
 
-# Run REPL/interactive mode
+# Run OCaml REPL with project loaded
 repl:
-    @echo "Starting REPL..."
-    # TODO: Add REPL command
-    # Elixir: iex -S mix
-    # Guile: guix shell guile -- guile
+    @echo "Starting utop REPL..."
+    dune utop
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DEPENDENCIES
@@ -168,16 +150,12 @@ repl:
 # Install all dependencies
 deps:
     @echo "Installing dependencies..."
-    # TODO: Add deps command
-    # Rust: (automatic with cargo)
-    # ReScript: npm install
-    # Elixir: mix deps.get
+    opam install . --deps-only --with-test --yes
 
 # Audit dependencies for vulnerabilities
 deps-audit:
     @echo "Auditing dependencies..."
-    # TODO: Add audit command
-    # Rust: cargo audit
+    opam list --installed --short | xargs -I{} opam info {} 2>/dev/null || true
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # DOCUMENTATION
@@ -222,14 +200,14 @@ man:
     #!/usr/bin/env bash
     mkdir -p docs/man
     cat > docs/man/{{project}}.1 << EOF
-.TH RSR-TEMPLATE-REPO 1 "$(date +%Y-%m-%d)" "{{version}}" "RSR Template Manual"
+.TH PALIMPSEST-PLASMA 1 "$(date +%Y-%m-%d)" "{{version}}" "PLASMA Manual"
 .SH NAME
-{{project}} \- RSR standard repository template
+{{project}} \- Governance automation engine for Palimpsest-MPL
 .SH SYNOPSIS
 .B just
 [recipe] [args...]
 .SH DESCRIPTION
-Canonical template for RSR (Rhodium Standard Repository) projects.
+Governance automation engine for the Palimpsest-MPL ecosystem.
 .SH AUTHOR
 Hyperpolymath <hyperpolymath@proton.me>
 EOF
@@ -447,11 +425,11 @@ log count="20":
 
 # Count lines of code
 loc:
-    @find . \( -name "*.rs" -o -name "*.ex" -o -name "*.res" -o -name "*.ncl" -o -name "*.scm" \) 2>/dev/null | xargs wc -l 2>/dev/null | tail -1 || echo "0"
+    @find . \( -name "*.ml" -o -name "*.mli" -o -name "*.rs" -o -name "*.ex" -o -name "*.scm" -o -name "*.idr" -o -name "*.zig" \) 2>/dev/null | xargs wc -l 2>/dev/null | tail -1 || echo "0"
 
 # Show TODO comments
 todos:
-    @grep -rn "TODO\|FIXME" --include="*.rs" --include="*.ex" --include="*.res" . 2>/dev/null || echo "No TODOs"
+    @grep -rn "TODO\|FIXME" --include="*.ml" --include="*.mli" --include="*.rs" --include="*.ex" . 2>/dev/null || echo "No TODOs"
 
 # Open in editor
 edit:

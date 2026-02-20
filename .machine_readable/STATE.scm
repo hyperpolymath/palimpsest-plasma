@@ -3,19 +3,23 @@
 
 (define project-state
   `((metadata
-      ((version . "1.1.0")
+      ((version . "2.0.0-dev")
        (schema-version . "1")
        (created . "2026-01-10T13:50:48+00:00")
-       (updated . "2026-02-13T00:00:00+00:00")
+       (updated . "2026-02-20T00:00:00+00:00")
        (project . "palimpsest-plasma")
        (repo . "palimpsest-plasma")))
 
     (current-position
-      ((phase . "Post-Release Metadata")
-       (overall-completion . 85)
+      ((phase . "PLASMA Engine Design-to-Implementation")
+       (overall-completion . 40)
        (working-features . ("canonical-license" "badge-pack" "compliance-docs"
                             "audit-ready" "citation-cff" "codemeta-json"
-                            "well-known-security" "well-known-ai"))))
+                            "well-known-security" "well-known-ai"
+                            "a2ml-parser" "union-schemas" "contract-validator"
+                            "grievance-generator" "architecture-docs"
+                            "policy-ast-spec" "cli-design-spec"
+                            "contractiles-concept"))))
 
     (route-to-mvp
       ((milestones
@@ -28,24 +32,54 @@
                               "Add .well-known/security.txt and .well-known/ai.txt"
                               "Update STATE.scm to reflect additions"))
                     (status . "complete")))
-         (audit-log . ((items . ("Run pmpl-verify --recursive --existence-only"
-                                "Run pmpl-audit CLI to capture provenance status"))
-                       (status . "in-progress")))
-         (release . ((items . ("Bundle docs/assets for MVP v1 release"
-                               "Publish audit summary and compliance checklist"
-                               "Announce PMPL-1.0-or-later readiness"))
-                     (status . "pending")))))))
+         (union-policy-parser-v0.1 . ((items . ("A2ML parser with nom"
+                                                "Union schema definitions (NUJ, IWW, UCU, BECTU, Equity, GMB)"
+                                                "Contract validator (Lax, Checked, Attested)"
+                                                "Grievance generator (JSON, Markdown, HTML)"
+                                                "Idris2 ABI + Zig FFI layer"))
+                                      (status . "complete")))
+         (v2.0.0 . ((items . ("OCaml project layout (dune-project, opam, src/core)"
+                              "Policy AST v0.1 implementation"
+                              "Schema versioning and migration framework"
+                              "Fact collection types and adapters"
+                              "Finding types with severity and kind"))
+                    (status . "in-progress")))
+         (v2.1.0 . ((items . ("Condition compiler"
+                              "Rule evaluator"
+                              "Policy evaluator"
+                              "Integration tests"))
+                    (status . "pending")))
+         (v2.2.0 . ((items . ("Action types"
+                              "Suggest vs Apply modes"
+                              "Planner: findings to planned actions"))
+                    (status . "pending")))
+         (v2.3.0 . ((items . ("plasma check CLI"
+                              "plasma fix CLI"
+                              "plasma audit CLI"
+                              "plasma governance CLI"
+                              "plasma migrate CLI"))
+                    (status . "pending")))
+         (v2.4.0 . ((items . ("Git hooks integration"
+                              "GitHub Actions reference workflow"
+                              "Daemon/cron mode"))
+                    (status . "pending")))))))
 
     (blockers-and-issues
       ((critical . ())
        (high . ())
-       (medium . ())
+       (medium . ("OCaml dune-project needs initial setup"
+                  "opam package needs definition"))
        (low . ())))
 
     (critical-next-actions
-      ((immediate . ("Document pmpl-verify output in docs/mvp-v1.adoc"
-                     "Capture pmpl-audit observations for release notes"))
-       (this-week . ("Publish MVP v1 release assets" "Confirm badge CDN links"))
-       (this-month . ("Gather feedback from Palimpsest Council" "Plan v1.2 follow-up"))))
+      ((immediate . ("Set up dune-project and plasma.opam"
+                     "Implement Policy AST v0.1 types in OCaml"
+                     "Write migration framework skeleton"))
+       (this-week . ("Implement fact collection types"
+                     "Implement finding types"
+                     "Write mock migration tests"))
+       (this-month . ("Build evaluation engine"
+                      "Build action planner"
+                      "Prototype CLI entry point"))))
 
     (session-history . ())))

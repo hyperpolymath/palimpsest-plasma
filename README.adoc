@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
 = Palimpsest Plasma
 :toc:
 :toc-placement!:
@@ -8,8 +9,97 @@ toc::[]
 
 == Overview
 
-Palimpsest Plasma is a Palimpsest ecosystem repository. See `ROADMAP.adoc` and
-the `docs/` directory for project details.
+**palimpsest-plasma** is the official governance automation engine for the
+Palimpsest-MPL ecosystem. It is an OCaml-based system that interprets the
+licence, exhibits, and governance rules as typed, machine-readable policies, and
+evaluates real-world repository states against those obligations.
+
+PLASMA stands for the operational, programmable substrate that keeps the
+Palimpsest-MPL ecosystem correct, compliant, and narratively coherent over time.
+
+== Core Responsibilities
+
+=== Compliance & Verification
+
+* Validate SPDX headers, provenance manifests, exhibit references, governance
+  metadata, and release requirements
+* Detect violations, omissions, inconsistencies, and structural drift
+* Produce actionable findings for maintainers and auditors
+
+=== Corrective, Adaptive, and Perfective Maintenance
+
+* Suggest or apply fixes (missing headers, outdated links, incorrect exhibit
+  references)
+* Adapt to structural changes in the repository
+* Improve documentation, governance artefacts, and provenance flows
+
+=== Governance Runtime
+
+* Enforce Council decisions
+* Track exhibit lifecycle changes
+* Validate versioning rules
+* Ensure governance processes are followed
+
+=== Policy Engine
+
+* Parse and evaluate obligations, prohibitions, permissions, and conditions
+* Support versioned policy schemas with migrations
+* Allow exhibits to extend or modify rules
+
+=== Audit & Reporting
+
+* Generate structured audit logs
+* Produce compliance reports
+* Support legal, governance, and provenance reviews
+
+=== Integration
+
+* CLI tool for local checks
+* Git hooks for pre-commit/pre-push enforcement
+* GitHub Actions for CI enforcement
+* Optional daemon/cron mode for periodic audits
+
+== Architecture
+
+OCaml core for stability, correctness, and long-term maintainability. The engine
+is structured in three layers:
+
+* **core/** -- Canonical PLASMA substrate: Policy AST, schemas, evaluation,
+  migrations, facts, findings, actions, governance runtime
+* **integration/** -- Surfaces: CLI, git hooks, CI, daemon
+* **adapters/** -- IO and environment-specific collectors/parsers: SPDX, exhibits,
+  repo topology
+
+See link:docs/architecture.adoc[docs/architecture.adoc] for the full design,
+link:docs/policy-ast-v0.1.adoc[docs/policy-ast-v0.1.adoc] for the typed AST
+specification, and link:TOPOLOGY.md[TOPOLOGY.md] for a visual architecture map.
+
+== Sub-Projects
+
+=== union-policy-parser
+
+A Rust-based policy validation engine for union contracts (NUJ, IWW, UCU) using
+A2ML (Attested Markup Language). Parses and validates employment contracts
+against union standards with formal proofs and grievance generation. See
+`union-policy-parser/` for full details.
+
+== MVP v1 Bundle
+
+The **MVP v1** bundle provides a deployable PMPL-1.0 experience:
+
+* **Canonical license tooling** -- `LICENSE` text, ECOSYSTEM mapping, and badges
+  aligned with the Palimpsest Stewardship Council’s PMPL-1.0 release
+* **Badge & documentation assets** -- `assets/badges/` pack and `docs/mvp-v1.adoc`
+* **Compliance readiness** -- SPDX metadata, automated checks, audit commands
+* **Audit/playback support** -- `pmpl-verify`/`pmpl-audit` provenance verification
+
+See `docs/mvp-v1.adoc` for the full deliverables checklist and compliance commands.
+
+== Static Site
+
+Compliance guidance builds through a local Elixir mix project at `site/`. Run
+`mix site.build` from that folder to regenerate `site/_site`. The GitHub Actions
+workflow in `.github/workflows/nimble-site.yml` deploys the generated pages.
 
 == License
 
@@ -18,28 +108,6 @@ Use SPDX identifier **PMPL-1.0-or-later** in file headers and metadata.
 
 See `LICENSE` for the full legal text.
 
-== MVP v1 Focus
+== Author
 
-Palimpsest Plasma is now delivering the **MVP v1** bundle for creators who want a
-deployable PMPL-1.0 experience:
-
-* **Canonical license tooling** – keep the shared `LICENSE` text, ECOSYSTEM mapping,
-  and badges aligned with the Palimpsest Stewardship Council’s PMPL-1.0 release.
-* **Badge & documentation assets** – ship the `assets/badges/` pack and the
-  `docs/mvp-v1.adoc` roadmap so integrations can adopt the v1.0 brand.
-* **Compliance readiness** – capture SPDX metadata, automated checks, and audit
-  command examples in `docs/mvp-v1.adoc` and `STATE.scm`.
-* **Audit/playback support** – use `pmpl-verify`/`pmpl-audit` to confirm the repo
-  meets the provenance expectations described in `palimpsest-license/VERSIONING.adoc`.
-
-See `docs/mvp-v1.adoc` for the full deliverables checklist and compliance commands.
-
-== Static site (NimblePublisher)
-
-Compliance guidance now builds through a local Elixir mix project at `site/`. Run `mix site.build` from that folder to regenerate `site/_site`; the GitHub Actions workflow defined in `.github/workflows/nimble-site.yml` mirrors the same steps and deploys the generated pages. Keep `site/_site/` ignored so the HTML remains an output artifact.
-
-== Static site (Serum)
-
-Project news and compliance guidance are rendered through a lightweight Serum site under `site/`. Serum is a Rust-based static site generator, so there is no Ruby tooling or Bundler dependency.
-
-To rebuild the site, install Serum CLI once with `cargo install --locked serum-cli`, then run `cd site && serum build`. The generated HTML lands in `site/_site`, which is what the CI workflow uploads as `serum-site`. Remove `site/_site` from git if you prefer to keep the repo clean.
+Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>

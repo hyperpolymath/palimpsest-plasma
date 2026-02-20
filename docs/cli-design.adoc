@@ -1,0 +1,206 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <jonathan.jewell@open.ac.uk>
+= Palimpsest Plasma — CLI & Integration Design
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
+
+== CLI Interface
+
+One binary, narratively clear subcommands, machine-readable output where useful.
+
+=== Subcommands
+
+[source]
+----
+plasma check [PATH] [--policy FILE] [--format human|json]
+plasma fix [PATH] [--apply] [--policy FILE]
+plasma audit [PATH] [--output FILE] [--format json]
+plasma governance apply-decision DECISION_ID [--source FILE]
+plasma migrate policy [--input FILE] [--output FILE]
+----
+
+=== `plasma check`
+
+Validate a repository against a policy.
+
+* **Input:** repo path, policy file (optional — default is the canonical PMPL
+  policy bundle)
+* **Output:** exit code non-zero on violations; rich text or JSON
+* **Flags:**
+  - `--policy FILE` — custom policy file
+  - `--format human|json` — output format (default: human)
+  - `--severity warning|error` — minimum severity threshold
+  - `--quiet` — exit code only, no output
+
+=== `plasma fix`
+
+Plan or apply corrective actions based on findings.
+
+* **Without `--apply`:** show planned actions (dry-run)
+* **With `--apply`:** perform changes, log diff summary, create backup
+* **Flags:**
+  - `--policy FILE` — custom policy file
+  - `--apply` — actually modify the repo
+  - `--backup` — create backup before applying changes (default: true)
+
+=== `plasma audit`
+
+Generate structured audit logs for external systems.
+
+* **Output:** JSON audit log suitable for legal, governance, and provenance
+  reviews
+* **Flags:**
+  - `--output FILE` — write to file instead of stdout
+  - `--format json` — output format
+  - `--since DATE` — audit since date
+  - `--verbose` — include positive findings (rule-passed)
+
+=== `plasma governance`
+
+Connect Council decisions and exhibit changes to policy updates.
+
+* `apply-decision DECISION_ID` — look up a Council decision, apply as overlay
+* `--source FILE` — decision definition file
+* `list-exhibits` — show active, superseded, deprecated exhibits
+
+=== `plasma migrate`
+
+Migrate policy files between schema versions.
+
+* `policy --input FILE --output FILE` — migrate a policy to latest schema
+* `--target-version MAJOR.MINOR` — migrate to specific version
+* `--dry-run` — show migration plan without writing
+
+== Integration Surfaces
+
+=== Git Hooks
+
+PLASMA provides scripts for pre-commit and pre-push enforcement.
+
+[source,bash]
+----
+# .git/hooks/pre-commit
+#!/bin/bash
+plasma check . --quiet --severity error || exit 1
+----
+
+Configuration via `.plasma.toml`:
+
+[source,toml]
+----
+[hooks]
+pre-commit = true
+pre-push = true
+severity = "error"
+policy = "policies/base.json"
+----
+
+=== GitHub Actions
+
+Reference workflow for CI enforcement:
+
+[source,yaml]
+----
+name: PLASMA Compliance
+on: [push, pull_request]
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run PLASMA check
+        run: plasma check . --format json > plasma-report.json
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: plasma-report
+          path: plasma-report.json
+----
+
+=== Daemon Mode
+
+Minimal "scan and log" loop for periodic audits:
+
+[source]
+----
+plasma daemon [--interval 1h] [--output-dir /var/log/plasma/]
+----
+
+Writes timestamped audit logs to the output directory. Suitable for cron or
+systemd timer integration.
+
+== Output Formats
+
+=== Human Output
+
+[source]
+----
+PLASMA Check — /path/to/repo
+Policy: pmpl-1.0-base (v0.1)
+
+[ERROR] Missing SPDX header in src/main.ml
+        Rule: spdx-header-required (Obligation)
+        Source: PMPL-1.0 §3.1
+
+[WARNING] Exhibit E-001 reference outdated
+          Rule: exhibit-ref-current (Obligation)
+          Source: Governance Playbook §2.4
+
+2 findings (1 error, 1 warning)
+----
+
+=== JSON Output
+
+[source,json]
+----
+{
+  "path": "/path/to/repo",
+  "policy": {"id": "pmpl-1.0-base", "version": {"major": 0, "minor": 1}},
+  "findings": [
+    {
+      "rule_id": "spdx-header-required",
+      "subject": {"type": "file", "path": "src/main.ml"},
+      "severity": "error",
+      "kind": "compliance",
+      "message": "Missing SPDX header",
+      "source": "PMPL-1.0 §3.1"
+    }
+  ],
+  "summary": {"errors": 1, "warnings": 1, "info": 0}
+}
+----
+
+== Action Planner Output
+
+=== Dry-Run
+
+[source]
+----
+PLASMA Fix — /path/to/repo (dry-run)
+
+[1] Add SPDX header to src/main.ml
+    License: PMPL-1.0-or-later
+    Reason: spdx-header-required (Obligation)
+
+[2] Update exhibit reference in .machine_readable/ECOSYSTEM.scm
+    From: E-001-v1 → E-001-v2
+    Reason: exhibit-ref-current (Obligation)
+
+2 actions planned. Run with --apply to execute.
+----
+
+=== Apply Mode
+
+[source]
+----
+PLASMA Fix — /path/to/repo (applying)
+
+[1] ✓ Added SPDX header to src/main.ml
+[2] ✓ Updated exhibit reference in .machine_readable/ECOSYSTEM.scm
+
+2 actions applied. Backup at .plasma-backup/2026-02-20T10:00:00/
+----
