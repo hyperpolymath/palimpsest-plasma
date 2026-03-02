@@ -1,0 +1,373 @@
+# BECTU Media and Entertainment Workers Rights
+
+@abstract:
+This schema defines the Broadcasting, Entertainment, Communications and Theatre Union
+(BECTU) standards for media and entertainment workers. It encodes protections for
+freelancers, crew, technicians, and creative workers in film, TV, theatre, and live
+events, with focus on fair pay, working hours, health & safety, and anti-bullying.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- UK Working Time Regulations 1998
+- UK Health and Safety at Work Act 1974
+- BECTU Crew Agreement
+- BECTU Theatre Agreement
+- UK Equality Act 2010
+- Copyright, Designs and Patents Act 1988
+@end
+
+---
+
+## Core Rights (MUST Clauses)
+
+### 1. Fair Pay and Minimum Rates
+
+**Principle:** Workers *must* receive minimum BECTU rates for their grade.
+
+**BECTU Minimum Rates (2025):**
+- **Camera Operator:** £350/day
+- **Sound Recordist:** £325/day
+- **Lighting Technician:** £300/day
+- **Runner/PA:** £125/day (min)
+- **Editor:** £40/hour
+- **Stage Crew:** £15/hour (min)
+
+**Overtime:**
+- Time-and-a-half after 10 hours
+- Double-time after 12 hours
+- Triple-time for night shoots (midnight-6am)
+
+**Attestation:** *Must* meet BECTU minimum rates per BECTU Crew Agreement 2025.
+
+---
+
+### 2. Working Hours Limits
+
+**Principle:** Working hours *must* comply with UK Working Time Regulations.
+
+**Limits:**
+- Maximum 12 hours/day without rest
+- Minimum 11 hours rest between shifts
+- Maximum 48 hours/week averaged over 17 weeks
+- Mandatory meal breaks (30 min after 6 hours)
+
+**Turnaround Time:**
+- 11 hours between wrap and next call time
+- 12 hours for night shoots
+
+**Attestation:** *Must* comply with UK Working Time Regulations 1998 and BECTU turnaround times.
+
+---
+
+### 3. Health & Safety
+
+**Principle:** Productions *must* ensure safe working conditions.
+
+**Requirements:**
+- Risk assessments before shoots
+- PPE provided (high-vis, ear protection, safety boots)
+- Stunt coordinators for hazardous scenes
+- First aid on set
+- COVID/disease safety protocols
+
+**Prohibited:**
+- Unsafe rigging
+- Overloaded vehicles
+- No safety equipment
+- Pressure to work in unsafe conditions
+
+**Attestation:** *Must* comply with UK Health and Safety at Work Act 1974.
+
+---
+
+### 4. No Bullying or Harassment
+
+**Principle:** Workers *must* be protected from bullying and harassment.
+
+**Requirements:**
+- Anti-bullying policy in place
+- Anonymous reporting mechanism
+- Investigation process within 14 days
+- Protection from retaliation
+
+**Prohibited Behaviors:**
+- Shouting/screaming at crew
+- Sexual harassment
+- Discrimination (race, gender, disability)
+- Intimidation
+
+**Attestation:** *Must* have anti-bullying policy per UK Equality Act 2010 and BECTU guidance.
+
+---
+
+### 5. Travel and Expenses
+
+**Principle:** Workers *must* be reimbursed for travel and expenses.
+
+**Requirements:**
+- Travel time paid (door-to-door)
+- Mileage: £0.45/mile (HMRC rate)
+- Accommodation provided for distant locations
+- Per diem: £35/day for meals
+
+**Attestation:** *Must* reimburse expenses per BECTU Crew Agreement.
+
+---
+
+### 6. No Unpaid Work
+
+**Principle:** All work *must* be compensated.
+
+**Requirements:**
+- Prep time paid
+- Travel time paid
+- Wrap time paid
+- No "favors" or "exposure" as payment
+
+**Prohibited:**
+- Unpaid trials
+- "Test shoots" without pay
+- "Deferred payment" for features (except profit-share with contract)
+
+**Attestation:** *Must* pay all hours worked per UK National Minimum Wage Act 1998.
+
+---
+
+### 7. Equipment and Insurance
+
+**Principle:** Productions *must* provide equipment or rental fees.
+
+**Requirements:**
+- Camera/sound equipment provided by production, OR
+- Rental fee for personal equipment (£100-£150/day)
+- Insurance for personal equipment used on production
+- No requirement to use personal equipment without compensation
+
+**Attestation:** *Must* provide equipment or rental fees per BECTU Crew Agreement.
+
+---
+
+## Freelancer Protections (MUST Clauses)
+
+### 8. Contracts and Paperwork
+
+**Principle:** Workers *must* receive written contracts before work begins.
+
+**Requirements:**
+- Contract issued at least 48 hours before start
+- Clear payment terms (NET 30 max)
+- Clear scope of work
+- Call sheets 24 hours in advance
+
+**Attestation:** *Must* provide written contracts per UK Employment Rights Act 1996.
+
+---
+
+### 9. Cancellation Fees
+
+**Principle:** If work is canceled, workers *must* receive compensation.
+
+**BECTU Cancellation Schedule:**
+- **< 24 hours notice:** 100% of day rate
+- **24-48 hours notice:** 75% of day rate
+- **48-72 hours notice:** 50% of day rate
+- **> 72 hours notice:** No fee (unless contract specifies)
+
+**Attestation:** *Must* pay cancellation fees per BECTU Crew Agreement.
+
+---
+
+### 10. No Exploitation of Runners
+
+**Principle:** Runners *must* be treated as workers, not interns.
+
+**Requirements:**
+- Minimum £125/day (BECTU rate)
+- No unpaid "work experience"
+- Proper roles (not just tea-making)
+- Pathway to crew roles
+
+**Prohibited:**
+- Unpaid "internships"
+- "Exposure" as payment
+- Exploitation under guise of training
+
+**Attestation:** *Must* pay runners per BECTU minimum rates.
+
+---
+
+## Theatre-Specific (MUST Clauses)
+
+### 11. Theatre Crew Safety
+
+**Principle:** Theatre workers *must* have safe rigging and equipment.
+
+**Requirements:**
+- Inspected rigging (annual certification)
+- Trained riggers only
+- Safety chains on all flying equipment
+- Emergency evacuation plans
+
+**Attestation:** *Must* comply with BECTU Theatre Agreement safety standards.
+
+---
+
+### 12. No Split Shifts
+
+**Principle:** Theatre crew *must not* be required to work split shifts without consent.
+
+**Requirements:**
+- No unpaid gaps between matinee and evening shows
+- If split shift: 4-hour gap minimum + 2 hours paid
+- Option to decline split shifts
+
+**Attestation:** *Should* avoid split shifts per BECTU Theatre Agreement.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 13. Mental Health Support
+
+**Principle:** Productions *should* provide mental health resources.
+
+**Recommendations:**
+- Access to counseling for stressful productions
+- Mental health first aiders on set
+- Trauma support for challenging content (violence, SV)
+
+**Attestation:** *Should* offer mental health support per BECTU Wellbeing Guide.
+
+---
+
+### 14. Diversity and Inclusion
+
+**Principle:** Productions *should* promote diversity in crew and cast.
+
+**Recommendations:**
+- 50% BAME representation targets
+- Gender balance in crew (not just cast)
+- Disability access and accommodations
+- LGBTQ+ inclusion
+
+**Attestation:** *Should* promote diversity per UK Equality Act 2010 positive duties.
+
+---
+
+### 15. Environmental Sustainability
+
+**Principle:** Productions *should* minimize environmental impact.
+
+**Recommendations:**
+- Green production practices
+- Reusable sets and props
+- Sustainable catering
+- Carbon offsetting
+
+**Attestation:** *Should* implement green practices per BECTU Environmental Charter.
+
+---
+
+### 16. Career Development
+
+**Principle:** Productions *should* support crew training and development.
+
+**Recommendations:**
+- Training budgets for crew
+- Mentorship programs
+- Shadowing opportunities for runners
+- Pathways to HOD roles
+
+**Attestation:** *Should* support career development.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 17. Portable Benefits for Freelancers
+
+**Principle:** Employers *could* contribute to freelancer benefits.
+
+**Recommendations:**
+- Health insurance stipends
+- Pension contributions
+- Equipment allowances
+- Sick pay for regular crew
+
+**Attestation:** *Could* offer portable benefits per BECTU Freelancer Campaign.
+
+---
+
+### 18. Profit-Share for Low-Budget
+
+**Principle:** Low-budget productions *could* offer profit-share instead of full rates.
+
+**Requirements (if profit-share):**
+- Written profit-share agreement
+- Transparent accounting
+- Minimum guarantee (50% of BECTU rate) + profit %
+- Time-limited (pay full rate if not profitable within 2 years)
+
+**Attestation:** *Could* offer profit-share with transparent contracts.
+
+---
+
+## Enforcement and Grievance
+
+### BECTU Enforcement
+
+**Process:**
+1. Member raises concern with BECTU rep
+2. Informal resolution with production
+3. Formal grievance if unresolved
+4. ACAS mediation or employment tribunal
+5. Industrial action (strike) for systemic violations
+
+**Blacklisting:**
+- BECTU maintains list of non-compliant productions
+- Members warned before accepting work
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+Media/entertainment contracts *must* include:
+- § Fair pay (BECTU minimum rates)
+- § Working hours limits (max 12 hours/day)
+- § Health & safety protections
+- § Anti-bullying policy
+- § Travel/expense reimbursement
+- § No unpaid work
+- § Equipment provision or rental fees
+- § Written contracts (48 hours advance)
+- § Cancellation fees
+- § No exploitation of runners
+
+Contracts *should* include:
+- § Mental health support
+- § Diversity commitments
+- § Environmental practices
+- § Career development
+
+Contracts *could* include:
+- § Portable benefits
+- § Profit-share (if low-budget)
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] UK Working Time Regulations 1998
+[3] UK Health and Safety at Work Act 1974
+[4] UK National Minimum Wage Act 1998
+[5] UK Equality Act 2010
+[6] Copyright, Designs and Patents Act 1988
+[7] BECTU Crew Agreement (2025)
+[8] BECTU Theatre Agreement (2024)
+[9] BECTU Freelancer Campaign
+[10] BECTU Wellbeing Guide
+[11] BECTU Environmental Charter
+@end

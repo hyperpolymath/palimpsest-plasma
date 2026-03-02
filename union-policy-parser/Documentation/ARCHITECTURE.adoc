@@ -1,0 +1,769 @@
+= Union Policy Parser Architecture
+:toc: left
+:toclevels: 3
+:license: PMPL-1.0-or-later
+
+== Abstract
+
+This document defines the architecture for **union-policy-parser**, a tool that validates
+employment contracts, editorial policies, and collective agreements against union standards
+(NUJ, IWW, UCU) using **A2ML (Attested Markup Language)** for document structure and
+**K9-SVC** for self-validating deployment.
+
+== Design Principles
+
+[%header,cols="1,3"]
+|===
+| Principle | Rationale
+
+| **Separation of Concerns**
+| A2ML handles document structure; K9 handles validation + deployment; union-policy-parser handles policy logic.
+
+| **Progressive Strictness**
+| Three validation modes: Lax (parse), Checked (validate structure), Attested (verify legal compliance).
+
+| **Union-First Design**
+| Empowers unions/workers more than employers; asymmetrical power through automation.
+
+| **Non-Proprietary Stack**
+| PMPL-1.0-or-later license; no vendor lock-in; open standards (A2ML, K9, Nickel).
+
+| **Formal Verification**
+| Use Idris2 typed core for provable contract properties.
+
+| **Self-Validating Documents**
+| K9 wraps A2ML contracts so they can validate/deploy themselves.
+|===
+
+== Three-Layer Architecture
+
+----
++--------------------------------------------------+
+|  Layer 3: Deployment & Distribution (K9-SVC)     |
+|  - Self-validating contract files (.k9)          |
+|  - Nickel contracts for validation rules         |
+|  - Just recipes for deployment                   |
+|  - Ed25519 signatures for tamper-proofing        |
++--------------------------------------------------+
+         ↓ wraps
++--------------------------------------------------+
+|  Layer 2: Document Structure (A2ML)              |
+|  - Contract markup (.a2ml)                       |
+|  - Must/should/could clauses                     |
+|  - References to UK/EU law                       |
+|  - Typed core (Idris2) for proofs                |
++--------------------------------------------------+
+         ↓ validates against
++--------------------------------------------------+
+|  Layer 1: Policy Engine (union-policy-parser)    |
+|  - Parses A2ML contracts                         |
+|  - Validates against NUJ/IWW schemas             |
+|  - Generates grievance reports                   |
+|  - CLI + library API                             |
++--------------------------------------------------+
+----
+
+== Components
+
+=== 1. A2ML Layer (Document Structure)
+
+**Purpose:** Provides structured, typed markup for contracts with attestation.
+
+**Format:**
+[source,a2ml]
+----
+# Employment Contract
+
+@abstract:
+This contract defines the employment relationship...
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- NUJ Code of Conduct
+@end
+
+## Section 1: Employment Terms
+
+**Days Contracted:** 5 days per week
+**Duties:** Teaching, curriculum development
+
+**Attestation:** Must match Offer Letter.
+
+@refs:
+[1] UK Employment Rights Act 1996
+@end
+----
+
+**Key Features:**
+- Surface syntax (lightweight markup)
+- Typed core (Idris2 proofs)
+- Opaque payloads (byte-for-byte preservation)
+- Deterministic parsing
+
+**File Extension:** `.a2ml`
+
+**MIME Type:** `application/vnd.a2ml` (pending IANA registration)
+
+=== 2. K9-SVC Layer (Self-Validating Deployment)
+
+**Purpose:** Wraps A2ML contracts in self-validating components with security levels.
+
+**K9 Pedigree:**
+[source,nickel]
+----
+{
+  name = "employment-contract",
+  version = "1.0.0",
+
+  security = {
+    trust_level = 'Hunt,  # Requires Ed25519 signature
+    permissions = {
+      filesystem = { write = false },
+      network = { outbound = false },
+    },
+  },
+
+  validation = {
+    schema = "nuj-code-of-ethics.a2ml",
+    required_clauses = [
+      "source-protection",
+      "editorial-independence",
+      "right-of-reply"
+    ],
+  },
+
+  recipes = {
+    validate = "union-policy-parser validate $INPUT",
+    deploy = "cp $INPUT /contracts/validated/",
+    audit = "union-policy-parser audit --schema nuj-ethics.a2ml",
+  },
+}
+----
+
+**K9 Leash Security Model:**
+
+[%header,cols="1,2,2"]
+|===
+| Level | Permissions | Use Case
+
+| **'Kennel**
+| Pure data (no execution)
+| Viewing contracts safely
+
+| **'Yard**
+| Nickel evaluation only
+| Validating contract structure
+
+| **'Hunt**
+| Full execution (requires signature)
+| Deploying validated contracts
+|===
+
+**File Extension:** `.k9` or `.k9.ncl`
+
+=== 3. Union-Policy-Parser (Policy Engine)
+
+**Purpose:** Core validation engine that checks contracts against union standards.
+
+**Architecture:**
+
+----
+union-policy-parser/
+├── src/
+│   ├── rust/          # CLI tool (primary implementation)
+│   │   ├── main.rs    # CLI entry point
+│   │   ├── parser.rs  # A2ML parser integration
+│   │   ├── validator.rs  # Schema validation
+│   │   └── reporter.rs   # Grievance generation
+│   │
+│   ├── julia/         # Batch processing scripts
+│   │   ├── Main.jl    # Batch validator
+│   │   └── parser.jl  # A2ML integration
+│   │
+│   └── idris2/        # Formal verification (future)
+│       └── Contracts.idr  # Contract proofs
+│
+├── schemas/           # Union policy schemas
+│   ├── nuj-code-of-ethics.a2ml
+│   ├── iww-freelancer-rights.a2ml
+│   ├── ucu-academic-standards.a2ml
+│   └── uk-employment-law.a2ml
+│
+├── examples/          # Sample contracts
+│   ├── ou-day-employee-contract.a2ml
+│   └── freelance-journalist-contract.a2ml
+│
+└── k9/                # K9 wrappers
+    ├── employment-contract.k9.ncl
+    └── nuj-editorial-policy.k9.ncl
+----
+
+**Languages:**
+- **Primary:** Rust (CLI tool, performance)
+- **Secondary:** Julia (batch processing, data analysis)
+- **Proofs:** Idris2 (formal verification, future)
+
+== Workflows
+
+=== Workflow 1: Freelancer Contract Validation
+
+[source,bash]
+----
+# 1. Author contract in A2ML
+vim freelance-contract.a2ml
+
+# 2. Validate against NUJ schema (local check)
+union-policy-parser validate freelance-contract.a2ml \
+  --schema schemas/nuj-code-of-ethics.a2ml \
+  --mode checked
+
+# Output: ✅ Valid | ⚠️ Warnings | ❌ Invalid
+
+# 3. Wrap in K9 for self-validation
+k9-package \
+  --input freelance-contract.a2ml \
+  --pedigree k9/freelance-template.ncl \
+  --output freelance-contract.k9
+
+# 4. Sign for tamper-proofing (union rep signs)
+k9-sign \
+  --key ~/.ssh/nuj-rep-ed25519 \
+  --input freelance-contract.k9
+
+# 5. Distribute to freelancer
+# Freelancer can verify signature before signing
+k9-verify --input freelance-contract.k9
+----
+
+=== Workflow 2: Employer Contract Batch Audit
+
+[source,bash]
+----
+# 1. Employer uploads batch of contracts
+ls contracts/*.pdf
+
+# 2. Convert PDF to A2ML (manual or automated)
+for pdf in contracts/*.pdf; do
+  pdf-to-a2ml "$pdf" > "contracts/$(basename $pdf .pdf).a2ml"
+done
+
+# 3. Batch validate with Julia
+julia src/julia/Main.jl \
+  --input-dir contracts/ \
+  --schema schemas/nuj-code-of-ethics.a2ml \
+  --output-report audit-report.json
+
+# 4. Generate compliance report
+union-policy-parser report \
+  --input audit-report.json \
+  --format html \
+  --output compliance-report.html
+
+# Output:
+# - 12 contracts missing "source-protection" clause
+# - 5 contracts lack "editorial-independence"
+# - 3 contracts have invalid "termination" terms
+----
+
+=== Workflow 3: Automated Grievance Generation
+
+[source,bash]
+----
+# 1. Parse contract and detect violation
+union-policy-parser validate employee-contract.a2ml \
+  --schema schemas/nuj-code-of-ethics.a2ml \
+  --auto-grievance
+
+# 2. System detects missing "right-of-reply" clause
+
+# 3. Auto-generate grievance letter
+union-policy-parser grievance \
+  --contract employee-contract.a2ml \
+  --violation "missing-right-of-reply" \
+  --template templates/nuj-grievance.md \
+  --output grievance-2025-001.md
+
+# Output: grievance-2025-001.md
+----
+
+**Generated Grievance Template:**
+[source,markdown]
+----
+To: [Employer HR Department]
+Subject: Formal Grievance - Violation of NUJ Code §3 (Right of Reply)
+
+Date: 2025-01-29
+
+Dear [Employer],
+
+I am writing to formally raise a grievance under the ACAS Code of Practice 1
+regarding a violation of the NUJ Code of Conduct in my employment contract.
+
+**Violation:**
+The contract (dated 2024-11-01) lacks a "Right of Reply" clause, in breach of:
+- NUJ Code of Conduct §3 (Fairness)
+- IPSO Editors' Code Clause 1.2
+
+**Required Action:**
+1. Amend contract to include right of reply provision
+2. Confirm editorial independence guarantees
+3. Provide written assurance within 14 days
+
+**Legal References:**
+- NUJ Code of Conduct (2024)
+- UK Employment Rights Act 1996
+- ACAS Code of Practice 1
+
+If this matter is not resolved within 14 days, I will escalate to ACAS mediation.
+
+Signed: [Employee Name]
+NUJ Member ID: [ID]
+----
+
+== Integration Points
+
+=== A2ML ↔ Union-Policy-Parser
+
+**Parser Integration:**
+
+[source,rust]
+----
+// src/rust/parser.rs
+use a2ml_parser::{parse, validate, Document};
+
+pub fn parse_contract(input: &str) -> Result<Document, ParseError> {
+    // Parse A2ML surface syntax
+    let doc = parse(input)?;
+
+    // Validate structure (checked mode)
+    validate(&doc, ValidationMode::Checked)?;
+
+    Ok(doc)
+}
+----
+
+**Schema Validation:**
+
+[source,rust]
+----
+// src/rust/validator.rs
+pub struct Validator {
+    schema: Document,  // NUJ ethics schema
+}
+
+impl Validator {
+    pub fn validate_contract(&self, contract: &Document) -> ValidationReport {
+        let mut report = ValidationReport::new();
+
+        // Check required clauses
+        for clause in self.schema.required_clauses() {
+            if !contract.has_clause(clause) {
+                report.add_error(
+                    format!("Missing required clause: {}", clause)
+                );
+            }
+        }
+
+        // Check attestations
+        for attestation in contract.attestations() {
+            if !self.verify_attestation(attestation) {
+                report.add_warning(
+                    format!("Unverified attestation: {}", attestation.claim)
+                );
+            }
+        }
+
+        report
+    }
+}
+----
+
+=== K9 ↔ Union-Policy-Parser
+
+**K9 Recipe Integration:**
+
+[source,nickel]
+----
+# k9/employment-contract.k9.ncl
+{
+  pedigree = {
+    name = "employment-contract",
+    version = "1.0.0",
+  },
+
+  recipes = {
+    validate = m%"
+      union-policy-parser validate ${self.payload} \
+        --schema schemas/nuj-code-of-ethics.a2ml \
+        --mode attested
+    "%,
+
+    audit = m%"
+      union-policy-parser audit ${self.payload} \
+        --schema schemas/nuj-code-of-ethics.a2ml \
+        --output audit-report.json
+    "%,
+
+    deploy = m%"
+      if union-policy-parser validate ${self.payload}; then
+        cp ${self.payload} /contracts/validated/
+      else
+        echo "Validation failed - contract not deployed"
+        exit 1
+      fi
+    "%,
+  },
+
+  # Embedded A2ML payload
+  payload | doc%"
+    # Employment Contract
+
+    @abstract:
+    This contract...
+    @end
+
+    ## Source Protection
+    The employer guarantees confidential source protection...
+  "%,
+}
+----
+
+**Running K9 Validation:**
+
+[source,bash]
+----
+# Validate embedded contract via K9 recipe
+just -f employment-contract.k9.ncl validate
+
+# Output:
+# ✅ Contract validates against NUJ schema
+# ✅ All required clauses present
+# ⚠️  Missing optional clause: "algorithmic-transparency"
+----
+
+== Security Model
+
+=== Asymmetrical Power Design
+
+**Union Advantages:**
+- Automated compliance checking (employers must audit manually)
+- Grievance template generation (instant response)
+- Batch validation (scale across many members)
+- Formal proofs (legal backing via Idris2)
+- Ed25519 signatures (tamper-proof contracts)
+
+**Employer Constraints:**
+- Must comply with schemas or face grievances
+- Cannot modify K9-wrapped contracts (signatures break)
+- Transparent audit trails (all checks logged)
+- Public accountability (OpenSSF Scorecard, SPDX headers)
+
+=== Tamper-Proofing with K9
+
+**Signature Chain:**
+
+[source,bash]
+----
+# 1. Union rep authors contract in A2ML
+vim contract.a2ml
+
+# 2. Wrap in K9
+k9-package --input contract.a2ml --output contract.k9
+
+# 3. Sign with union's Ed25519 key
+k9-sign --key ~/.ssh/nuj-union-ed25519 --input contract.k9
+
+# 4. Distribute to employer
+# Employer cannot modify without breaking signature
+
+# 5. Employee verifies before signing
+k9-verify --input contract.k9
+# Output: ✅ Signature valid (signed by NUJ Rep)
+----
+
+**What This Prevents:**
+- Employer altering terms after union approval
+- Unsigned/unapproved contracts being distributed
+- Backdated changes to existing contracts
+
+=== License Firewall (PMPL-1.0-or-later)
+
+**Palimpsest Mozilla Public License (PMPL-1.0-or-later):**
+
+- **Copyleft:** Employers cannot create proprietary forks
+- **Ethical use:** AI training requires consent
+- **Quantum-safe:** Future-proof against quantum attacks (Exhibit B)
+- **Provenance:** All modifications must be signed (Exhibit B)
+
+**Effect:**
+- Employers can *use* union-policy-parser
+- Employers *cannot* weaponize it (proprietary extensions blocked)
+- All changes must flow back to union (copyleft)
+
+== Data Flow
+
+----
+ Freelancer               Union Rep              Employer
+    |                         |                      |
+    | 1. Upload contract PDF  |                      |
+    |------------------------>|                      |
+    |                         |                      |
+    |                    2. Convert to A2ML         |
+    |                         |                      |
+    |                    3. Validate (union-policy-parser)
+    |                         |                      |
+    |                    4. Wrap in K9 + sign       |
+    |                         |                      |
+    | 5. Return signed .k9    |                      |
+    |<------------------------|                      |
+    |                         |                      |
+    | 6. Verify signature     |                      |
+    | (k9-verify)             |                      |
+    |                         |                      |
+    | 7. Send to employer     |                      |
+    |--------------------------------------------------->|
+    |                         |                      |
+    |                         |           8. Employer validates
+    |                         |           (k9 validate recipe)
+    |                         |                      |
+    |                         |           9. If valid → sign
+    |                         |              If invalid → reject
+    |                         |                      |
+    | 10. Receive countersigned contract            |
+    |<---------------------------------------------------|
+    |                         |                      |
+    | 11. Verify both signatures                     |
+    |    - Union rep (original)                      |
+    |    - Employer (acceptance)                     |
+----
+
+== CLI Interface
+
+=== Basic Commands
+
+[source,bash]
+----
+# Validate a contract
+union-policy-parser validate <contract.a2ml> \
+  --schema <schema.a2ml> \
+  --mode [lax|checked|attested]
+
+# Generate audit report
+union-policy-parser audit <contract.a2ml> \
+  --schema <schema.a2ml> \
+  --output <report.json>
+
+# Auto-generate grievance
+union-policy-parser grievance <contract.a2ml> \
+  --violation <clause-id> \
+  --template <template.md> \
+  --output <grievance.md>
+
+# Batch validate
+union-policy-parser batch <dir/> \
+  --schema <schema.a2ml> \
+  --output <report.json>
+
+# Check schema itself
+union-policy-parser check-schema <schema.a2ml>
+----
+
+=== Validation Modes
+
+[%header,cols="1,2,2"]
+|===
+| Mode | Checks | Output
+
+| **Lax**
+| Parses A2ML syntax only
+| Syntax errors
+
+| **Checked**
+| + Validates structure (required fields, references)
+| Missing clauses, broken references
+
+| **Attested**
+| + Verifies legal compliance (UK law, NUJ standards)
+| Legal violations, non-compliance
+|===
+
+== Future Enhancements
+
+=== Phase 1: Core Implementation (Q1 2025)
+- [ ] Rust CLI with A2ML parser
+- [ ] NUJ/IWW schema validation
+- [ ] Basic grievance generation
+- [ ] K9 integration for self-validation
+
+=== Phase 2: Formal Verification (Q2 2025)
+- [ ] Idris2 typed core for contract proofs
+- [ ] Decidable validation predicates
+- [ ] Legal theorem proving (e.g., "Does termination comply with ERA 1996?")
+
+=== Phase 3: Tooling & Distribution (Q3 2025)
+- [ ] WASM runtime for browser validation
+- [ ] Web component for freelancer self-service
+- [ ] Julia batch processing for union branches
+- [ ] Deno distribution for JS ecosystems
+
+=== Phase 4: AI Integration (Q4 2025)
+- [ ] PDF-to-A2ML automated conversion
+- [ ] AI-powered clause suggestion (via llm-verify)
+- [ ] Neurosymbolic reasoning (symbolic A2ML + neural LLM)
+- [ ] Grievance auto-filing via Hypatia
+
+== Appendices
+
+=== Appendix A: Example K9 Contract Package
+
+File: `freelance-journalist-contract.k9.ncl`
+
+[source,nickel]
+----
+{
+  pedigree = {
+    name = "freelance-journalist-contract",
+    version = "1.0.0",
+    magic = "K9!",
+    mime_type = "application/vnd.k9+nickel",
+  },
+
+  target = {
+    os = ["linux", "darwin"],
+    container_support = true,
+  },
+
+  security = {
+    trust_level = 'Hunt,
+    permissions = {
+      filesystem = { read = true, write = false },
+      network = { outbound = false },
+      subprocess = { spawn = false },
+    },
+  },
+
+  validation = {
+    schema = "schemas/nuj-code-of-ethics.a2ml",
+    required_clauses = [
+      "source-protection",
+      "editorial-independence",
+      "right-of-reply",
+      "copyright-retention",
+      "payment-terms",
+    ],
+    checksum = "sha256:abcd1234...",
+  },
+
+  recipes = {
+    install = "echo 'No installation needed'",
+
+    validate = m%"
+      union-policy-parser validate ${self.payload_file} \
+        --schema ${self.validation.schema} \
+        --mode attested
+    "%,
+
+    audit = m%"
+      union-policy-parser audit ${self.payload_file} \
+        --schema ${self.validation.schema} \
+        --output /tmp/audit-report.json
+    "%,
+
+    deploy = m%"
+      set -e
+      if union-policy-parser validate ${self.payload_file}; then
+        echo "✅ Contract validated - safe to sign"
+        cp ${self.payload_file} /contracts/validated/
+      else
+        echo "❌ Validation failed - DO NOT SIGN"
+        exit 1
+      fi
+    "%,
+  },
+
+  payload_file = "./freelance-contract.a2ml",
+}
+----
+
+=== Appendix B: Integration with Hypatia (CI/CD)
+
+File: `.github/workflows/contract-validation.yml`
+
+[source,yaml]
+----
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Contract Validation
+
+on:
+  push:
+    paths:
+      - 'contracts/**/*.a2ml'
+      - 'contracts/**/*.k9'
+
+permissions: read-all
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
+
+      - name: Install union-policy-parser
+        run: |
+          cargo install --git https://github.com/hyperpolymath/union-policy-parser
+
+      - name: Install K9 tools
+        run: |
+          cargo install --git https://github.com/hyperpolymath/k9-svc
+
+      - name: Validate A2ML contracts
+        run: |
+          for contract in contracts/*.a2ml; do
+            union-policy-parser validate "$contract" \
+              --schema schemas/nuj-code-of-ethics.a2ml \
+              --mode attested
+          done
+
+      - name: Validate K9 packages
+        run: |
+          for k9 in contracts/*.k9; do
+            just -f "$k9" validate
+          done
+
+      - name: Generate compliance report
+        if: always()
+        run: |
+          union-policy-parser batch contracts/ \
+            --schema schemas/nuj-code-of-ethics.a2ml \
+            --output compliance-report.json
+
+      - name: Upload report
+        if: always()
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8  # v4
+        with:
+          name: compliance-report
+          path: compliance-report.json
+
+      - name: Auto-file grievance on failure
+        if: failure()
+        run: |
+          union-policy-parser grievance \
+            --contract $FAILED_CONTRACT \
+            --violation auto-detect \
+            --template templates/nuj-grievance.md \
+            --output grievance-${{ github.run_id }}.md
+
+          # Create GitHub issue for union rep
+          gh issue create \
+            --title "Contract Validation Failure" \
+            --body-file grievance-${{ github.run_id }}.md \
+            --label grievance \
+            --assignee nuj-rep
+----
+
+== License
+
+This document is licensed under **PMPL-1.0-or-later** (Palimpsest Mozilla Public License).
+
+See: https://github.com/hyperpolymath/palimpsest-license

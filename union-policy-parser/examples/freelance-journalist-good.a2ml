@@ -1,0 +1,203 @@
+# Freelance Journalism Contract - Good Example
+
+@abstract:
+This is an example of a COMPLIANT freelance journalism contract that meets NUJ and IWW standards.
+It includes all required protections: fair payment terms, copyright retention, source protection,
+editorial independence, and kill fees. This contract would pass validation against both
+nuj-code-of-ethics.a2ml and iww-freelancer-rights.a2ml schemas.
+@end
+
+@requires:
+- NUJ Code of Conduct (2024)
+- IWW Freelancer Rights
+- UK Copyright, Designs and Patents Act 1988
+- UK Late Payment of Commercial Debts Act 1998
+@end
+
+---
+
+## Contract Parties
+
+**Freelancer:** Jane Doe, Freelance Journalist
+**Client:** The Guardian News & Media Ltd
+**Date:** 2025-02-01
+**Duration:** Per-assignment basis (ongoing relationship)
+
+---
+
+## 1. Scope of Work
+
+**Assignment:** Investigative reporting on climate policy
+
+**Deliverables:**
+- 2,000-word feature article
+- Up to 3 revisions included
+- Original photography (if agreed separately)
+
+**Editorial Independence:** Freelancer retains full editorial control over investigative methods,
+sources, and findings, subject only to factual accuracy and legal review.
+
+**Attestation:** *Must* guarantee editorial independence per NUJ Code §2.
+
+---
+
+## 2. Payment Terms
+
+**Rate:** £500 for commissioned 2,000-word feature (£0.25/word)
+
+**Payment Schedule:**
+- Invoice submitted upon final draft acceptance
+- Payment due NET 30 days from invoice date
+- Bank transfer to freelancer's account
+
+**Late Payment Penalty:** 5% interest per month on overdue invoices, per UK Late Payment of Commercial Debts Act 1998
+
+**Attestation:** *Must* pay within NET 30 days with late payment penalties per IWW Freelancer Rights §1.
+
+---
+
+## 3. Kill Fee
+
+**Kill Fee:** 75% of agreed fee (£375) if article is commissioned but not published
+
+**Triggers:**
+- Editorial decision not to publish (not freelancer's fault)
+- Change in editorial direction
+- Space constraints
+
+**Payment:** Kill fee paid within NET 30 days of kill decision
+
+**Attestation:** *Must* provide kill fee ≥50% per IWW Freelancer Rights §2.
+
+---
+
+## 4. Copyright and Licensing
+
+**Copyright Ownership:** Freelancer retains copyright
+
+**License Granted:** First publication rights only (print and online) for The Guardian
+
+**Duration:** Exclusive for 3 months from publication, then non-exclusive
+
+**Additional Rights:** Any republication, syndication, or anthology use requires separate fee negotiation
+
+**Attestation:** *Must* retain freelancer copyright or grant only limited license per IWW Freelancer Rights §3.
+
+---
+
+## 5. Source Protection
+
+**Source Protection Guarantee:** Client agrees to protect confidential sources as per NUJ Code of Conduct §6
+
+**No Forced Disclosure:** Client will not require freelancer to disclose confidential source identities
+
+**Legal Support:** Client will provide legal support if freelancer is subjected to legal pressure to reveal sources
+
+**Attestation:** *Must* guarantee source protection per NUJ Code §6.
+
+---
+
+## 6. Expenses Reimbursement
+
+**Reimbursable Expenses:**
+- Travel (mileage at £0.45/mile or public transport receipts)
+- Accommodation (if overnight research required)
+- Research materials (books, reports, FOI fees)
+
+**Pre-Approval:** Expenses over £100 require pre-approval from commissioning editor
+
+**Reimbursement Timeline:** Within NET 30 days of expense claim submission
+
+**Attestation:** *Must* reimburse expenses within 30 days per IWW Freelancer Rights §4.
+
+---
+
+## 7. Revisions and Scope Creep
+
+**Included Revisions:** Up to 3 rounds of revisions included in fee
+
+**Scope Changes:** Significant changes to assignment scope (e.g., doubling word count, new angle) require renegotiation of fee
+
+**Attestation:** *Must* define revision limits and prevent scope creep exploitation.
+
+---
+
+## 8. Termination
+
+**Notice Period:** Either party may terminate with 14 days written notice
+
+**Payment on Termination:** Freelancer receives pro-rata payment for work completed up to termination
+
+**Attestation:** *Must* provide ≥14 days notice per IWW Freelancer Rights §5.
+
+---
+
+## 9. Moral Rights
+
+**Attribution:** Freelancer's byline will appear on published article
+
+**Right to Object:** Freelancer has right to object to derogatory treatment of work
+
+**Integrity:** Client will not materially alter work without freelancer consultation
+
+**Attestation:** *Must* respect moral rights per UK Copyright, Designs and Patents Act 1988.
+
+---
+
+## 10. Union Representation
+
+**Union Recognition:** Client recognizes freelancer's right to NUJ representation in disputes
+
+**No Retaliation:** Client will not retaliate against freelancer for union membership or activity
+
+**Attestation:** *Must* recognize union rights per UK Trade Union and Labour Relations Act 1992.
+
+---
+
+## 11. Anti-Discrimination
+
+**Equal Treatment:** Freelancer will receive equal treatment regardless of race, gender, disability, age, or other protected characteristics
+
+**Harassment Policy:** Client maintains zero-tolerance harassment policy
+
+**Attestation:** *Must* comply with UK Equality Act 2010.
+
+---
+
+## 12. Truth and Accuracy
+
+**Fact-Checking:** Client will provide fact-checking support
+
+**Corrections:** Client will promptly correct any errors in published work
+
+**Attestation:** *Must* support accuracy per NUJ Code §1.
+
+---
+
+## 13. Privacy and GDPR
+
+**Data Protection:** Client will handle freelancer's personal data per GDPR
+
+**Source Data:** Freelancer will handle interviewee data per GDPR and NUJ guidelines
+
+**Attestation:** *Must* comply with GDPR (EU 2016/679).
+
+---
+
+## Signatures
+
+**Freelancer:** Jane Doe (signed electronically 2025-02-01)
+
+**Client:** The Guardian News & Media Ltd, represented by Commissioning Editor Sarah Smith (signed electronically 2025-02-01)
+
+---
+
+@refs:
+[1] NUJ Code of Conduct (2024) - https://www.nuj.org.uk/about/nuj-code/
+[2] IWW Freelancer Rights
+[3] UK Copyright, Designs and Patents Act 1988
+[4] UK Late Payment of Commercial Debts Act 1998
+[5] UK Equality Act 2010
+[6] GDPR (EU 2016/679)
+[7] UK Trade Union and Labour Relations Act 1992
+@end

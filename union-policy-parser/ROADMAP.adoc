@@ -1,0 +1,50 @@
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Union Policy Parser - Roadmap
+:toc:
+
+== Current State
+
+*Phase 0: Repository Infrastructure* [COMPLETE]
+
+* [x] Repository created
+* [x] Language policy established (`.claude/CLAUDE.md`)
+* [x] Multi-forge mirroring configured (GitHub -> GitLab/Codeberg/Bitbucket)
+* [x] SPDX license headers
+
+== Planned Development
+
+[NOTE]
+====
+Detailed roadmap will be added when project specification is uploaded.
+====
+
+=== Phase 1: Specification
+
+* [ ] Upload project specification
+* [ ] Define union policy grammar/schema
+* [ ] Document input/output formats
+* [ ] Establish test fixtures
+
+=== Phase 2: Core Implementation
+
+* [ ] Parser implementation (ReScript or Rust)
+* [ ] AST/IR definition
+* [ ] Validation layer
+* [ ] Error reporting
+
+=== Phase 3: Tooling
+
+* [ ] CLI interface
+* [ ] Library API
+* [ ] WASM build (if Rust)
+* [ ] Deno module distribution
+
+=== Phase 4: Integration
+
+* [ ] Documentation
+* [ ] CI/CD pipeline for testing
+* [ ] Package distribution (Guix, Deno)
+
+== Contributing
+
+Awaiting project specification before accepting contributions.

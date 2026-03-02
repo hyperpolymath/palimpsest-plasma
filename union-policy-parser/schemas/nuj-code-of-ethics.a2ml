@@ -1,0 +1,379 @@
+# NUJ Code of Ethics and Conduct
+
+@abstract:
+This schema defines the National Union of Journalists' Code of Conduct as a
+machine-readable policy for automated validation of employment contracts,
+press releases, and editorial policies. It encodes the core ethical principles
+that NUJ members must uphold, with must/should/could clauses for enforcement
+by union-policy-parser.
+@end
+
+@requires:
+- NUJ Code of Conduct (2024 edition)
+- UK Defamation Act 2013
+- GDPR (EU 2016/679)
+- IPSO Editors' Code of Practice
+- Ofcom Broadcasting Code
+- UK Copyright, Designs and Patents Act 1988
+@end
+
+---
+
+## Core Principles (MUST Clauses)
+
+### 1. Truth and Accuracy
+
+**Principle:** A journalist shall strive to ensure that information disseminated is **honestly conveyed, accurate and fair**.
+
+**Requirements:**
+- Factual accuracy in all reporting
+- Fair representation of events and subjects
+- Honest conveyance without distortion
+- Correction of errors promptly and prominently
+
+**Violations Include:**
+- Knowingly publishing false information
+- Distorting facts to fit narrative
+- Failing to correct known errors
+- Misleading headlines or framing
+
+**Attestation:** *Must* comply with NUJ Code §1 and IPSO Clause 1 (Accuracy).
+
+---
+
+### 2. Independence
+
+**Principle:** A journalist shall **strive to eliminate distortion, news suppression and censorship**, and shall only accept instructions consistent with their professional obligations.
+
+**Requirements:**
+- Editorial independence from commercial pressures
+- Resistance to censorship (internal or external)
+- Disclosure of conflicts of interest
+- Refusal of gifts/inducements that compromise impartiality
+
+**Violations Include:**
+- Suppressing news due to advertiser pressure
+- Accepting payment for favorable coverage
+- Concealing financial interests in subjects covered
+- Following editorial instructions that distort truth
+
+**Attestation:** *Must* maintain editorial independence per NUJ Code §2.
+
+---
+
+### 3. Fairness
+
+**Principle:** A journalist shall strive to ensure that the information they disseminate is **fair and does not misrepresent or distort** facts or context.
+
+**Requirements:**
+- Right of reply for criticized subjects
+- Balanced representation of viewpoints
+- Context preservation (no misleading editing)
+- Fair treatment of vulnerable subjects
+
+**Violations Include:**
+- Denying right of reply
+- Quote mining to misrepresent views
+- Omitting crucial context
+- Unfair treatment of marginalized groups
+
+**Attestation:** *Must* provide right of reply per NUJ Code §3 and IPSO Clause 1.
+
+---
+
+### 4. Privacy and Harassment
+
+**Principle:** A journalist shall respect **privacy** and **avoid harassment**.
+
+**Requirements:**
+- Respect for private life (GDPR Article 8)
+- Justified public interest for privacy intrusion
+- No harassment in pursuit of stories
+- Protection of vulnerable subjects (children, grief-stricken, trauma survivors)
+
+**Violations Include:**
+- Intrusion without public interest justification
+- Persistent unwanted contact (harassment)
+- Publishing private information without consent
+- Exploiting vulnerable subjects
+
+**Public Interest Defense:** Privacy intrusion justified only if:
+- Detecting/exposing crime
+- Protecting public health/safety
+- Preventing public from being misled
+- Exposing abuse of power/hypocrisy
+
+**Attestation:** *Must* comply with GDPR and NUJ Code §4; privacy intrusion requires public interest justification.
+
+---
+
+### 5. Accountability and Corrections
+
+**Principle:** A journalist shall **acknowledge mistakes** and **correct errors promptly** and with due prominence.
+
+**Requirements:**
+- Prompt correction publication
+- Prominence matching original error
+- Transparent corrections policy
+- Apology where appropriate
+
+**Violations Include:**
+- Refusing to correct errors
+- Burying corrections in obscure locations
+- Delayed corrections
+- Failing to apologize for serious errors
+
+**Attestation:** *Must* publish corrections promptly per NUJ Code §5 and IPSO Clause 1.
+
+---
+
+### 6. Source Protection
+
+**Principle:** A journalist shall **protect confidential sources** of information.
+
+**Requirements:**
+- Non-disclosure of source identity without consent
+- Secure source communication methods
+- Resistance to legal/employer pressure to reveal sources
+- Clear disclosure of "on/off the record" terms
+
+**Exceptions:** Only if source:
+- Lied about material facts
+- Caused direct harm through deception
+
+**Legal Protection:** UK Contempt of Court Act 1981 §10 protects journalists from forced source disclosure (unless court orders in interests of justice).
+
+**Attestation:** *Must* protect sources per NUJ Code §6 and UK law.
+
+---
+
+### 7. Discrimination
+
+**Principle:** A journalist shall **not publish material that encourages discrimination** on grounds of:
+- Race
+- Colour
+- Religion
+- Gender/sex
+- Sexual orientation
+- Disability
+- Age
+- Other protected characteristics (Equality Act 2010)
+
+**Requirements:**
+- Avoid discriminatory language
+- Challenge stereotypes
+- Represent diversity accurately
+- No incitement to hatred
+
+**Violations Include:**
+- Using racist/sexist language
+- Perpetuating harmful stereotypes
+- Inciting hatred against protected groups
+- Discriminatory job descriptions/assignments
+
+**Attestation:** *Must* comply with UK Equality Act 2010 and NUJ Code §7.
+
+---
+
+### 8. Plagiarism
+
+**Principle:** A journalist shall **not plagiarise**.
+
+**Requirements:**
+- Original work or proper attribution
+- Citation of sources
+- Licensing compliance for third-party content
+- No passing off others' work as own
+
+**Violations Include:**
+- Copying text without attribution
+- Using photos/video without permission
+- Republishing paywalled content without license
+- Claiming authorship of ghostwritten work
+
+**Attestation:** *Must* respect copyright (Copyright, Designs and Patents Act 1988) and attribute sources.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 9. Transparency and Disclosure
+
+**Principle:** A journalist *should* disclose funding sources, sponsorships, and potential conflicts of interest.
+
+**Recommendations:**
+- Label advertorials/sponsored content clearly
+- Disclose personal financial interests
+- Identify PR-sourced material
+- Transparency about algorithmic/AI assistance
+
+**Violations Include:**
+- Hidden advertorials
+- Undisclosed financial conflicts
+- Presenting PR material as independent journalism
+- AI-generated content without disclosure
+
+**Attestation:** *Should* disclose funding and conflicts per NUJ Transparency Guidelines.
+
+---
+
+### 10. Diversity in Sources
+
+**Principle:** A journalist *should* reflect diverse voices and perspectives in reporting.
+
+**Recommendations:**
+- Gender balance in expert sources
+- Ethnic/racial diversity representation
+- Include marginalized perspectives
+- Avoid "single story" narratives
+
+**Violations Include:**
+- All-male expert panels
+- Exclusion of affected communities
+- Reliance on elite sources only
+- Perpetuating dominant narratives
+
+**Attestation:** *Should* reflect diversity per NUJ Equality Guidelines.
+
+---
+
+### 11. Environmental Impact
+
+**Principle:** A journalist *should* consider the environmental impact of reporting and production.
+
+**Recommendations:**
+- Disclose carbon footprint of major productions
+- Sustainable travel choices
+- Digital-first distribution to reduce print waste
+- Environmental story coverage
+
+**Attestation:** *Should* minimize environmental impact per NUJ Green Journalism Guide.
+
+---
+
+### 12. Accessibility
+
+**Principle:** A journalist *should* ensure content is accessible to disabled audiences.
+
+**Recommendations:**
+- WCAG 2.1 AA compliance (minimum)
+- Captions for video content
+- Alt text for images
+- Plain language summaries
+
+**Attestation:** *Should* comply with WCAG 2.1 for digital content.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 13. Mental Health Support
+
+**Principle:** Employers *could* provide mental health resources for journalists covering traumatic events.
+
+**Recommendations:**
+- Counseling access post-trauma coverage
+- Mental health days without stigma
+- Peer support networks
+- Trauma-informed editorial practices
+
+**Attestation:** *Could* include mental health support per NUJ Wellbeing Guide.
+
+---
+
+### 14. Algorithmic Transparency
+
+**Principle:** Employers *could* explain AI-driven editorial decisions to journalists.
+
+**Recommendations:**
+- Right to human review of AI recommendations
+- Transparency about algorithmic news selection
+- AI bias audits
+- Journalist override rights
+
+**Attestation:** *Could* provide algorithmic transparency per NUJ AI Ethics Guide.
+
+---
+
+### 15. Portable Benefits
+
+**Principle:** Employers *could* support portable benefits for freelance journalists.
+
+**Recommendations:**
+- Health insurance stipends
+- Pension contributions
+- Training budgets
+- Equipment allowances
+
+**Attestation:** *Could* offer portable benefits per NUJ Freelancer Campaign.
+
+---
+
+## Enforcement and Grievance
+
+### Union Enforcement
+
+**Process:**
+1. Member alleges NUJ Code violation
+2. Union rep validates against this schema
+3. Evidence gathering (contract, correspondence, published work)
+4. Formal grievance filed with employer
+5. ACAS mediation if unresolved
+6. Employment tribunal if necessary
+
+**Automated Checks:**
+- `union-policy-parser` validates contracts against this schema
+- Flags missing clauses (e.g., source protection, diversity)
+- Generates grievance templates for violations
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+Contracts for NUJ members *must* include:
+- § Source protection guarantees
+- § Editorial independence provisions
+- § Right to refuse unethical assignments
+- § Whistleblower protection
+- § Corrections policy
+
+Contracts *should* include:
+- § Transparency requirements
+- § Diversity commitments
+- § Accessibility standards
+- § Environmental policies
+
+Contracts *could* include:
+- § Mental health support
+- § Algorithmic transparency
+- § Portable benefits
+
+**Validation:**
+```
+union-policy-parser validate employment-contract.a2ml \
+  --schema nuj-code-of-ethics.a2ml \
+  --clause "source-protection" \
+  --clause "editorial-independence"
+```
+
+---
+
+@refs:
+[1] NUJ Code of Conduct (2024 edition) - https://www.nuj.org.uk/about/nuj-code/
+[2] IPSO Editors' Code of Practice - https://www.ipso.co.uk/editors-code-of-practice/
+[3] Ofcom Broadcasting Code - https://www.ofcom.org.uk/tv-radio-and-on-demand/broadcast-codes/broadcast-code
+[4] UK Defamation Act 2013
+[5] GDPR (EU 2016/679)
+[6] UK Equality Act 2010
+[7] UK Copyright, Designs and Patents Act 1988
+[8] UK Contempt of Court Act 1981 §10
+[9] WCAG 2.1 Web Content Accessibility Guidelines
+[10] NUJ Freelance Fees Guide (2024)
+[11] NUJ Transparency Guidelines (2023)
+[12] NUJ Equality Guidelines (2022)
+[13] NUJ Green Journalism Guide (2020)
+[14] NUJ AI Ethics Guide (2024)
+[15] NUJ Wellbeing Guide (2021)
+@end

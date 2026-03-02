@@ -1,0 +1,370 @@
+# UCU Academic Standards and Employment Rights
+
+@abstract:
+This schema defines the University and College Union (UCU) standards for academic
+employment contracts in UK higher education. It encodes protections against casualization,
+workload limits, academic freedom guarantees, and research/teaching balance requirements.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- UK Working Time Regulations 1998
+- UK Fixed-term Employees (Prevention of Less Favourable Treatment) Regulations 2002
+- UK Equality Act 2010
+- Education Act 2011
+- UCU Model Contract
+- UCU Anti-Casualization Framework
+@end
+
+---
+
+## Core Principles (MUST Clauses)
+
+### 1. Academic Freedom
+
+**Principle:** Academics *must* have freedom to research, teach, and speak without institutional censorship.
+
+**Requirements:**
+- Freedom to determine research agenda
+- Freedom to challenge institutional policies
+- Protection from dismissal for lawful speech
+- No requirement to obtain pre-approval for research topics
+
+**Prohibited:**
+- Censorship of research findings
+- Punishment for criticizing university management
+- Forced self-censorship
+- Restrictions on conference presentations
+
+**Legal Protection:** Education Act 2011 Section 26 (academic freedom in HE)
+
+**Attestation:** *Must* guarantee academic freedom per Education Act 2011 §26.
+
+---
+
+### 2. Workload Limits
+
+**Principle:** Academic workload *must* be sustainable and not exceed reasonable limits.
+
+**Requirements:**
+- Maximum 40 hours/week averaged over academic year
+- Transparent workload allocation model (WAM)
+- Annual workload review with line manager
+- Right to refuse unreasonable additional duties
+
+**Workload Components:**
+- Teaching (lectures, seminars, tutorials)
+- Research (including PhD supervision)
+- Administration (committees, meetings)
+- Pastoral care (student support)
+
+**UCU Recommended Allocation:**
+- 40% teaching
+- 40% research
+- 20% administration
+
+**Attestation:** *Must* specify workload limits ≤ 40 hours/week per UK Working Time Regulations 1998.
+
+---
+
+### 3. No Casualization
+
+**Principle:** Academics *must not* be exploited through precarious employment.
+
+**Requirements:**
+- Permanent contracts for permanent work
+- Fixed-term contracts only for genuinely temporary roles
+- Conversion to permanent after 4 years of continuous service
+- Pro-rata pay and benefits for part-time staff
+
+**Prohibited Practices:**
+- Rolling short-term contracts for permanent teaching
+- Zero-hours contracts
+- Unpaid marking/preparation time
+- "Voluntary" teaching without compensation
+
+**Attestation:** *Must* comply with UK Fixed-term Employees Regulations 2002; permanent work requires permanent contracts.
+
+---
+
+### 4. Research Time
+
+**Principle:** Academics *must* have protected time for research.
+
+**Requirements:**
+- Minimum 0.5 FTE (50% of time) for research for research-active staff
+- Research time protected from encroachment by teaching/admin
+- Annual research leave entitlement
+- Support for conference attendance
+
+**Research Sabbaticals:**
+- 1 semester sabbatical per 6 years of service
+- Full pay during sabbatical
+- No teaching duties during sabbatical
+
+**Attestation:** *Must* allocate ≥ 50% time for research per UCU Model Contract.
+
+---
+
+### 5. Teaching Load
+
+**Principle:** Teaching load *must* be reasonable and allow for effective pedagogy.
+
+**Requirements:**
+- Maximum 18 contact hours/week during term
+- Maximum 120 students for marking-intensive courses
+- Teaching preparation time allocated (1:2 ratio - 1 hour teaching = 2 hours prep/marking)
+- No more than 3 different course preps per year (for new staff)
+
+**PhD Supervision:**
+- Maximum 6 PhD students per supervisor
+- PhD supervision counted as 0.1 FTE per student
+
+**Attestation:** *Must* limit teaching to ≤ 18 contact hours/week per UCU standards.
+
+---
+
+### 6. Fair Pay
+
+**Principle:** Academics *must* receive fair pay with regular progression.
+
+**Requirements:**
+- Starting salary on appropriate pay spine point
+- Annual cost-of-living increases (minimum CPI + 1%)
+- Incremental progression through pay spine
+- Equal pay for equal work (no gender/race pay gaps)
+
+**UCU Pay Campaign (2025):**
+- Minimum starting salary: £40,000 (Lecturer)
+- Annual increment: ≥ 3%
+- No unpaid hours
+
+**Attestation:** *Must* meet UCU minimum pay scales adjusted for 2025 cost of living.
+
+---
+
+### 7. Pension Provision
+
+**Principle:** Academics *must* have access to defined-benefit pension schemes.
+
+**Requirements:**
+- USS (Universities Superannuation Scheme) or TPS (Teachers' Pension Scheme)
+- Employer contributions ≥ 21.4% (USS rate 2025)
+- No pension cuts without consultation
+
+**Attestation:** *Must* provide defined-benefit pension with employer contributions ≥ 21%.
+
+---
+
+## Anti-Casualization (MUST Clauses)
+
+### 8. No Hourly-Paid Contracts
+
+**Principle:** Teaching *must not* be paid on an hourly basis without employee rights.
+
+**Requirements:**
+- Fractional contracts (0.2 FTE, 0.4 FTE, etc.) instead of hourly
+- Pro-rata holiday pay, sick pay, pension
+- Inclusion in department meetings and decision-making
+
+**Prohibited:**
+- "Sessional" or "hourly-paid" lecturer contracts
+- Payment per contact hour only (no prep/marking time)
+- Exclusion from staff development
+
+**Attestation:** *Must* provide fractional contracts with full employee rights per UK Fixed-term Employees Regulations 2002.
+
+---
+
+### 9. No Unpaid Labor
+
+**Principle:** All academic work *must* be compensated.
+
+**Requirements:**
+- Marking time paid
+- Preparation time paid
+- Attendance at departmental meetings paid (if required)
+- No "goodwill" exploitation
+
+**Attestation:** *Must* compensate all hours worked per UK National Minimum Wage Act 1998.
+
+---
+
+### 10. Right to Permanent Contract
+
+**Principle:** After 4 years of continuous fixed-term contracts, *must* convert to permanent.
+
+**Requirements:**
+- Automatic conversion at 4-year mark
+- No requirement to reapply
+- Continuity of service recognized
+
+**Attestation:** *Must* convert fixed-term to permanent after 4 years per UK Fixed-term Employees Regulations 2002.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 11. Sabbatical Provision
+
+**Principle:** Academics *should* have regular sabbatical leave for research.
+
+**Recommendations:**
+- 1 semester per 6 years (UCU standard)
+- Full pay during sabbatical
+- Research funding support
+
+**Attestation:** *Should* provide sabbatical leave per UCU Model Contract.
+
+---
+
+### 12. Conference Funding
+
+**Principle:** Universities *should* fund conference attendance.
+
+**Recommendations:**
+- £1,500/year conference budget per academic
+- Travel, accommodation, registration covered
+- PhD student conference support
+
+**Attestation:** *Should* provide annual conference funding.
+
+---
+
+### 13. PhD Supervision Limits
+
+**Principle:** PhD supervision load *should* be capped.
+
+**Recommendations:**
+- Maximum 6 PhD students per supervisor
+- Additional time allocated for first-time supervisors
+- Training for PhD supervision
+
+**Attestation:** *Should* cap PhD supervision at 6 students per UCU guidelines.
+
+---
+
+### 14. Equality and Diversity
+
+**Principle:** Contracts *should* promote equality and tackle discrimination.
+
+**Recommendations:**
+- Gender pay gap reporting
+- BAME representation targets
+- Disability accommodations
+- Flexible working for carers
+
+**Attestation:** *Should* comply with UK Equality Act 2010 positive duty provisions.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 15. Four-Day Week
+
+**Principle:** Universities *could* adopt four-day working week.
+
+**Recommendations:**
+- Compressed hours (9-day fortnight)
+- Reduced working week with same pay
+- Improved work-life balance
+
+**Attestation:** *Could* pilot four-day week per UCU campaign.
+
+---
+
+### 16. Climate Justice
+
+**Principle:** Universities *could* adopt climate-conscious employment practices.
+
+**Recommendations:**
+- Carbon budgets for international travel
+- Remote work options to reduce commuting
+- Funding for sustainable research
+
+**Attestation:** *Could* implement climate justice measures per UCU Environmental Framework.
+
+---
+
+## Workload Calculation
+
+**UCU Workload Allocation Model (WAM):**
+
+**Teaching:**
+- 1 hour lecture = 3 hours total (1 delivery + 2 prep/marking)
+- 1 hour seminar = 2 hours total (1 delivery + 1 prep)
+- 1 PhD student = 0.1 FTE (156 hours/year)
+
+**Research:**
+- Grant application: 40 hours
+- Journal article: 80 hours
+- Book chapter: 60 hours
+
+**Administration:**
+- Committee membership: 0.05 FTE
+- Programme director: 0.2 FTE
+- Head of department: 0.4 FTE
+
+**Total Annual Hours:** 1,560 hours (40 hours/week × 39 weeks)
+
+**Attestation:** *Must* use transparent workload model per UCU WAM guidelines.
+
+---
+
+## Enforcement and Grievance
+
+### UCU Enforcement
+
+**Process:**
+1. Member raises concern with UCU rep
+2. Informal resolution attempted with line manager
+3. Formal grievance if unresolved (ACAS Code of Practice 1)
+4. UCU support for employment tribunal if needed
+5. Industrial action (strike) if systemic violations
+
+**Automated Checks:**
+- `union-policy-parser` validates academic contracts
+- Flags casualization, workload violations
+- Generates grievance letters
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+Academic contracts *must* include:
+- § Academic freedom guarantee
+- § Workload limits (≤ 40 hours/week)
+- § No casualization (permanent work = permanent contract)
+- § Protected research time (≥ 50% for research-active)
+- § Teaching load limits (≤ 18 contact hours/week)
+- § Fair pay (UCU scales)
+- § Pension provision (USS/TPS)
+
+Contracts *should* include:
+- § Sabbatical provision
+- § Conference funding
+- § PhD supervision limits
+- § Equality and diversity commitments
+
+Contracts *could* include:
+- § Four-day week pilots
+- § Climate justice measures
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] UK Working Time Regulations 1998
+[3] UK Fixed-term Employees (Prevention of Less Favourable Treatment) Regulations 2002
+[4] UK Equality Act 2010
+[5] Education Act 2011 Section 26 (Academic Freedom)
+[6] UCU Model Contract
+[7] UCU Anti-Casualization Framework
+[8] UCU Workload Allocation Model (WAM)
+[9] UCU Pay Campaign 2025
+[10] USS (Universities Superannuation Scheme) Regulations
+[11] ACAS Code of Practice 1: Disciplinary and Grievance Procedures
+[12] UCU Environmental Framework
+@end

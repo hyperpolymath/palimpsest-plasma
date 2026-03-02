@@ -1,0 +1,279 @@
+# Academic Lecturer Employment Contract
+
+@abstract:
+This is an example academic employment contract for a Lecturer position at a UK university.
+It demonstrates compliance with UCU standards: academic freedom, workload limits, research time,
+fair pay, and anti-casualization protections. This contract would pass validation against
+ucu-academic-standards.a2ml schema.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- UK Working Time Regulations 1998
+- Education Act 2011 Section 26 (Academic Freedom)
+- UCU Model Contract
+- USS (Universities Superannuation Scheme) Regulations
+@end
+
+---
+
+## Contract Parties
+
+**Employee:** Dr. Sarah Johnson
+**Employer:** University of Example
+**Position:** Lecturer in Sociology
+**Start Date:** 2025-09-01
+**Contract Type:** Permanent (full-time, 1.0 FTE)
+
+---
+
+## 1. Academic Freedom
+
+**Guarantee:** The University guarantees academic freedom as defined in Education Act 2011 Section 26:
+- Freedom to question and test received wisdom
+- Freedom to put forward new ideas and controversial opinions
+- Freedom to determine research agenda without institutional censorship
+- Protection from dismissal for lawful speech and academic critique
+
+**Academic Responsibilities:**
+- Research, teaching, and scholarship in sociology
+- Freedom to challenge institutional policies through proper channels
+- No requirement for pre-approval of research topics
+
+**Attestation:** *Must* guarantee academic freedom per Education Act 2011 §26 and UCU §1.
+
+---
+
+## 2. Workload Allocation
+
+**Annual Hours:** 1,560 hours (40 hours/week averaged over 39 weeks)
+
+**Workload Model (WAM):**
+- **Teaching:** 600 hours (38%) - 18 contact hours/week during term
+- **Research:** 650 hours (42%) - Protected research time
+- **Administration:** 310 hours (20%) - Committees, meetings, pastoral care
+
+**Workload Review:** Annual workload planning meeting with Head of Department
+
+**Right to Refuse:** May decline unreasonable additional duties beyond allocated hours
+
+**Attestation:** *Must* limit workload to ≤40 hours/week per UCU §2.
+
+---
+
+## 3. Teaching Load
+
+**Contact Hours:** Maximum 18 contact hours per week during teaching term (24 weeks)
+
+**Teaching Responsibilities:**
+- 2 undergraduate modules (lectures + seminars)
+- 1 postgraduate seminar
+- Dissertation supervision (max 10 students)
+- Exam marking (allocated time included in workload)
+
+**Preparation Time:** Allocated at 1:2 ratio (1 hour teaching = 2 hours prep/marking)
+
+**Attestation:** *Must* limit teaching to ≤18 contact hours/week per UCU §5.
+
+---
+
+## 4. Research Time
+
+**Research Allocation:** 650 hours/year (42% of time) protected for research
+
+**Research Support:**
+- £2,000/year research budget
+- Conference attendance (1-2 per year, funded)
+- Research leave (sabbatical: 1 semester per 6 years)
+
+**Research Expectations:**
+- Publications in peer-reviewed journals
+- Grant applications (supported by Research Office)
+- PhD supervision (counted as research time)
+
+**Attestation:** *Must* allocate ≥50% time for research per UCU §4.
+
+---
+
+## 5. Salary and Pay Progression
+
+**Starting Salary:** £42,000/year (Grade 7, Spine Point 32)
+
+**Pay Scale:** Academic pay spine, increments awarded annually
+
+**Cost-of-Living Increases:** Annual CPI + 1% minimum (per UCU pay campaign)
+
+**Incremental Progression:** Automatic annual increment until top of grade
+
+**Attestation:** *Must* meet UCU minimum pay scales (£40,000 starting) per UCU §6.
+
+---
+
+## 6. Pension Provision
+
+**Pension Scheme:** USS (Universities Superannuation Scheme)
+
+**Employer Contribution:** 21.4% of salary
+
+**Employee Contribution:** 9.8% of salary (threshold tier)
+
+**Defined Benefit:** USS provides defined-benefit pension
+
+**Attestation:** *Must* provide defined-benefit pension with ≥21% employer contribution per UCU §7.
+
+---
+
+## 7. Working Hours and Flexibility
+
+**Standard Hours:** 40 hours/week averaged over academic year (39 weeks)
+
+**Flexibility:** Some flexibility in hours due to academic nature of work
+
+**No Excessive Hours:** University will monitor workload to prevent excessive hours
+
+**Right to Disconnect:** No expectation of out-of-hours email responses
+
+**Attestation:** *Must* comply with UK Working Time Regulations 1998 (48-hour max).
+
+---
+
+## 8. Holiday Entitlement
+
+**Annual Leave:** 30 days/year + 8 public holidays + university closure days (Christmas)
+
+**Total:** Approximately 45 days/year
+
+**Carry-Over:** Up to 5 days may be carried to next year
+
+**Attestation:** *Must* provide statutory holiday minimum (28 days) per UK Working Time Regulations 1998.
+
+---
+
+## 9. Sick Pay
+
+**Occupational Sick Pay:**
+- Full pay: First 26 weeks
+- Half pay: Next 26 weeks
+- Then Statutory Sick Pay (SSP)
+
+**Certification:** Self-certification up to 7 days, then GP note required
+
+**Attestation:** *Should* provide occupational sick pay (UCU recommends full pay for 26 weeks).
+
+---
+
+## 10. Probation and Permanency
+
+**Contract Type:** Permanent (not fixed-term)
+
+**Probation:** 18 months probationary period with reviews at 6, 12, and 18 months
+
+**Support:** Mentoring and development support during probation
+
+**Attestation:** *Must* provide permanent contract for permanent work per UCU §3 (Anti-Casualization).
+
+---
+
+## 11. PhD Supervision
+
+**Supervision Load:** Maximum 6 PhD students as primary supervisor
+
+**Supervision Time:** Allocated as 0.1 FTE per student (156 hours/year each)
+
+**Training:** PhD supervision training provided
+
+**Attestation:** *Should* cap PhD supervision at 6 students per UCU §13.
+
+---
+
+## 12. Sabbatical Leave
+
+**Research Sabbatical:** 1 semester (6 months) per 6 years of service
+
+**Pay:** Full salary during sabbatical
+
+**Purpose:** Focused research time (e.g., book completion, grant writing)
+
+**Attestation:** *Should* provide sabbatical per UCU §11.
+
+---
+
+## 13. Professional Development
+
+**Conference Funding:** £1,500/year for conference attendance
+
+**Training:** Access to staff development courses
+
+**Career Progression:** Support for promotion applications
+
+**Attestation:** *Should* provide conference funding per UCU §12.
+
+---
+
+## 14. Equality and Diversity
+
+**Equal Treatment:** No discrimination based on protected characteristics
+
+**Pay Gap Reporting:** University publishes annual gender/ethnicity pay gap reports
+
+**Reasonable Adjustments:** Support for disabled staff
+
+**Attestation:** *Must* comply with UK Equality Act 2010.
+
+---
+
+## 15. Grievance and Disciplinary
+
+**Procedures:** As per ACAS Code of Practice 1
+
+**Union Representation:** Right to UCU representation at disciplinary/grievance meetings
+
+**Appeals:** Right of appeal against disciplinary decisions
+
+**Attestation:** *Must* follow ACAS Code of Practice 1 per UK Employment Rights Act 1996.
+
+---
+
+## 16. Termination
+
+**Notice Period:** 3 months notice by either party
+
+**Redundancy:** Full redundancy consultation if position at risk
+
+**Unfair Dismissal:** Protection from unfair dismissal (after 2 years service)
+
+**Attestation:** *Must* provide notice per UK Employment Rights Act 1996.
+
+---
+
+## 17. Union Recognition
+
+**UCU Recognition:** University recognizes UCU for collective bargaining
+
+**Time Off for Union Duties:** UCU reps have time off for union work
+
+**Check-Off:** Union dues deducted via payroll
+
+**Attestation:** *Should* recognize UCU per UK Trade Union and Labour Relations Act 1992.
+
+---
+
+## Signatures
+
+**Employee:** Dr. Sarah Johnson (signed 2025-08-01)
+
+**Employer:** University of Example, represented by HR Director Prof. David Williams (signed 2025-08-01)
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] UK Working Time Regulations 1998
+[3] Education Act 2011 Section 26 (Academic Freedom)
+[4] UCU Model Contract
+[5] UCU Workload Allocation Model (WAM)
+[6] USS (Universities Superannuation Scheme) Regulations
+[7] UK Equality Act 2010
+[8] ACAS Code of Practice 1
+[9] UK Trade Union and Labour Relations Act 1992
+@end

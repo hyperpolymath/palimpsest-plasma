@@ -1,0 +1,192 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+name: Validate Contracts
+
+on:
+  push:
+    paths:
+      - 'examples/**/*.a2ml'
+      - 'schemas/**/*.a2ml'
+      - 'src/**/*.rs'
+  pull_request:
+    paths:
+      - 'examples/**/*.a2ml'
+      - 'schemas/**/*.a2ml'
+
+permissions: read-all
+
+jobs:
+  validate-schemas:
+    name: Validate Schemas
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@6d9817901c499d6b02debbb57edb38d33daa680b  # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@7e69c5f32fcfbc8e3daa8e2d73eb74cc2ba851ec  # v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            src/rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build union-policy-parser
+        run: |
+          cd src/rust
+          cargo build --release
+
+      - name: Validate NUJ schemas
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/nuj-code-of-ethics.a2ml
+          ./src/rust/target/release/union-policy-parser check-schema schemas/nuj-pr-comms-guidance.a2ml
+
+      - name: Validate IWW schema
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/iww-freelancer-rights.a2ml
+
+      - name: Validate UCU schema
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/ucu-academic-standards.a2ml
+
+      - name: Validate BECTU schema
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/bectu-media-rights.a2ml
+
+      - name: Validate Equity schema
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/equity-performers-rights.a2ml
+
+      - name: Validate GMB schema
+        run: |
+          ./src/rust/target/release/union-policy-parser check-schema schemas/gmb-general-workers-rights.a2ml
+
+  validate-example-contracts:
+    name: Validate Example Contracts
+    runs-on: ubuntu-latest
+    needs: validate-schemas
+    strategy:
+      matrix:
+        contract:
+          - name: "OU Day Employee"
+            file: "ou-day-employee-contract.a2ml"
+            schema: "nuj-code-of-ethics.a2ml"
+            union: "nuj"
+          - name: "Freelance Journalist (Good)"
+            file: "freelance-journalist-good.a2ml"
+            schema: "nuj-code-of-ethics.a2ml"
+            union: "nuj"
+          - name: "Freelance Journalist (Bad)"
+            file: "freelance-journalist-bad.a2ml"
+            schema: "iww-freelancer-rights.a2ml"
+            union: "iww"
+            expected_failure: true
+          - name: "Academic Lecturer"
+            file: "academic-lecturer-contract.a2ml"
+            schema: "ucu-academic-standards.a2ml"
+            union: "ucu"
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@6d9817901c499d6b02debbb57edb38d33daa680b  # stable
+        with:
+          toolchain: stable
+
+      - name: Cache Cargo dependencies
+        uses: actions/cache@7e69c5f32fcfbc8e3daa8e2d73eb74cc2ba851ec  # v4
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+            src/rust/target/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+
+      - name: Build union-policy-parser
+        run: |
+          cd src/rust
+          cargo build --release
+
+      - name: Validate ${{ matrix.contract.name }}
+        id: validate
+        continue-on-error: ${{ matrix.contract.expected_failure == true }}
+        run: |
+          ./src/rust/target/release/union-policy-parser validate \
+            examples/${{ matrix.contract.file }} \
+            --schema schemas/${{ matrix.contract.schema }} \
+            --union ${{ matrix.contract.union }} \
+            --mode checked
+
+      - name: Check expected failure
+        if: matrix.contract.expected_failure == true && steps.validate.outcome == 'success'
+        run: |
+          echo "❌ Expected validation to fail for ${{ matrix.contract.name }}"
+          exit 1
+
+      - name: Generate audit report
+        if: steps.validate.outcome == 'success'
+        run: |
+          ./src/rust/target/release/union-policy-parser audit \
+            examples/${{ matrix.contract.file }} \
+            --schema schemas/${{ matrix.contract.schema }} \
+            --union ${{ matrix.contract.union }} \
+            --output audit-${{ matrix.contract.union }}-${{ strategy.job-index }}.json
+
+      - name: Upload audit report
+        if: steps.validate.outcome == 'success'
+        uses: actions/upload-artifact@26f96dfa697d77e81fd5907df203aa23a56210a8  # v4
+        with:
+          name: audit-report-${{ matrix.contract.union }}-${{ strategy.job-index }}
+          path: audit-*.json
+          retention-days: 30
+
+  auto-grievance:
+    name: Auto-Generate Grievances for Violations
+    runs-on: ubuntu-latest
+    needs: validate-example-contracts
+    if: failure()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
+
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@6d9817901c499d6b02debbb57edb38d33daa680b  # stable
+
+      - name: Build union-policy-parser
+        run: |
+          cd src/rust
+          cargo build --release
+
+      - name: Generate grievance for bad contract
+        run: |
+          ./src/rust/target/release/union-policy-parser grievance \
+            examples/freelance-journalist-bad.a2ml \
+            --violation "multiple-exploitative-clauses" \
+            --schema schemas/iww-freelancer-rights.a2ml \
+            --union iww \
+            --output grievance-bad-contract.md
+
+      - name: Create GitHub Issue for Violations
+        uses: actions/github-script@7d2d13cb9171433f7b1c64aad26dcd68dd3ec2eb  # v7
+        with:
+          script: |
+            const fs = require('fs');
+            const grievance = fs.readFileSync('grievance-bad-contract.md', 'utf8');
+
+            github.rest.issues.create({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              title: 'Contract Validation Failure: Exploitative Clauses Detected',
+              body: `## ⚠️ Contract Validation Failure\n\n${grievance}\n\n**Action:** Review contract and contact union rep.`,
+              labels: ['contract-violation', 'grievance']
+            });

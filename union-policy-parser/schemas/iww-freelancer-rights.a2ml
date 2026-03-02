@@ -1,0 +1,326 @@
+# IWW Freelancer Rights and Fair Contracts
+
+@abstract:
+This schema defines the Industrial Workers of the World (IWW) Freelance Journalists Union
+standards for fair freelance contracts. It encodes protections against exploitation,
+payment standards, and collective organizing rights for atomized workers in the gig economy.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- UK National Minimum Wage Act 1998
+- UK Late Payment of Commercial Debts (Interest) Act 1998
+- Copyright, Designs and Patents Act 1988
+- GDPR (EU 2016/679)
+- IWW Freelance Branch Constitution
+@end
+
+---
+
+## Core Rights (MUST Clauses)
+
+### 1. Fair Payment Terms
+
+**Principle:** Freelancers *must* receive payment within reasonable timeframes with penalties for late payment.
+
+**Requirements:**
+- Payment terms clearly specified (NET 30 maximum)
+- Late payment penalties (minimum 5% after due date)
+- No "payment on publication" clauses
+- No unpaid trial periods
+- No speculative work without compensation
+
+**Prohibited Practices:**
+- NET 60, NET 90, or longer payment terms
+- "We'll pay when we get paid" clauses
+- Payment contingent on third-party actions
+- Unpaid "test assignments"
+- "Exposure" as payment
+
+**Attestation:** *Must* comply with UK Late Payment of Commercial Debts (Interest) Act 1998; payment terms ≤ NET 30 days.
+
+---
+
+### 2. Kill Fee Provision
+
+**Principle:** If commissioned work is rejected/canceled, freelancer *must* receive compensation.
+
+**Requirements:**
+- Kill fee specified in contract (minimum 50%)
+- Payable even if work not used
+- Triggered by editorial decision, not freelancer fault
+
+**Kill Fee Minimums:**
+- **50%** of agreed fee (minimum acceptable)
+- **75%** (IWW recommended)
+- **100%** if killed after final draft submission
+
+**Attestation:** *Must* include kill fee provision ≥ 50% of contracted payment.
+
+---
+
+### 3. Copyright Retention
+
+**Principle:** Freelancers *must* retain copyright or have limited, defined licensing.
+
+**Requirements:**
+- Default: Copyright remains with freelancer
+- If transferred: "First publication rights only" OR specific time-limited license
+- No "all rights" or "work for hire" clauses
+- No perpetual, worldwide, exclusive licenses without significant additional payment
+
+**Acceptable Licensing:**
+- First publication rights (print and online)
+- Time-limited exclusive (e.g., 6 months exclusive, then non-exclusive)
+- Non-exclusive license (freelancer can resell)
+
+**Prohibited:**
+- "All rights forever" without 3x+ standard rate
+- Work-for-hire agreements (except with employee-equivalent pay)
+- Perpetual exclusive licenses
+- Retroactive rights grabs
+
+**Attestation:** *Must* retain copyright or grant only limited, defined licenses per Copyright, Designs and Patents Act 1988.
+
+---
+
+### 4. Expenses Reimbursement
+
+**Principle:** Reasonable expenses *must* be reimbursed promptly.
+
+**Requirements:**
+- Pre-approval process defined
+- Reimbursement within 30 days of submission
+- No cap on reasonable, necessary expenses
+
+**Reimbursable Expenses:**
+- Travel (mileage, public transport)
+- Accommodation
+- Equipment rental
+- Research materials
+- Communication (phone, internet)
+
+**Attestation:** *Must* specify expense reimbursement process and timeframe ≤ 30 days.
+
+---
+
+### 5. Termination Notice
+
+**Principle:** Either party *must* provide notice before terminating contract.
+
+**Requirements:**
+- Minimum 14 days notice (for ongoing contracts)
+- Immediate termination only for gross misconduct
+- Payment for all work completed up to termination date
+
+**Attestation:** *Must* provide ≥ 14 days notice per UK Employment Rights Act 1996 (adapted for freelancers).
+
+---
+
+### 6. No Exploitation Clauses
+
+**Principle:** Contracts *must not* contain exploitative terms.
+
+**Prohibited Clauses:**
+- Free trial periods
+- Unpaid "probation"
+- Spec work (work before contract signed)
+- Unpaid revisions beyond agreed scope
+- Non-compete clauses (except with compensation)
+- Exclusivity without retainer
+- Indemnity clauses shifting all risk to freelancer
+
+**Attestation:** *Must not* contain clauses that exploit freelancer's precarious position.
+
+---
+
+## Collective Organizing Rights (MUST Clauses)
+
+### 7. Union Recognition
+
+**Principle:** Employers *must* recognize freelancer's right to union representation.
+
+**Requirements:**
+- Right to IWW representation in disputes
+- No retaliation for union activity
+- Access to union delegate during grievance procedures
+
+**Prohibited:**
+- Blacklisting union members
+- Refusing work due to union membership
+- Intimidation for organizing
+
+**Attestation:** *Must* comply with UK Trade Union and Labour Relations (Consolidation) Act 1992.
+
+---
+
+### 8. Collective Voice Mechanisms
+
+**Principle:** Atomized freelancers *should* have mechanisms for collective bargaining.
+
+**Recommendations:**
+- Freelancer committees for rate negotiations
+- Transparent rate cards
+- Grievance aggregation (multiple freelancers can file jointly)
+
+**Attestation:** *Should* provide mechanisms for collective freelancer input on terms.
+
+---
+
+## Payment Standards (MUST Clauses)
+
+### 9. Minimum Rates
+
+**Principle:** Payment *must* meet or exceed IWW/NUJ minimum rates.
+
+**IWW Freelance Journalist Minimums (2025):**
+- **£350/day** (7.5 hours) or **£46.67/hour**
+- **£0.40/word** for articles (minimum)
+- **£500** for commissioned feature (1000-1500 words)
+- **£150** for news story (300-500 words)
+
+**Attestation:** *Must* meet or exceed IWW/NUJ minimum rates adjusted for 2025 UK National Minimum Wage.
+
+---
+
+### 10. Rate Transparency
+
+**Principle:** Payment rates *should* be transparent and standardized.
+
+**Recommendations:**
+- Published rate card
+- No secret negotiations
+- Regular rate reviews
+- Cost-of-living adjustments
+
+**Attestation:** *Should* publish transparent rate structures.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 11. Portable Benefits
+
+**Principle:** Employers *should* contribute to freelancer benefits.
+
+**Recommendations:**
+- Health insurance stipend (£100-£200/month)
+- Pension contributions (3-5% of fee)
+- Equipment allowance (£500/year)
+- Training budget (£300/year)
+
+**Attestation:** *Should* provide portable benefits per IWW Portable Benefits Campaign.
+
+---
+
+### 12. Mental Health Support
+
+**Principle:** Employers *should* provide mental health resources for trauma coverage.
+
+**Recommendations:**
+- Counseling access after traumatic assignments
+- Mental health days without penalty
+- Peer support networks
+
+**Attestation:** *Should* offer mental health support for freelancers.
+
+---
+
+### 13. Equipment Provision
+
+**Principle:** Employers *should* provide or reimburse necessary equipment.
+
+**Recommendations:**
+- Camera/recording equipment (if required for assignment)
+- Software licenses (Adobe, etc.)
+- Phone/internet stipend
+- Home office setup (if remote)
+
+**Attestation:** *Should* provide equipment or stipends for tools required for work.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 14. Income Stability
+
+**Principle:** Employers *could* provide minimum income guarantees for regular contributors.
+
+**Recommendations:**
+- Retainer for exclusive contributors
+- Minimum assignments per month
+- First-refusal rights for freelancer
+
+**Attestation:** *Could* offer income stability mechanisms.
+
+---
+
+### 15. Platform Rights
+
+**Principle:** Platform-based freelancers *could* have additional protections.
+
+**Recommendations:**
+- No arbitrary deactivation
+- Transparent algorithmic ranking
+- Data access rights
+- Human review for disputes
+
+**Attestation:** *Could* provide platform-specific rights per Fairwork Principles.
+
+---
+
+## Enforcement and Grievance
+
+### IWW Enforcement
+
+**Process:**
+1. Freelancer alleges violation
+2. IWW rep validates against this schema
+3. Demand letter sent to employer (7-day response)
+4. Collective action if unresolved (e.g., refusal to accept future assignments)
+5. Legal action if necessary
+
+**Automated Checks:**
+- `union-policy-parser` validates contracts
+- Flags exploitative clauses
+- Generates demand letters
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+Freelance contracts *must* include:
+- § Payment terms (NET 30 max)
+- § Kill fee provision (≥50%)
+- § Copyright retention
+- § Expense reimbursement
+- § Termination notice (≥14 days)
+- § No exploitation clauses
+
+Contracts *should* include:
+- § Portable benefits
+- § Mental health support
+- § Equipment provision
+- § Rate transparency
+
+Contracts *could* include:
+- § Income stability mechanisms
+- § Platform rights
+- § Collective bargaining
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] UK National Minimum Wage Act 1998
+[3] UK Late Payment of Commercial Debts (Interest) Act 1998
+[4] Copyright, Designs and Patents Act 1988
+[5] GDPR (EU 2016/679)
+[6] Trade Union and Labour Relations (Consolidation) Act 1992
+[7] IWW Freelance Branch Constitution
+[8] NUJ Freelance Fees Guide (2025)
+[9] Fairwork Principles (Platform Work Charter)
+[10] IWW Portable Benefits Campaign
+@end

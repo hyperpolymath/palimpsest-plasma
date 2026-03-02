@@ -1,0 +1,366 @@
+# Open University Day Employees Contract of Employment (HRP052)
+
+@abstract:
+This document encodes the Open University's "Day Employees: Contract of Employment"
+(HRP052, November 2009) as Attested Markup Language (A2ML) for machine-readable
+validation and enforcement by unions (e.g., NUJ, IWW, UCU). The contract comprises
+17 sections covering employment terms, taxation, workplace, termination, grievance
+procedures, and worker protections under UK law.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- ACAS Code of Practice 1: Disciplinary and Grievance Procedures
+- UK National Minimum Wage Act 1998
+- UK Working Time Regulations 1998
+- UK Defamation Act 2013
+- GDPR (EU 2016/679)
+- Copyright, Designs and Patents Act 1988
+- Trade Union and Labour Relations (Consolidation) Act 1992
+@end
+
+---
+
+## 1. Employment Terms
+
+**Contract Definition:** Day Employees contracted for number of days specified in Offer Letter.
+
+**Working Day:** 1 day = 7.5 hours or equivalent in evening work.
+
+**Consultation Basis:** Some contracts based on availability for consultation, may involve:
+- Defined days of attendance, *or*
+- Work completed on/by defined date, *or*
+- Work completed over defined period
+
+**Duties:** Outlined in Offer Letter, may be amplified by additional sheet.
+
+**Required Fields:**
+- Days contracted (must match Offer Letter)
+- Duties specification (must be detailed)
+- Consultation requirements (if applicable)
+
+**Attestation:** Must verify days-contracted matches Offer Letter and duties are fully specified.
+
+---
+
+## 2. Taxation and National Insurance
+
+**Employee Status:** Day Employees are University employees for NI and Income Tax purposes.
+
+**Tax Deduction:** Deductions made from fees payable per HMRC instructions (Oxon & Bucks Area).
+
+**Tax Code Process:**
+1. New employees sent Income Tax Enquiry Form
+2. Employee completes and returns to Oxon & Bucks Area Tax Office
+3. Tax Office notifies University of correct Tax Code
+4. *Fallback:* If no notification, tax deducted at basic rate
+
+**National Insurance:**
+- Default: Full rate deduction
+- Exception: Reduced rate if certificate from Contributions Agency submitted
+
+**Required Fields:**
+- Tax deduction method (must comply with HMRC)
+- NI contribution rate (full/reduced/exempt)
+- Tax code (must be obtained from HMRC)
+
+**Attestation:** Must comply with HMRC regulations and provide tax code or accept basic rate deduction.
+
+---
+
+## 3. Place of Work
+
+**Primary Location:** Appointing Regional Centre (default).
+
+**Remote Work:** Day Employee may work from home if:
+- Regional Director agreement obtained **in writing**
+- Agreement specifies days or periods
+
+**Required Fields:**
+- Primary workplace location
+- Remote work approval status (yes/no)
+- Written approval from Regional Director (if remote)
+
+**Attestation:** Remote work requires documented Regional Director approval.
+
+---
+
+## 4. Insurance
+
+**University Coverage:**
+- Covers legal liabilities to/for Day Employees
+- Limited to incidents **within** Open University duties
+- Does **not** cover personal property loss/damage
+
+**Private Vehicle Use:**
+- Required: Insurance for business/trade/profession use
+- Employee must verify coverage before University travel
+- University may request insurance evidence before expense payment
+
+**Required Fields:**
+- University liability coverage (yes - automatic)
+- Personal property coverage (no - employee responsibility)
+- Vehicle insurance for business use (if applicable)
+
+**Attestation:** Employee must maintain valid business-use vehicle insurance if using private vehicle for duties.
+
+---
+
+## 5. Sickness or Absence
+
+**No Pay for Unperformed Duties:** University cannot pay for duties not performed due to:
+- Sickness
+- Absence (including public holidays, normal holiday)
+
+**Statutory Sick Pay:** May be entitled if unable to perform duties due to sickness.
+
+**Termination Right:** University may terminate with statutory notice if employee cannot complete duties within required timescale.
+
+**Required Fields:**
+- Sick pay entitlement (statutory only)
+- Termination conditions (if duties incomplete)
+
+**Attestation:** Employee acknowledges no remuneration for unperformed duties; only statutory sick pay available.
+
+---
+
+## 6. Pension Facilities
+
+**Occupational Pension:** Not provided for Day Employees.
+
+**Contracting-Out Certificate:** None in place.
+
+**Stakeholder Pension:**
+- Provider: Prudential
+- Employer contribution: **None**
+- Access: Available but no University contribution
+
+**Contact:** Pensions Manager, Human Resources (for stakeholder pension details).
+
+**Required Fields:**
+- Occupational pension access (no)
+- Stakeholder pension provider (Prudential)
+- Employer contribution (no)
+
+**Attestation:** Employee acknowledges no occupational pension or employer contribution.
+
+---
+
+## 7. Termination
+
+**Notice Period:** 1 month written notice by either party (except gross misconduct).
+
+**Gross Misconduct:** University may terminate summarily without notice.
+
+**Continuous Service ≥ 1 Year:** If termination ends University employment:
+- Employee invited to dismissal meeting
+- Right of accompaniment offered
+- Right of appeal after meeting
+
+**Payment on Termination:** Only for actual duties completed up to termination date.
+
+**Relocation Termination:** University may terminate if employee moves beyond reasonable distance and cannot fulfill obligations (Regional Director investigation required).
+
+**Contract Duration:** Strictly for contract period; future contracts require reapplication.
+
+**Required Fields:**
+- Notice period (1 month default)
+- Gross misconduct provisions
+- Continuous service duration (impacts dismissal process)
+- Payment on termination (pro-rata only)
+- Relocation impact assessment
+
+**Attestation:** Must comply with UK Employment Rights Act 1996 notice requirements and dismissal procedures.
+
+---
+
+## 8. Grievance and Disciplinary Procedures
+
+**Grievance Process:**
+1. **Informal:** Speak with Regional Director first
+2. **Formal:** If unresolved, follow ACAS Code of Practice 1
+   - Reference: [http://www.acas.org.uk](http://www.acas.org.uk)
+
+**Disciplinary Process:** University follows ACAS Code of Practice 1 for disciplinary matters.
+
+**Required Fields:**
+- Informal resolution attempt (required first step)
+- Formal procedure reference (ACAS Code of Practice 1)
+- Right of accompaniment (yes)
+
+**Attestation:** Must follow ACAS Code of Practice 1: Disciplinary and Grievance Procedures.
+
+---
+
+## 9. Confidentiality
+
+**General:** Shall not disclose confidential business or future plans to third parties.
+
+**Confidential Information Includes:**
+- Assignments
+- Examination papers and marks
+- Personal information (applicants, students, graduates, employees)
+
+**Prohibition:** During **and after** employment:
+- No divulge/communicate to third parties
+- No use for personal purpose
+- No use for non-University purposes
+- No unauthorized disclosure
+
+**Student Records:** Must not release names, addresses, or other student information to third parties without:
+- Exception: OU employees directly concerned with student progress/administration
+- Requirement: Written student permission otherwise
+
+**Required Fields:**
+- Confidential information types (assignments, exams, personal data)
+- Disclosure prohibition (during and after employment)
+- Student data protection (written permission required)
+
+**Attestation:** Must comply with GDPR and University confidentiality policy for student records.
+
+---
+
+## 10. Copyright
+
+**University Ownership:** Copyright vests in Open University for all materials produced during contract:
+- Written materials
+- Recorded materials
+- Computer programmes
+- Databases
+- Other works
+
+**Employee Retention:** Day Employee retains copyright in existing materials developed **before** contract commencement.
+
+**Required Fields:**
+- Copyright ownership (University for contract work)
+- Pre-existing materials (employee retains)
+
+**Attestation:** Must comply with Copyright, Designs and Patents Act 1988; University owns work product.
+
+---
+
+## 11. Remuneration
+
+**Basis:** Daily rate specified in Offer Letter.
+
+**Day Definition:** 1 day = 7.5 hours or equivalent in evening work.
+
+**Source:** Notified by Regional Centre.
+
+**Required Fields:**
+- Daily rate (must match Offer Letter)
+- Day definition (7.5 hours standard)
+
+**Attestation:** Daily rate must match Offer Letter specification.
+
+---
+
+## 12. Method of Payment
+
+**Payment Method:** Bank credit to employee account after claim submitted.
+
+**Staff Engagement Form Required:** Must provide:
+1. Name and address
+2. Bank details (Sort Code, account number)
+3. National Insurance number
+4. NI contribution rate
+5. Exemption/reduced rate certificate (if applicable)
+
+**Payment Timing:** Monthly for days actually worked in preceding month.
+
+**No Form = No Payment:** University cannot pay until Staff Engagement Form received.
+
+**Required Fields:**
+- Bank account details
+- National Insurance number
+- NI contribution rate/certificate
+- Claim submission requirement
+
+**Attestation:** Payment contingent on completed Staff Engagement Form and submitted claims.
+
+---
+
+## 13. Expenses
+
+**Reimbursement:** University reimburses expenses if:
+- Necessarily incurred in duty discharge
+- **Previously authorized** by Regional Director
+
+**Rates:** Per "Travel and Subsistence Policy" (current rates).
+
+**Documentation:** Available on Human Resources intranet site.
+
+**Required Fields:**
+- Pre-authorization requirement (yes - Regional Director)
+- Reimbursement policy reference (Travel and Subsistence Policy)
+- Rates reference (current policy rates)
+
+**Attestation:** Expenses require Regional Director pre-authorization; reimbursement per policy rates.
+
+---
+
+## 14. Travel
+
+**Home to Regional Centre:** Not reimbursed if Regional Centre is normal place of work.
+
+**Travel Time:** Not paid for travel to Regional Centre.
+
+**Work From Home Exception:** If Regional Director approves in writing:
+- May authorize travel expenses (home ↔ University)
+- Calculated per Travel and Subsistence Policy
+
+**Required Fields:**
+- Home-to-work travel (not reimbursed if Regional Centre)
+- Remote work travel (requires written Regional Director approval)
+
+**Attestation:** Travel reimbursement requires written Regional Director approval for remote work arrangements.
+
+---
+
+## 15. Employment with Other Organisations
+
+**Responsibility:** Day Employee responsible for ensuring OU contract does not conflict with other employment terms/conditions.
+
+**Required Fields:**
+- Other employment disclosure (employee responsibility)
+- Conflict avoidance (employee ensures no conflict)
+
+**Attestation:** Employee acknowledges responsibility to avoid conflicts with other employment.
+
+---
+
+## 16. Collective Agreement
+
+**Status:** **No collective agreements** applicable to this contract.
+
+**Required Fields:**
+- Collective agreement applicability (no)
+
+**Attestation:** Contract operates outside collective bargaining; no union recognition for Day Employees under this contract type.
+
+---
+
+## 17. Useful References
+
+**Internal Documents:**
+- Day Contract Rates
+- Travel and Subsistence Policy
+- Travel and Subsistence Rates
+
+**External Resources:**
+- ACAS website: [http://www.acas.org.uk](http://www.acas.org.uk)
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] ACAS Code of Practice 1: Disciplinary and Grievance Procedures (http://www.acas.org.uk)
+[3] UK National Minimum Wage Act 1998
+[4] UK Working Time Regulations 1998
+[5] GDPR (EU 2016/679)
+[6] Copyright, Designs and Patents Act 1988
+[7] Trade Union and Labour Relations (Consolidation) Act 1992
+[8] Open University Travel and Subsistence Policy (internal)
+[9] Open University Day Contract Rates (internal)
+[10] HM Revenue & Customs Regulations (Oxon & Bucks Area)
+@end

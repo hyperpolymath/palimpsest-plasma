@@ -1,0 +1,400 @@
+# GMB General Workers Rights and Standards
+
+@abstract:
+This schema defines the GMB (General, Municipal, Boilermakers) union standards for
+general workers across multiple sectors including care, local government, utilities,
+logistics, manufacturing, and retail. It encodes fundamental worker protections,
+living wage standards, and anti-zero-hours exploitation.
+@end
+
+@requires:
+- UK Employment Rights Act 1996
+- UK National Minimum Wage Act 1998
+- UK Working Time Regulations 1998
+- UK Health and Safety at Work Act 1974
+- UK Equality Act 2010
+- Trade Union and Labour Relations (Consolidation) Act 1992
+- GMB Living Wage Campaign Standards
+@end
+
+---
+
+## Core Rights (MUST Clauses)
+
+### 1. Living Wage, Not Minimum Wage
+
+**Principle:** Workers *must* receive Real Living Wage, not just National Minimum Wage.
+
+**GMB Living Wage Standards (2025):**
+- **Real Living Wage:** £12.60/hour (UK)
+- **London Living Wage:** £13.85/hour
+- **National Minimum Wage:** £11.44/hour (inadequate per GMB)
+
+**Attestation:** *Must* pay Real Living Wage per GMB Living Wage Campaign.
+
+---
+
+### 2. No Zero-Hours Contracts
+
+**Principle:** Workers *must* have guaranteed hours, not zero-hours contracts.
+
+**Requirements:**
+- Minimum 16 hours/week guaranteed
+- Pro-rata pay and benefits
+- Right to refuse shifts without penalty (if beyond guaranteed hours)
+- Conversion to permanent after 12 weeks
+
+**Prohibited:**
+- Pure zero-hours (no guaranteed hours)
+- Exclusive zero-hours (can't work elsewhere)
+- Retaliation for refusing shifts
+
+**Attestation:** *Must* provide guaranteed hours per GMB Campaign Against Zero-Hours.
+
+---
+
+### 3. Fair Working Hours
+
+**Principle:** Working hours *must* comply with UK regulations.
+
+**Limits:**
+- Maximum 48 hours/week averaged over 17 weeks
+- Minimum 11 hours rest between shifts
+- Minimum 20-minute break for 6+ hour shifts
+- Maximum 8 hours night work in 24 hours
+
+**Attestation:** *Must* comply with UK Working Time Regulations 1998.
+
+---
+
+### 4. Equal Pay for Equal Work
+
+**Principle:** Workers *must* receive equal pay regardless of protected characteristics.
+
+**Requirements:**
+- No gender pay gap
+- No ethnicity pay gap
+- Equal pay for part-time workers (pro-rata)
+- Equal pay for agency workers (after 12 weeks)
+
+**Attestation:** *Must* comply with UK Equality Act 2010 equal pay provisions.
+
+---
+
+### 5. Safe Working Conditions
+
+**Principle:** Employers *must* ensure workplace safety.
+
+**Requirements:**
+- Risk assessments
+- PPE provided free of charge
+- Health and safety training
+- Accident reporting
+- Safety representatives (GMB-trained)
+
+**Attestation:** *Must* comply with UK Health and Safety at Work Act 1974.
+
+---
+
+### 6. Fair Dismissal and Grievance
+
+**Principle:** Workers *must* have protection from unfair dismissal.
+
+**Requirements:**
+- Disciplinary procedures (ACAS Code of Practice 1)
+- Right to union representation
+- Right to appeal
+- No summary dismissal except gross misconduct
+
+**Attestation:** *Must* follow ACAS Code of Practice 1 and UK Employment Rights Act 1996.
+
+---
+
+### 7. Sick Pay and Leave
+
+**Principle:** Workers *must* receive sick pay.
+
+**Requirements:**
+- Statutory Sick Pay (SSP) as minimum
+- GMB campaigns for occupational sick pay:
+  - Full pay for 4 weeks
+  - Half pay for next 8 weeks
+
+**Attestation:** *Must* provide SSP per UK regulations; *should* provide occupational sick pay.
+
+---
+
+### 8. Holiday Entitlement
+
+**Principle:** Workers *must* receive paid holiday.
+
+**Requirements:**
+- Minimum 5.6 weeks/year (28 days for full-time)
+- Pro-rata for part-time
+- Paid at normal rate
+- Cannot be replaced with "rolled-up holiday pay"
+
+**Attestation:** *Must* provide holiday per UK Working Time Regulations 1998.
+
+---
+
+### 9. Pension Provision
+
+**Principle:** Employers *must* provide pension enrollment.
+
+**Requirements:**
+- Auto-enrollment for eligible workers
+- Minimum 3% employer contribution
+- Minimum 5% employee contribution
+
+**Attestation:** *Must* provide pension per UK Pensions Act 2008.
+
+---
+
+### 10. No Bogus Self-Employment
+
+**Principle:** Workers *must* be classified correctly (employee vs self-employed).
+
+**Requirements:**
+- If employer controls how work is done: employee
+- If fixed hours/location: employee
+- If no substitution allowed: employee
+- IR35 compliance
+
+**Prohibited:**
+- Misclassifying employees as self-employed
+- Gig economy exploitation (Uber model)
+- Avoiding employment rights through "contractor" status
+
+**Attestation:** *Must* classify workers correctly per UK Employment Rights Act 1996 and IR35 rules.
+
+---
+
+## Sector-Specific (MUST Clauses)
+
+### 11. Care Workers: Travel Time
+
+**Principle:** Care workers *must* be paid for travel time between clients.
+
+**Requirements:**
+- Travel time paid at full rate
+- Mileage reimbursed (£0.45/mile)
+- No unpaid gaps between visits
+
+**Attestation:** *Must* pay travel time per GMB Care Workers Campaign.
+
+---
+
+### 12. Retail Workers: Contracted Hours
+
+**Principle:** Retail workers *must* have guaranteed contracted hours.
+
+**Requirements:**
+- Minimum 16 hours/week contracted
+- No "flexible contracts" meaning zero-hours
+- Right to refuse additional shifts
+- Premium pay for short-notice shifts (time-and-a-half if <48 hours notice)
+
+**Attestation:** *Must* provide contracted hours per GMB Retail Workers Rights.
+
+---
+
+### 13. Cleaners: Outsourcing Protections
+
+**Principle:** Outsourced cleaners *must* have same terms as in-house workers.
+
+**Requirements:**
+- TUPE protections on outsourcing
+- Same pay and conditions as in-house
+- Pension access
+- Union recognition carried over
+
+**Attestation:** *Must* apply TUPE protections per UK regulations.
+
+---
+
+### 14. Utilities Workers: No Fire and Rehire
+
+**Principle:** Employers *must not* use "fire and rehire" to cut terms.
+
+**Requirements:**
+- No termination to impose worse contracts
+- Collective bargaining for changes
+- Protection from constructive dismissal
+
+**Attestation:** *Must not* use fire and rehire per GMB Campaign Against Fire and Rehire.
+
+---
+
+### 15. Logistics/Delivery: No Algorithmic Management Abuse
+
+**Principle:** Gig economy workers *must* have protection from algorithmic management.
+
+**Requirements:**
+- Right to human review of algorithmic decisions
+- Transparency about performance metrics
+- No arbitrary deactivation
+- Appeals process
+
+**Attestation:** *Must* provide algorithmic transparency per GMB Gig Economy Charter.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 16. Trade Union Recognition
+
+**Principle:** Employers *should* recognize GMB for collective bargaining.
+
+**Recommendations:**
+- GMB rep access to workplace
+- Time off for union duties
+- Check-off system (union dues deducted)
+- Partnership working
+
+**Attestation:** *Should* recognize GMB per UK Trade Union and Labour Relations Act 1992.
+
+---
+
+### 17. Training and Development
+
+**Principle:** Employers *should* invest in worker training.
+
+**Recommendations:**
+- Apprenticeships
+- Skills training
+- Health and safety qualifications
+- Career progression pathways
+
+**Attestation:** *Should* provide training opportunities.
+
+---
+
+### 18. Mental Health and Wellbeing
+
+**Principle:** Employers *should* support worker wellbeing.
+
+**Recommendations:**
+- Mental health first aiders
+- Counseling access (EAP)
+- Stress risk assessments
+- Right to disconnect (no out-of-hours emails)
+
+**Attestation:** *Should* support wellbeing per GMB Mental Health Charter.
+
+---
+
+### 19. Environmental Protections
+
+**Principle:** Employers *should* involve workers in green transition.
+
+**Recommendations:**
+- Just Transition for fossil fuel workers
+- Green skills training
+- Worker voice in environmental decisions
+
+**Attestation:** *Should* support just transition per GMB Green New Deal.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 20. Four-Day Week
+
+**Principle:** Employers *could* pilot four-day working week.
+
+**Recommendations:**
+- Same pay for 4 days (32 hours)
+- Improved work-life balance
+- Productivity gains
+
+**Attestation:** *Could* pilot four-day week per GMB 4-Day Week Campaign.
+
+---
+
+### 21. Workplace Democracy
+
+**Principle:** Employers *could* give workers board representation.
+
+**Recommendations:**
+- Worker directors on company boards
+- Employee ownership schemes
+- Profit-sharing
+
+**Attestation:** *Could* introduce workplace democracy per GMB Worker Voice Campaign.
+
+---
+
+## Enforcement and Grievance
+
+### GMB Enforcement
+
+**Process:**
+1. Member raises concern with GMB rep
+2. Informal resolution with management
+3. Formal grievance (ACAS Code of Practice 1)
+4. Collective grievance if systemic
+5. Industrial action (strike ballot)
+
+**Legal Support:**
+- GMB provides legal representation for employment tribunals
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+General worker contracts *must* include:
+- § Real Living Wage (not minimum wage)
+- § No zero-hours (minimum 16 hours/week guaranteed)
+- § Fair working hours (max 48 hours/week)
+- § Equal pay for equal work
+- § Safe working conditions
+- § Fair dismissal procedures (ACAS)
+- § Sick pay (SSP minimum)
+- § Holiday entitlement (5.6 weeks/year)
+- § Pension provision (auto-enrollment)
+- § Correct employment status (no bogus self-employment)
+
+Sector-specific *must* include:
+- § Care workers: Travel time paid
+- § Retail workers: Contracted hours
+- § Cleaners: TUPE protections
+- § Utilities: No fire and rehire
+- § Logistics: Algorithmic transparency
+
+Contracts *should* include:
+- § Trade union recognition
+- § Training and development
+- § Mental health support
+- § Environmental protections
+
+Contracts *could* include:
+- § Four-day week pilot
+- § Workplace democracy
+
+---
+
+@refs:
+[1] UK Employment Rights Act 1996
+[2] UK National Minimum Wage Act 1998
+[3] UK Working Time Regulations 1998
+[4] UK Health and Safety at Work Act 1974
+[5] UK Equality Act 2010
+[6] UK Pensions Act 2008
+[7] Trade Union and Labour Relations (Consolidation) Act 1992
+[8] GMB Living Wage Campaign Standards
+[9] GMB Campaign Against Zero-Hours
+[10] GMB Care Workers Campaign
+[11] GMB Retail Workers Rights
+[12] GMB Campaign Against Fire and Rehire
+[13] GMB Gig Economy Charter
+[14] GMB Mental Health Charter
+[15] GMB Green New Deal
+[16] GMB 4-Day Week Campaign
+[17] GMB Worker Voice Campaign
+[18] ACAS Code of Practice 1
+[19] IR35 Rules (HMRC)
+[20] TUPE Regulations
+@end

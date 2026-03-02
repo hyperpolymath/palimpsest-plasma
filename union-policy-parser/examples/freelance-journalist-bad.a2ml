@@ -1,0 +1,204 @@
+# Freelance Journalism Contract - Bad Example (Violations)
+
+@abstract:
+This is an example of a NON-COMPLIANT freelance journalism contract with multiple violations
+of NUJ and IWW standards. It includes exploitative clauses: all-rights grab, no kill fee,
+NET 90 payment terms, no source protection, and spec work. This contract would FAIL validation
+and trigger grievance generation.
+@end
+
+@requires:
+- None (contract violates union standards)
+@end
+
+---
+
+## Contract Parties
+
+**Freelancer:** John Smith, Freelance Journalist
+**Client:** Exploitative Media Corp Ltd
+**Date:** 2025-02-01
+**Duration:** Per-assignment basis
+
+---
+
+## 1. Scope of Work
+
+**Assignment:** Write article on topic to be determined
+
+**Deliverables:**
+- 2,000-word article
+- Unlimited revisions until client satisfied
+- Must provide 3 sample drafts before commission confirmed
+
+⚠️ **VIOLATION:** Spec work (3 sample drafts before commission) - violates IWW §6 (No Exploitation)
+
+---
+
+## 2. Payment Terms
+
+**Rate:** £100 for 2,000-word feature (£0.05/word - well below NUJ minimum)
+
+**Payment Schedule:**
+- Payment due NET 90 days from publication date (not submission date)
+- Payment only if article is published
+- No late payment penalties
+
+⚠️ **VIOLATION 1:** Rate below IWW/NUJ minimum (should be £0.40/word minimum)
+⚠️ **VIOLATION 2:** NET 90 payment terms (should be NET 30 max per IWW §1)
+⚠️ **VIOLATION 3:** "Payment on publication" (should be NET 30 from submission per IWW §1)
+⚠️ **VIOLATION 4:** No late payment penalties (required per IWW §1)
+
+---
+
+## 3. Kill Fee
+
+**Kill Fee:** None. If article is not published, no payment is owed.
+
+⚠️ **VIOLATION:** No kill fee (should be ≥50% per IWW §2)
+
+---
+
+## 4. Copyright and Licensing
+
+**Copyright Transfer:** Freelancer assigns ALL RIGHTS to client, including:
+- Copyright ownership (work-for-hire)
+- Moral rights waiver
+- Perpetual, worldwide, exclusive license
+- Right to alter, edit, or republish without consultation
+- Right to use freelancer's name/byline for other content
+
+⚠️ **VIOLATION:** All-rights grab / work-for-hire without premium payment (violates IWW §3 and Copyright Act)
+
+---
+
+## 5. Source Protection
+
+**Source Disclosure:** Freelancer must disclose all confidential sources to client upon request.
+Client reserves right to require source contact information for verification.
+
+⚠️ **VIOLATION:** No source protection guarantee (violates NUJ Code §6)
+
+---
+
+## 6. Expenses Reimbursement
+
+**Expenses:** Freelancer responsible for all expenses. No reimbursement provided.
+
+⚠️ **VIOLATION:** No expense reimbursement (violates IWW §4)
+
+---
+
+## 7. Revisions and Scope Creep
+
+**Revisions:** Unlimited revisions required at no additional cost
+
+**Scope Changes:** Client may request any changes to assignment scope without additional payment
+
+⚠️ **VIOLATION:** Unlimited revisions and scope changes without compensation (exploitative per IWW §6)
+
+---
+
+## 8. Termination
+
+**Termination:** Client may terminate at any time without notice or payment.
+Freelancer must provide 30 days notice to terminate.
+
+⚠️ **VIOLATION:** Asymmetric termination (no notice/payment for freelancer, but requires 30 days from freelancer)
+
+---
+
+## 9. Editorial Control
+
+**Editorial Decisions:** Client has sole control over all editorial decisions, including:
+- Sources used
+- Angle of story
+- Tone and framing
+- Fact-checking standards
+
+Freelancer must accept all editorial direction without objection.
+
+⚠️ **VIOLATION:** No editorial independence (violates NUJ Code §2)
+
+---
+
+## 10. Non-Compete and Exclusivity
+
+**Non-Compete:** Freelancer may not write on similar topics for competing publications for 12 months.
+
+**Exclusivity:** Freelancer must be available exclusively for client work during assignment period.
+
+⚠️ **VIOLATION:** Non-compete and exclusivity clauses without retainer payment (exploitative per IWW §6)
+
+---
+
+## 11. Indemnification
+
+**Indemnity:** Freelancer indemnifies client against all legal claims arising from article,
+including defamation, privacy violations, and copyright infringement.
+Freelancer must pay client's legal fees if sued.
+
+⚠️ **VIOLATION:** One-sided indemnity clause shifts all risk to freelancer (exploitative)
+
+---
+
+## 12. Union Activity
+
+**No Union Representation:** This is an individual contract. Freelancer waives right to union representation or collective bargaining.
+
+⚠️ **VIOLATION:** Waiving union rights is illegal per UK Trade Union and Labour Relations Act 1992
+
+---
+
+## 13. Confidentiality
+
+**Confidentiality:** Freelancer must not disclose contract terms to anyone, including union reps,
+under penalty of £10,000.
+
+⚠️ **VIOLATION:** Gagging clause prevents disclosure of exploitative terms (illegal)
+
+---
+
+## 14. Governing Law
+
+**Disputes:** All disputes must be resolved through private arbitration (no employment tribunal).
+Freelancer waives right to court proceedings.
+
+⚠️ **VIOLATION:** Waiving right to employment tribunal (may be unenforceable)
+
+---
+
+## Signatures
+
+**Freelancer:** John Smith (signed 2025-02-01)
+
+**Client:** Exploitative Media Corp Ltd (signed 2025-02-01)
+
+---
+
+## VALIDATION SUMMARY
+
+This contract contains **14 MAJOR VIOLATIONS** of NUJ/IWW standards:
+
+1. Spec work requirement
+2. Rate below minimum (£0.05 vs £0.40/word)
+3. NET 90 payment terms (should be NET 30)
+4. Payment on publication (should be NET 30 from submission)
+5. No late payment penalties
+6. No kill fee
+7. All-rights grab / work-for-hire
+8. No source protection
+9. No expense reimbursement
+10. Unlimited revisions
+11. No editorial independence
+12. Exploitative non-compete/exclusivity
+13. One-sided indemnity
+14. Union rights waiver
+
+**RECOMMENDATION:** DO NOT SIGN THIS CONTRACT. Contact NUJ/IWW rep for assistance.
+
+---
+
+@refs:
+None - this contract violates all relevant union standards
+@end

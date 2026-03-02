@@ -1,0 +1,47 @@
+image:https://img.shields.io/badge/License-PMPL--1.0-blue.svg[License: PMPL-1.0,link="https://github.com/hyperpolymath/palimpsest-license"]
+image:https://img.shields.io/badge/Philosophy-Palimpsest-indigo.svg[Palimpsest,link="https://github.com/hyperpolymath/palimpsest-license"]
+
+
+// SPDX-License-Identifier: PMPL-1.0-or-later
+= Union Policy Parser
+
+:toc:
+:toc-placement!:
+
+**Repository project specification - will be uploaded shortly**
+
+toc::[]
+
+== Status
+
+[WARNING]
+====
+This repository is in initial setup phase. No implementation code has been uploaded yet.
+====
+
+== Current Contents
+
+[cols="1,3"]
+|===
+|Path |Description
+
+|`.claude/CLAUDE.md`
+|Language policy (Hyperpolymath Standard) - defines allowed/banned languages and tools
+
+|`.github/workflows/mirror.yml`
+|CI workflow for multi-forge mirroring (GitLab, Codeberg, Bitbucket)
+|===
+
+== Technology Stack (per Language Policy)
+
+Allowed technologies for this project:
+
+* **ReScript** - Primary application code
+* **Deno** - Runtime and package management
+* **Rust** - Performance-critical components, WASM
+* **Gleam** - Backend services (BEAM or JS target)
+* **Guile Scheme** - State/meta files
+
+== License
+
+PMPL-1.0-or-later

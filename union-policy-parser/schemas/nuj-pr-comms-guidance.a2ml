@@ -1,0 +1,478 @@
+# NUJ Guidance for PR & Communications Professionals
+
+@abstract:
+This schema defines the National Union of Journalists' ethical standards specifically
+for PR and communications professionals. It extends the NUJ Code of Conduct with
+PR-specific guidance on transparency, client relationships, media ethics, and the
+boundary between journalism and advocacy.
+@end
+
+@requires:
+- NUJ Code of Conduct (2024 edition)
+- UK Communications Act 2003
+- UK Consumer Protection from Unfair Trading Regulations 2008
+- ASA CAP Code (Advertising Standards)
+- CIPR Code of Conduct
+- PRCA Professional Charter
+- IPSO Editors' Code of Practice
+@end
+
+---
+
+## Core Principles (MUST Clauses)
+
+### 1. Truth and Transparency in PR
+
+**Principle:** PR professionals *must* be truthful and transparent about their role and client relationships.
+
+**Requirements:**
+- Clear identification as PR/communications professional
+- Disclosure of client/employer when placing stories
+- No misrepresentation as independent journalist
+- Factual accuracy in press releases and statements
+
+**Prohibited Practices:**
+- Posing as independent journalist
+- Hiding client identity from media
+- "Astroturfing" (fake grassroots campaigns)
+- Misleading journalists about story origins
+
+**Attestation:** *Must* disclose PR role and client relationships per NUJ PR Guidance §2.1.
+
+---
+
+### 2. No Deception of Media
+
+**Principle:** PR professionals *must not* deceive journalists or media outlets.
+
+**Requirements:**
+- Honest representation of facts
+- No fabricated quotes or sources
+- No manipulation of images/video
+- Corrections issued promptly for errors
+
+**Prohibited:**
+- Fake testimonials
+- Staged events presented as spontaneous
+- Misleading statistics
+- Hidden product placement
+
+**Attestation:** *Must* maintain honesty with media per NUJ Code §1 (Truth and Accuracy).
+
+---
+
+### 3. Separation from Editorial
+
+**Principle:** PR content *must* be clearly distinguishable from editorial content.
+
+**Requirements:**
+- Advertorials labeled as "Advertisement" or "Sponsored Content"
+- Native advertising clearly disclosed
+- No attempts to blend PR with editorial
+- Respect for editorial independence
+
+**Labeling Requirements:**
+- "Sponsored by [Client]"
+- "Advertisement Feature"
+- "Paid Partnership"
+- "Promotional Content"
+
+**Attestation:** *Must* label advertorials per ASA CAP Code and NUJ PR Guidance §3.1.
+
+---
+
+### 4. Anti-Misinformation
+
+**Principle:** PR professionals *must* include correction policies for false statements.
+
+**Requirements:**
+- Correction policy for client statements
+- Prompt correction of errors
+- No knowing distribution of false information
+- Fact-checking before release
+
+**Correction Timeframe:**
+- Social media: Within 24 hours
+- Press releases: Within 48 hours
+- Campaigns: Immediate withdrawal if false
+
+**Attestation:** *Must* include correction policy per NUJ PR Guidance §3.4.
+
+---
+
+### 5. Data Protection in PR
+
+**Principle:** PR campaigns *must* comply with GDPR for media contacts and subjects.
+
+**Requirements:**
+- Consent for use of personal data
+- Right to erasure for press contacts
+- No sharing of personal data without consent
+- Secure storage of media databases
+
+**Media Lists:**
+- Opt-in only (no bought lists)
+- Easy unsubscribe
+- Regular data audits
+- No GDPR violations
+
+**Attestation:** *Must* comply with GDPR for PR data per EU 2016/679.
+
+---
+
+### 6. No Bribery or Inducements
+
+**Principle:** PR professionals *must not* bribe journalists or offer inappropriate inducements.
+
+**Requirements:**
+- No cash payments to journalists
+- Gifts within reasonable limits (< £50)
+- Transparent hospitality (press trips disclosed)
+- No quid-pro-quo arrangements
+
+**Prohibited:**
+- Cash for coverage
+- Expensive gifts to journalists
+- Hidden sponsorships
+- "Pay-for-play" arrangements
+
+**Attestation:** *Must* avoid bribery per UK Bribery Act 2010 and NUJ Code §2.
+
+---
+
+### 7. Respect for Source Protection
+
+**Principle:** PR professionals *must* respect journalists' source protection.
+
+**Requirements:**
+- No pressure on journalists to reveal sources
+- No retaliation against journalists for protecting sources
+- Understanding of NUJ Code §6 (Source Protection)
+
+**Attestation:** *Must* respect source protection per NUJ Code §6.
+
+---
+
+## Client Relationships (MUST Clauses)
+
+### 8. Client Confidentiality
+
+**Principle:** PR professionals *must* maintain client confidentiality (unless illegal).
+
+**Requirements:**
+- Non-disclosure of sensitive client information
+- Secure handling of confidential materials
+- Exception: Illegal or unethical client activities
+
+**Exceptions to Confidentiality:**
+- Criminal activity
+- Public health/safety risks
+- Fraud or deception
+
+**Attestation:** *Must* maintain client confidentiality except where illegal or unethical.
+
+---
+
+### 9. Conflicts of Interest
+
+**Principle:** PR professionals *must* disclose conflicts of interest.
+
+**Requirements:**
+- Disclosure of personal interests in client's industry
+- No representation of competing clients without disclosure
+- Transparent about financial relationships
+
+**Attestation:** *Must* disclose conflicts per NUJ Code §2 (Independence).
+
+---
+
+### 10. Right to Refuse Unethical Clients
+
+**Principle:** PR professionals *must* have the right to refuse unethical work.
+
+**Requirements:**
+- Right to decline clients engaged in illegal/harmful activities
+- No retaliation for ethical refusals
+- Whistleblower protection for reporting unethical practices
+
+**Prohibited Clients (examples):**
+- Tobacco companies targeting children
+- Climate denial campaigns
+- Misinformation campaigns
+- Discriminatory organizations
+
+**Attestation:** *Must* allow refusal of unethical clients per NUJ PR Guidance §4.1.
+
+---
+
+## Best Practices (SHOULD Clauses)
+
+### 11. Diversity in PR Sources
+
+**Principle:** PR campaigns *should* reflect diverse voices and perspectives.
+
+**Recommendations:**
+- Gender balance in spokespeople
+- BAME representation
+- Disability inclusion
+- Avoid "manels" (all-male panels)
+
+**Attestation:** *Should* reflect diversity per NUJ Equality Guide.
+
+---
+
+### 12. Environmental Impact of Campaigns
+
+**Principle:** PR campaigns *should* disclose environmental impact.
+
+**Recommendations:**
+- Carbon footprint reporting for major campaigns
+- Sustainable event planning
+- Digital-first to reduce print waste
+- No greenwashing
+
+**Attestation:** *Should* minimize environmental impact per NUJ Green PR Guide.
+
+---
+
+### 13. Accessibility of PR Materials
+
+**Principle:** PR materials *should* be accessible to disabled audiences.
+
+**Recommendations:**
+- WCAG 2.1 AA compliance for websites
+- Captions for videos
+- Alt text for images
+- Plain language summaries
+
+**Attestation:** *Should* comply with WCAG 2.1 for digital content.
+
+---
+
+### 14. Fact-Checking Infrastructure
+
+**Principle:** PR agencies *should* have robust fact-checking processes.
+
+**Recommendations:**
+- Designated fact-checker on staff
+- Third-party verification for statistics
+- Source documentation for all claims
+- Pre-release fact-check for major campaigns
+
+**Attestation:** *Should* implement fact-checking infrastructure.
+
+---
+
+## Crisis Communications (MUST Clauses)
+
+### 15. Honesty in Crisis
+
+**Principle:** Crisis communications *must* prioritize truth over reputation management.
+
+**Requirements:**
+- Acknowledge problems honestly
+- No cover-ups or stonewalling
+- Transparent about what's known/unknown
+- Prompt updates as situation develops
+
+**Prohibited:**
+- Lying to media during crisis
+- Delaying bad news
+- Blaming victims
+- Attacking journalists
+
+**Attestation:** *Must* maintain honesty during crises per NUJ Code §1.
+
+---
+
+### 16. Victim Sensitivity
+
+**Principle:** Crisis communications *must* show sensitivity to victims.
+
+**Requirements:**
+- No victim-blaming
+- Respectful language
+- Offer support/resources
+- Privacy protection for victims
+
+**Attestation:** *Must* treat victims sensitively per NUJ Code §4 (Privacy and Harassment).
+
+---
+
+## Social Media & Digital PR (MUST Clauses)
+
+### 17. Disclosure on Social Media
+
+**Principle:** Social media PR *must* disclose paid partnerships and sponsorships.
+
+**Requirements:**
+- #ad or #sponsored hashtags
+- Clear disclosure of client relationships
+- Transparency about influencer partnerships
+- No stealth marketing
+
+**Platform-Specific:**
+- Instagram: "Paid partnership with [Brand]"
+- Twitter/X: #ad in first line
+- TikTok: Branded content toggle
+- LinkedIn: "Sponsored by [Client]"
+
+**Attestation:** *Must* disclose paid social media per ASA CAP Code and NUJ PR Guidance §5.2.
+
+---
+
+### 18. No Fake Reviews/Testimonials
+
+**Principle:** PR campaigns *must not* use fake reviews or testimonials.
+
+**Requirements:**
+- All testimonials genuine and verifiable
+- No incentivized positive reviews without disclosure
+- No suppression of negative reviews
+- No astroturfing on review platforms
+
+**Attestation:** *Must* use genuine testimonials per UK Consumer Protection Regulations 2008.
+
+---
+
+### 19. AI Disclosure in PR
+
+**Principle:** AI-generated PR content *must* be disclosed.
+
+**Requirements:**
+- Label AI-generated text/images/video
+- Human oversight for all AI content
+- Disclosure of AI tools used
+- No passing off AI as human-created
+
+**Labeling:**
+- "Generated with AI assistance"
+- "AI-created image"
+- "Human-edited AI draft"
+
+**Attestation:** *Must* disclose AI-generated content per NUJ AI Ethics Guide §2.1.
+
+---
+
+## Advocacy Targets (COULD Clauses)
+
+### 20. Mental Health Support for PR Professionals
+
+**Principle:** Employers *could* provide mental health resources for PR professionals.
+
+**Recommendations:**
+- Counseling for crisis communications stress
+- Mental health days without stigma
+- Peer support networks
+- Trauma-informed practices
+
+**Attestation:** *Could* include mental health support per NUJ Wellbeing Guide.
+
+---
+
+### 21. Portable Benefits for Freelance PR
+
+**Principle:** Employers *could* support portable benefits for freelance PR professionals.
+
+**Recommendations:**
+- Health insurance stipends
+- Pension contributions
+- Equipment allowances
+- Training budgets
+
+**Attestation:** *Could* offer portable benefits per NUJ Freelancer Campaign.
+
+---
+
+## Enforcement and Grievance
+
+### NUJ PR Branch Enforcement
+
+**Process:**
+1. Member alleges PR ethics violation
+2. NUJ PR rep validates against this schema
+3. Evidence gathering (press releases, media coverage)
+4. Formal complaint to employer or client
+5. CIPR/PRCA referral if professional standards violated
+6. Employment tribunal if employment rights breached
+
+**Automated Checks:**
+- `union-policy-parser` validates PR contracts/policies
+- Flags missing transparency clauses
+- Generates complaint templates
+
+---
+
+## Integration with Employment Contracts
+
+**Required Contract Clauses:**
+
+PR professional contracts *must* include:
+- § Truth and transparency requirements
+- § No deception of media
+- § Advertorial labeling requirements
+- § Anti-misinformation policy
+- § GDPR compliance for PR data
+- § No bribery/inducements clause
+- § Right to refuse unethical clients
+
+Contracts *should* include:
+- § Diversity commitments
+- § Environmental impact disclosure
+- § Accessibility standards
+- § Fact-checking infrastructure
+
+Contracts *could* include:
+- § Mental health support
+- § Portable benefits (freelancers)
+
+---
+
+## Boundary Between Journalism and PR
+
+### Key Distinctions
+
+**Journalist:**
+- Independent editorial judgment
+- Serves public interest
+- Accountable to readers/viewers
+- Protected by source protection
+
+**PR Professional:**
+- Advocates for client
+- Serves client interests
+- Accountable to client
+- Must disclose client relationship
+
+**Ethical Boundary:**
+- NUJ members can work in PR **if**:
+  - They disclose their role honestly
+  - They don't pose as independent journalists
+  - They follow NUJ PR Guidance
+  - They don't undermine editorial independence
+
+**Prohibited:**
+- NUJ journalist working PR for same outlet (conflict)
+- PR professional presenting as journalist without disclosure
+
+**Attestation:** *Must* maintain clear boundary per NUJ PR Guidance §1.1.
+
+---
+
+@refs:
+[1] NUJ Code of Conduct (2024 edition)
+[2] NUJ Guidance for PR & Communications (2023)
+[3] UK Communications Act 2003
+[4] UK Consumer Protection from Unfair Trading Regulations 2008
+[5] UK Bribery Act 2010
+[6] ASA CAP Code (Advertising Standards)
+[7] CIPR Code of Conduct
+[8] PRCA Professional Charter
+[9] IPSO Editors' Code of Practice
+[10] GDPR (EU 2016/679)
+[11] WCAG 2.1 (Web Content Accessibility Guidelines)
+[12] NUJ AI Ethics Guide (2024)
+[13] NUJ Equality Guide (2022)
+[14] NUJ Green PR Guide (2023)
+[15] NUJ Wellbeing Guide (2021)
+@end
