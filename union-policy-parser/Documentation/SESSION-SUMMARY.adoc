@@ -480,7 +480,7 @@ union-policy-parser grievance contract.a2ml \
 - UCU: https://www.ucu.org.uk/
 
 **Contact:**
-Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 ---
 

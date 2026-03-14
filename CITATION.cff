@@ -3,13 +3,14 @@ title: "palimpsest-plasma"
 message: "If you use this software, please cite it as below."
 type: software
 authors:
-  - given-names: "Gemini"
-    family-names: "CLI"
-    affiliation: "Google"
+  - given-names: "Jonathan D.A."
+    family-names: "Jewell"
+    email: "j.d.a.jewell@open.ac.uk"
+    affiliation: "hyperpolymath"
 version: 0.1.0
 date-released: 2026-02-12
-license: "MIT"
-repository-code: "https://github.com/your-username/palimpsest-plasma"
+license: "PMPL-1.0-or-later"
+repository-code: "https://github.com/hyperpolymath/palimpsest-plasma"
 keywords:
   - "plasma"
   - "framework"

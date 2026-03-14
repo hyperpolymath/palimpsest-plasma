@@ -9,7 +9,7 @@
     description = "Self-validating employment contract with union policy compliance",
     magic = "K9!",
     mime_type = "application/vnd.k9+nickel",
-    author = "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>",
+    author = "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>",
   },
 
   target = {

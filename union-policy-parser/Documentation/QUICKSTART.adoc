@@ -386,7 +386,7 @@ A: See `CONTRIBUTING.adoc`:
 
 * GitHub: https://github.com/hyperpolymath/union-policy-parser
 * License: PMPL-1.0-or-later (Palimpsest MPL)
-* Contact: Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>
+* Contact: Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 
 == License
 

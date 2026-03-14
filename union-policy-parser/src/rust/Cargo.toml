@@ -3,7 +3,7 @@
 [package]
 name = "union-policy-parser"
 version = "0.1.0"
-authors = ["Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"]
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 edition = "2021"
 license = "PMPL-1.0-or-later"
 description = "Policy validation engine for union contracts (NUJ, IWW, UCU) using A2ML"

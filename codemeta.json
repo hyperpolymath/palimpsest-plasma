@@ -4,16 +4,16 @@
   "authors": [
     {
       "@type": "Person",
-      "givenName": "Gemini",
-      "familyName": "CLI",
+      "givenName": "Jonathan D.A.",
+      "familyName": "Jewell",
+      "email": "j.d.a.jewell@open.ac.uk",
       "affiliation": {
         "@type": "Organization",
-        "name": "Google"
+        "name": "hyperpolymath"
       }
     }
   ],
-  "identifier": "https://doi.org/YOUR-DOI-HERE",
-  "codeRepository": "https://github.com/your-username/palimpsest-plasma",
+  "codeRepository": "https://github.com/hyperpolymath/palimpsest-plasma",
   "datePublished": "2026-02-12",
   "dateModified": "2026-02-12",
   "description": "A comprehensive framework for creating dynamic, self-modifying software systems, focusing on resilience and adaptability.",
@@ -24,12 +24,12 @@
     "self-modifying",
     "adaptive"
   ],
-  "license": "https://spdx.org/licenses/MIT",
+  "license": "https://spdx.org/licenses/PMPL-1.0-or-later",
   "name": "palimpsest-plasma",
   "programmingLanguage": [],
   "version": "0.1.0",
-  "url": "https://your-project-website.com/palimpsest-plasma",
-  "readme": "https://github.com/your-username/palimpsest-plasma/blob/main/README.md",
-  "issueTracker": "https://github.com/your-username/palimpsest-plasma/issues",
+  "url": "https://github.com/hyperpolymath/palimpsest-plasma",
+  "readme": "https://github.com/hyperpolymath/palimpsest-plasma/blob/main/README.adoc",
+  "issueTracker": "https://github.com/hyperpolymath/palimpsest-plasma/issues",
   "developmentStatus": "active"
 }

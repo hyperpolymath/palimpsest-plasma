@@ -42,7 +42,7 @@ seambot, finishbot.
 2. **Single source of truth** - `.machine_readable/` is authoritative
 3. **No stale metadata** - If root SCMs exist, they are OUT OF DATE
 4. **License consistency** - All code PMPL-1.0-or-later unless platform requires MPL-2.0
-5. **Author attribution** - Always "Jonathan D.A. Jewell <jonathan.jewell@open.ac.uk>"
+5. **Author attribution** - Always "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
 6. **OCaml core** - PLASMA engine is OCaml; do not rewrite in other languages
 7. **Deontic operators** - Obligation/Prohibition/Permission are first-class AST values
 8. **Immutable base policy** - Exhibits extend but never mutate the base policy
