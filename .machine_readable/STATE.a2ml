@@ -1,0 +1,14 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# STATE.a2ml — Project state checkpoint
+# Converted from STATE.scm on 2026-03-15
+
+[metadata]
+project = "palimpsest-plasma"
+version = "2.0.0-dev"
+last-updated = "2026-03-15"
+status = "active"
+
+[project-context]
+name = "palimpsest-plasma"
+completion-percentage = 40
+phase = "PLASMA Engine Design-to-Implementation"
