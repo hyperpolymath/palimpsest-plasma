@@ -17,6 +17,7 @@
 //! 4. **Red-Flag Scanning**: Heuristic search for exploitative keywords 
 //!    (e.g. "moral rights waiver").
 
+#![forbid(unsafe_code)]
 use clap::{Parser, Subcommand};
 use anyhow::Result;
 use std::path::PathBuf;
