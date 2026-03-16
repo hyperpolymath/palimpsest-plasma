@@ -17,12 +17,12 @@ obligations, and produces findings, actions, and audit reports.
 ### Machine-Readable Metadata: `.machine_readable/` ONLY
 
 These 6 SCM files MUST exist in `.machine_readable/` directory ONLY:
-1. **STATE.scm** - Project state, progress, blockers
-2. **META.scm** - Architecture decisions, governance
-3. **ECOSYSTEM.scm** - Position in ecosystem, relationships
-4. **AGENTIC.scm** - AI agent interaction patterns
-5. **NEUROSYM.scm** - Neurosymbolic integration config
-6. **PLAYBOOK.scm** - Operational runbook
+1. **.machine_readable/6a2/STATE.a2ml** - Project state, progress, blockers
+2. **.machine_readable/6a2/META.a2ml** - Architecture decisions, governance
+3. **.machine_readable/6a2/ECOSYSTEM.a2ml** - Position in ecosystem, relationships
+4. **.machine_readable/6a2/AGENTIC.a2ml** - AI agent interaction patterns
+5. **.machine_readable/6a2/NEUROSYM.a2ml** - Neurosymbolic integration config
+6. **.machine_readable/6a2/PLAYBOOK.a2ml** - Operational runbook
 
 **CRITICAL:** If ANY of these files exist in the root directory, this is an ERROR.
 
@@ -38,7 +38,7 @@ seambot, finishbot.
 
 ## CORE INVARIANTS
 
-1. **No SCM duplication** - Root must NOT contain STATE.scm, META.scm, etc.
+1. **No SCM duplication** - Root must NOT contain .machine_readable/6a2/STATE.a2ml, .machine_readable/6a2/META.a2ml, etc.
 2. **Single source of truth** - `.machine_readable/` is authoritative
 3. **No stale metadata** - If root SCMs exist, they are OUT OF DATE
 4. **License consistency** - All code PMPL-1.0-or-later unless platform requires MPL-2.0
@@ -101,7 +101,7 @@ Read these for full context:
 1. Read THIS file (0-AI-MANIFEST.a2ml) first
 2. Understand canonical locations (.machine_readable/, .bot_directives/)
 3. Know the invariants (no SCM duplication, OCaml core, deontic operators)
-4. Read `.machine_readable/STATE.scm` for current status
+4. Read `.machine_readable/6a2/STATE.a2ml` for current status
 5. Read `docs/architecture.adoc` for system design
 6. Check `ROADMAP.adoc` for current milestone
 
@@ -110,13 +110,13 @@ Read these for full context:
 ### on-enter (Session Start)
 
 1. Read and acknowledge this manifest
-2. Read `.machine_readable/STATE.scm`
+2. Read `.machine_readable/6a2/STATE.a2ml`
 3. Check for blockers
 4. State understanding of canonical locations and invariants
 
 ### on-exit (Session End)
 
-1. Update `.machine_readable/STATE.scm` if changes made
+1. Update `.machine_readable/6a2/STATE.a2ml` if changes made
 2. Document new blockers
 3. Summarize outcomes
 
