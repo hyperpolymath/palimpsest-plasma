@@ -1,0 +1,26 @@
+# SPDX-License-Identifier: PMPL-1.0-or-later
+# Clade declaration — part of the gv-clade-index registry
+# See: https://github.com/hyperpolymath/gv-clade-index
+
+[identity]
+uuid = "6175bd82-b27e-5e6b-a887-1cf625cb690e"
+primary-forge = "github"
+primary-owner = "hyperpolymath"
+canonical-name = "palimpsest-plasma"
+prefixed-name = "gv-palimpsest-plasma"
+
+[clade]
+primary = "gv"
+secondary = ["rm"]
+assigned = "2026-03-16"
+rationale = ""
+
+[forges]
+github = "hyperpolymath/palimpsest-plasma"
+gitlab = "hyperpolymath/palimpsest-plasma"
+bitbucket = "hyperpolymath/palimpsest-plasma"
+
+[lineage]
+type = "standalone"
+parent = "Governance automation engine — OCaml policy AST"
+born = "2026-03-16"
