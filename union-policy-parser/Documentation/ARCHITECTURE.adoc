@@ -715,7 +715,7 @@ jobs:
 
       - name: Install K9 tools
         run: |
-          cargo install --git https://github.com/hyperpolymath/k9-svc
+          cargo install --git https://github.com/hyperpolymath/standards/tree/main/k9-svc
 
       - name: Validate A2ML contracts
         run: |
