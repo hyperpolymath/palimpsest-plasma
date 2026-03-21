@@ -1,0 +1,149 @@
+SPDX-License-Identifier: PMPL-2.0-or-later
+SPDX-FileCopyrightText: 2026 Palimpsest Stewardship Council
+
+================================================================================
+PALIMPSEST-MPL LICENSE VERSION 2.0
+================================================================================
+
+File-level copyleft with strengthened attribution and provenance
+
+Based on Mozilla Public License 2.0
+
+--------------------------------------------------------------------------------
+PREAMBLE
+--------------------------------------------------------------------------------
+
+This License extends the Mozilla Public License 2.0 (MPL-2.0) with provisions
+for strengthened attribution and cryptographic provenance. The base MPL-2.0
+terms apply except where explicitly modified below.
+
+Like a palimpsest manuscript where each layer builds upon what came before,
+this license ensures that each contributor's work remains visible and
+attributable, even as the software evolves.
+
+This License imposes no restrictions on the field of endeavor, use, or
+purpose of the Covered Software. It is intended to be compatible with the
+Open Source Definition.
+
+--------------------------------------------------------------------------------
+SECTION 1: BASE LICENSE
+--------------------------------------------------------------------------------
+
+This License incorporates the full text of Mozilla Public License 2.0 by
+reference. The complete MPL-2.0 text is available at:
+https://www.mozilla.org/en-US/MPL/2.0/
+
+All terms, conditions, and definitions from MPL-2.0 apply except where
+explicitly modified below.
+
+Where this License and MPL-2.0 conflict, this License takes precedence.
+Where this License is silent, MPL-2.0 applies.
+
+--------------------------------------------------------------------------------
+SECTION 2: ADDITIONAL DEFINITIONS
+--------------------------------------------------------------------------------
+
+2.1. "Provenance Metadata"
+    means attribution information attached to or associated with Covered
+    Software, including but not limited to: author identities, timestamps,
+    modification history, SPDX headers, and cryptographic signatures.
+
+2.2. "Attribution Notice"
+    means any copyright notice, author name, SPDX-License-Identifier,
+    SPDX-FileCopyrightText, or Provenance Metadata present in or
+    associated with Covered Software.
+
+--------------------------------------------------------------------------------
+SECTION 3: STRENGTHENED ATTRIBUTION
+--------------------------------------------------------------------------------
+
+In addition to the notice requirements of MPL-2.0 Section 3.4:
+
+3.1. Attribution Preservation
+    You must not strip, alter, or obscure Attribution Notices from Covered
+    Software. This includes:
+    (a) copyright headers in source files;
+    (b) SPDX-License-Identifier and SPDX-FileCopyrightText lines;
+    (c) author information in package manifests (Cargo.toml, package.json,
+        mix.exs, or equivalent); and
+    (d) Provenance Metadata where present.
+
+3.2. Derivative Work Attribution
+    When creating a Larger Work that incorporates Covered Software, You
+    must include a notice in Your Larger Work that identifies the Covered
+    Software and its Contributors, in a location reasonably likely to be
+    seen by recipients (e.g., a NOTICE file, an "About" screen, or
+    documentation).
+
+3.3. Automated Processing
+    If You process Covered Software using automated tools (including but
+    not limited to AI training, content aggregation, or code generation),
+    You must preserve Attribution Notices in the processed output where
+    technically feasible, or provide attribution in accompanying
+    documentation.
+
+--------------------------------------------------------------------------------
+SECTION 4: PROVENANCE (OPTIONAL)
+--------------------------------------------------------------------------------
+
+4.1. Cryptographic Signatures
+    Contributors may sign their Contributions using cryptographic
+    signatures. This License recognizes but does not require such
+    signatures.
+
+4.2. Signature Preservation
+    If cryptographic signatures are present in Covered Software, You must
+    preserve them in all distributions. You must not forge, alter, or
+    misrepresent the origin of signatures.
+
+4.3. Algorithm Recommendations
+    Contributors are encouraged (but not required) to use post-quantum
+    cryptographic algorithms for long-term provenance. Recommended
+    algorithms include ML-DSA (FIPS 204), SLH-DSA (FIPS 205), and
+    Ed25519 for current use.
+
+--------------------------------------------------------------------------------
+SECTION 5: GOVERNANCE
+--------------------------------------------------------------------------------
+
+5.1. Stewardship Council
+    This License is maintained by the Palimpsest Stewardship Council, which
+    may issue clarifications, interpretive guidance, and future versions.
+
+5.2. Version Selection
+    You may use Covered Software under this version of the License or any
+    later version published by the Palimpsest Stewardship Council.
+
+5.3. Community Covenant
+    Projects using this License are encouraged (but not required) to adopt
+    the Palimpsest Community Covenant, which provides ethical guidelines
+    for responsible use. The Covenant is a separate document and is not
+    part of this License.
+
+--------------------------------------------------------------------------------
+SECTION 6: COMPATIBILITY
+--------------------------------------------------------------------------------
+
+6.1. MPL-2.0 Compatibility
+    Covered Software under this License may be combined with software
+    under MPL-2.0. In such combinations, the MPL-2.0 terms apply to the
+    MPL-2.0 files, and this License applies to the PMPL-2.0 files.
+
+6.2. Secondary Licenses
+    The Secondary License provisions of MPL-2.0 Section 3.3 apply to
+    this License. The following licenses are designated as Secondary
+    Licenses: GNU General Public License v2.0 or later, GNU Lesser
+    General Public License v2.1 or later, GNU Affero General Public
+    License v3.0 or later.
+
+6.3. Relicensing
+    You may not relicense Covered Software under a license that does not
+    preserve the attribution requirements of Section 3.
+
+================================================================================
+END OF PALIMPSEST-MPL LICENSE VERSION 2.0
+================================================================================
+
+For the Community Covenant: PALIMPSEST-COVENANT.md
+For provenance tooling: https://github.com/hyperpolymath/palimpsest-plasma
+For questions: https://github.com/hyperpolymath/palimpsest-license
