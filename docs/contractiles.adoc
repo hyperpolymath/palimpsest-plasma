@@ -56,22 +56,22 @@ proceeds. It combines a rule with dynamic state: how much tension has
 accumulated, what conditions have been observed, and whether the rule is
 currently active, relaxed, or released.
 
-== Relationship to Existing Contractile Directories
+== Relationship to the Contractile CLI
 
-The `contractiles/` directories in both the parent repo and the
-union-policy-parser sub-project contain the five standard RSR contractile
-categories:
+Operational contractile execution (must/trust/dust/intend/k9) is delegated to
+the canonical **contractile CLI** from `reposystem/contractiles/`. PLASMA no
+longer maintains local copies of Mustfile, Dustfile, Intentfile, or K9
+templates. Instead:
 
-* **k9** — K9-SVC validation (canary/sentinel checks)
-* **dust** — Disposable utility scripts and throwaway tooling
-* **lust** — Legal utility scripts and templates
-* **must** — Mandatory compliance checks
-* **trust** — Trust chain and provenance validation
+* `contractiles/contractile.just` provides Just recipes that delegate to the
+  shared CLI binaries (`must check`, `trust verify`, `dust status`, etc.)
+* PLASMA's governance engine consumes the _output_ of these CLI tools as typed
+  facts, applying the formal contractile model (tension, holding, relaxing,
+  releasing) as a governance layer on top.
 
-These are _operational_ contractiles — scripts and checks that execute during
-CI/CD. The PLASMA contractile concept described here is the _formal_ model that
-will eventually subsume and generalise these operational scripts into a typed,
-evaluable framework.
+See https://github.com/hyperpolymath/reposystem/tree/main/contractiles[the
+contractile CLI] for the operational stack, and `contractiles/README.adoc` for
+the delegation architecture.
 
 == Proposed Type Definition
 
