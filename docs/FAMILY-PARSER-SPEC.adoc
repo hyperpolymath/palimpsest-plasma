@@ -1,0 +1,899 @@
+// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
+= Palimpsest Family Parser Specification
+Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+v0.1, 2026-03-23
+:toc: left
+:toclevels: 4
+:sectnums:
+:icons: font
+
+== Overview
+
+The Palimpsest Family Parser replaces the current naive string-matching in
+`plasma audit` and `plasma migrate` with a structured parser that understands:
+
+* The palimpsest license family as a *type system* — base + layer + fallback
+* SPDX compound expressions (`MIT OR Apache-2.0`, `PMPL-2.0-or-later WITH ...`)
+* Mixed-license repositories (e.g., PAGPL engine + proprietary content)
+* License zone boundaries within a single repository
+* Fallback chain validation (does the declared fallback match the base?)
+
+This is a Rust library crate (`plasma-parser`) consumed by the existing
+`plasma` CLI binary, the planned OCaml PLASMA governance engine (via C FFI),
+and a PanLL panel (via Gossamer HTTP bridge or WASM).
+
+== Architecture
+
+=== Component Diagram
+
+[source]
+----
+                    ┌──────────────────────────┐
+                    │     PanLL (ReScript)      │
+                    │   PlasmaGovernance panel   │
+                    │   Plaza panel (existing)   │
+                    └───────────┬──────────────┘
+                                │ HTTP / panel bus
+                    ┌───────────▼──────────────┐
+                    │  plasma-daemon (Rust)      │
+                    │  localhost:8098            │
+                    │  JSON-RPC or REST          │
+                    └───────────┬──────────────┘
+                                │ direct call
+          ┌─────────────────────▼─────────────────────┐
+          │            plasma-parser (Rust lib)         │
+          │                                             │
+          │  ┌──────────┐  ┌──────────┐  ┌───────────┐│
+          │  │  Lexer    │→│  Parser   │→│ Validator  ││
+          │  │ (SPDX +   │ │ (family   │ │ (fallback  ││
+          │  │  content)  │ │  tree)    │ │  chain)    ││
+          │  └──────────┘  └──────────┘  └───────────┘│
+          │  ┌──────────┐  ┌──────────┐  ┌───────────┐│
+          │  │  Zone     │  │ Compat   │  │ Reporter  ││
+          │  │  Scanner  │  │ Matrix   │  │ (JSON/    ││
+          │  │ (dir map) │  │          │  │  SARIF)   ││
+          │  └──────────┘  └──────────┘  └───────────┘│
+          └───────────────────────────────────────────┘
+                    │ C FFI (cbindgen)
+          ┌─────────▼────────────────┐
+          │  PLASMA Engine (OCaml)    │
+          │  (future governance core) │
+          └──────────────────────────┘
+----
+
+=== Crate Structure
+
+[source]
+----
+palimpsest-plasma/
+├── plasma-parser/                # NEW: library crate
+│   ├── Cargo.toml
+│   └── src/
+│       ├── lib.rs               # Public API
+│       ├── spdx/
+│       │   ├── mod.rs           # SPDX expression parser
+│       │   ├── lexer.rs         # Tokeniser for SPDX expressions
+│       │   └── catalog.rs       # Known SPDX identifiers + palimpsest extensions
+│       ├── family/
+│       │   ├── mod.rs           # License family type system
+│       │   ├── registry.rs      # Family definitions (PMPL, PAGPL, PGPL, PAPL...)
+│       │   └── fallback.rs      # Fallback chain validation
+│       ├── zone/
+│       │   ├── mod.rs           # License zone scanner
+│       │   ├── boundary.rs      # Zone boundary detection
+│       │   └── policy.rs        # Zone policy rules (e.g., "dlc/ must be proprietary")
+│       ├── compat/
+│       │   ├── mod.rs           # Compatibility matrix
+│       │   └── matrix.rs        # License-pair compatibility lookups
+│       ├── audit/
+│       │   ├── mod.rs           # Structured audit engine
+│       │   ├── header.rs        # SPDX header extraction and validation
+│       │   └── content.rs       # LICENSE file content analysis
+│       └── report/
+│           ├── mod.rs           # Report generation
+│           ├── json.rs          # JSON output
+│           └── sarif.rs         # SARIF for GitHub Code Scanning
+│
+├── src/                         # Existing CLI (depends on plasma-parser)
+│   ├── main.rs                  # Existing — add new subcommands
+│   ├── audit.rs                 # Rewrite: delegate to plasma-parser
+│   ├── migrate.rs               # Rewrite: delegate to plasma-parser
+│   ├── init.rs                  # Extend: support target license selection
+│   ├── badge.rs                 # Extend: badge per family variant
+│   └── daemon.rs               # NEW: HTTP daemon mode for PanLL
+│
+└── Cargo.toml                   # Workspace root
+----
+
+== Type System
+
+=== Core Types
+
+[source,rust]
+----
+/// A base license that exists independently in the legal landscape.
+/// These are the well-known licenses with court precedent.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum BaseLicense {
+    MIT,
+    Apache2,
+    GPL2,
+    GPL3,
+    LGPL21,
+    LGPL3,
+    AGPL3,
+    MPL2,
+    BSD2,
+    BSD3,
+    ISC,
+    EUPL12,
+    Artistic2,
+    CERNOHLS2,
+    Unlicense,
+    ZeroBSD,
+    /// Proprietary / All Rights Reserved.
+    Proprietary,
+    /// Creative Commons variant.
+    CreativeCommons(CcVariant),
+    /// Unknown base license with raw SPDX identifier.
+    Other(String),
+}
+
+/// Creative Commons sub-variants.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct CcVariant {
+    pub attribution: bool,    // BY
+    pub share_alike: bool,    // SA
+    pub non_commercial: bool, // NC
+    pub no_derivatives: bool, // ND
+    pub version: String,      // "4.0"
+}
+
+/// The palimpsest layer — the provisions added on top of a base license.
+/// All palimpsest variants share the same layer; only the base differs.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PalimpsestLayer {
+    pub version: Version,
+    pub emotional_lineage: bool,       // P1
+    pub ai_notice: bool,               // P2
+    pub ethical_use: bool,             // P3
+    pub provenance_metadata: bool,     // P4
+    pub quantum_safe: bool,            // P5
+    pub lineage_chain: bool,           // P6
+    pub governance: bool,              // P7
+}
+
+/// A complete palimpsest license = base + layer + fallback.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct PalimpsestLicense {
+    /// The palimpsest variant identifier (e.g., "PAGPL", "PMPL", "PGPL").
+    pub variant: PalimpsestVariant,
+    /// The version of this palimpsest license.
+    pub version: Version,
+    /// The base license this palimpsest extends.
+    pub base: BaseLicense,
+    /// The palimpsest-specific provisions.
+    pub layer: PalimpsestLayer,
+    /// The license to fall back to if palimpsest provisions are struck.
+    /// Must be identical to `base` (enforced by validation).
+    pub fallback: BaseLicense,
+    /// Whether "or later" applies.
+    pub or_later: bool,
+}
+
+/// Known palimpsest variants.
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub enum PalimpsestVariant {
+    /// Palimpsest-MPL (base: MPL-2.0). Existing, published.
+    PMPL,
+    /// Palimpsest-AGPL (base: AGPL-3.0). Proposed.
+    PAGPL,
+    /// Palimpsest-GPL (base: GPL-3.0). Proposed.
+    PGPL,
+    /// Palimpsest-Apache (base: Apache-2.0). Proposed.
+    PAPL,
+    /// Palimpsest-BSD (base: BSD-3-Clause). Proposed.
+    PBSD,
+    /// Palimpsest-EUPL (base: EUPL-1.2). Proposed.
+    PEUPL,
+    /// Other/future variant.
+    Other(String),
+}
+
+/// Any license — either a plain base license or a palimpsest variant.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum License {
+    Base(BaseLicense),
+    Palimpsest(PalimpsestLicense),
+}
+
+/// A parsed SPDX expression, which may be compound.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum SpdxExpr {
+    /// Single license identifier.
+    Simple(License),
+    /// Dual licensing: A OR B (user chooses).
+    Or(Box<SpdxExpr>, Box<SpdxExpr>),
+    /// Combined: A AND B (both apply).
+    And(Box<SpdxExpr>, Box<SpdxExpr>),
+    /// License with exception: A WITH exception-id.
+    With(Box<SpdxExpr>, String),
+}
+----
+
+=== License Zones
+
+A *zone* is a directory (or set of directories) within a repository that
+shares a single license. Mixed-license repos have multiple zones.
+
+[source,rust]
+----
+/// A license zone — a region of the repository under one license.
+#[derive(Debug, Clone)]
+pub struct LicenseZone {
+    /// Human-readable zone name (e.g., "engine", "game-content", "tools").
+    pub name: String,
+    /// Glob patterns for directories/files in this zone.
+    pub paths: Vec<String>,
+    /// The license governing this zone.
+    pub license: SpdxExpr,
+    /// Whether this zone is proprietary (All Rights Reserved).
+    pub proprietary: bool,
+}
+
+/// A repository's complete license map.
+#[derive(Debug, Clone)]
+pub struct LicenseMap {
+    /// The repository root path.
+    pub root: PathBuf,
+    /// Default license (applies to files not in any explicit zone).
+    pub default_license: SpdxExpr,
+    /// Explicit zones with their own licenses.
+    pub zones: Vec<LicenseZone>,
+}
+----
+
+== Zone Configuration
+
+Repositories declare their license zones in a `.plasma.toml` file at the
+repository root (or in `.machine_readable/6a2/`):
+
+[source,toml]
+----
+# .plasma.toml — license zone configuration for palimpsest-plasma
+# SPDX-License-Identifier: PMPL-2.0-or-later
+
+[project]
+name = "idaptik"
+default-license = "PAGPL-1.0-or-later"
+
+# Engine zone — open-source, strongest copyleft
+[[zone]]
+name = "engine"
+license = "PAGPL-1.0-or-later"
+paths = [
+    "src/engine/**",
+    "vm/**",
+    "shared/**",
+    "sync-server/**",
+    "src/app/**",
+    "src/bindings/**",
+]
+
+# Game content zone — proprietary, all rights reserved
+[[zone]]
+name = "game-content"
+license = "LicenseRef-Proprietary"
+proprietary = true
+paths = [
+    "dlc/**",
+    "raw-assets/**",
+    "src/app/narrative/**",
+]
+# Copyright holders for proprietary content
+copyright = "Jonathan D.A. Jewell and Joshua B. Jewell"
+
+# Modding tools zone — lower-friction copyleft
+[[zone]]
+name = "tools"
+license = "PMPL-1.0-or-later"
+paths = [
+    "idaptik-ums/**",
+    "idaptik-developers/**",
+    "escape-hatch/**",
+]
+
+# Specs and protocols — most permissive
+[[zone]]
+name = "specs"
+license = "PAPL-1.0-or-later"
+paths = [
+    "src/abi/**",
+    "ffi/zig/**",
+    "generated/abi/**",
+]
+----
+
+== Parser Pipeline
+
+=== Stage 1: SPDX Expression Lexer
+
+Tokenises SPDX expressions from both file headers and `.plasma.toml`:
+
+[source]
+----
+Input:  "PAGPL-1.0-or-later"
+Tokens: [Ident("PAGPL"), Dash, Number(1), Dot, Number(0), Dash, OrLater]
+
+Input:  "MIT OR Apache-2.0"
+Tokens: [Ident("MIT"), Or, Ident("Apache"), Dash, Number(2), Dot, Number(0)]
+
+Input:  "PMPL-2.0-or-later WITH Classpath-exception-2.0"
+Tokens: [Ident("PMPL"), Dash, Number(2), Dot, Number(0), Dash, OrLater,
+         With, Ident("Classpath-exception"), Dash, Number(2), Dot, Number(0)]
+----
+
+=== Stage 2: SPDX Expression Parser
+
+Builds an `SpdxExpr` AST. Precedence: `WITH` binds tightest, then `AND`,
+then `OR`. Parentheses override.
+
+=== Stage 3: License Resolution
+
+Maps parsed identifiers to the `License` type system:
+
+[source,rust]
+----
+/// Resolve an SPDX identifier string to a License.
+fn resolve(id: &str, or_later: bool) -> Result<License> {
+    match id {
+        "PMPL" => Ok(License::Palimpsest(PalimpsestLicense {
+            variant: PalimpsestVariant::PMPL,
+            base: BaseLicense::MPL2,
+            fallback: BaseLicense::MPL2,
+            layer: PalimpsestLayer::full(Version::new(id)?),
+            version: Version::new(id)?,
+            or_later,
+        })),
+        "PAGPL" => Ok(License::Palimpsest(PalimpsestLicense {
+            variant: PalimpsestVariant::PAGPL,
+            base: BaseLicense::AGPL3,
+            fallback: BaseLicense::AGPL3,
+            layer: PalimpsestLayer::full(Version::new(id)?),
+            version: Version::new(id)?,
+            or_later,
+        })),
+        "PGPL" => Ok(License::Palimpsest(PalimpsestLicense {
+            variant: PalimpsestVariant::PGPL,
+            base: BaseLicense::GPL3,
+            fallback: BaseLicense::GPL3,
+            layer: PalimpsestLayer::full(Version::new(id)?),
+            version: Version::new(id)?,
+            or_later,
+        })),
+        "PAPL" => Ok(License::Palimpsest(PalimpsestLicense {
+            variant: PalimpsestVariant::PAPL,
+            base: BaseLicense::Apache2,
+            fallback: BaseLicense::Apache2,
+            layer: PalimpsestLayer::full(Version::new(id)?),
+            version: Version::new(id)?,
+            or_later,
+        })),
+        "MIT" => Ok(License::Base(BaseLicense::MIT)),
+        "Apache-2.0" => Ok(License::Base(BaseLicense::Apache2)),
+        // ... etc
+        _ => Ok(License::Base(BaseLicense::Other(id.to_string()))),
+    }
+}
+----
+
+=== Stage 4: Family Validation
+
+For every `PalimpsestLicense`, verify:
+
+1. *Base-fallback consistency*: `self.base == self.fallback`
+2. *Layer completeness*: All palimpsest provisions are declared
+3. *VERSION file check*: If the repo has a LICENSE file for this variant,
+   parse it and verify the base license text is actually present
+4. *Exhibit presence*: If quantum-safe provenance is declared, verify
+   Exhibit B is present (or referenced)
+
+[source,rust]
+----
+/// Validation errors specific to palimpsest licenses.
+#[derive(Debug)]
+pub enum FamilyError {
+    /// Fallback license doesn't match the declared base.
+    FallbackMismatch {
+        variant: PalimpsestVariant,
+        declared_base: BaseLicense,
+        declared_fallback: BaseLicense,
+    },
+    /// Base license text not found in LICENSE file.
+    BaseLicenseTextMissing {
+        variant: PalimpsestVariant,
+        expected_base: BaseLicense,
+    },
+    /// Palimpsest layer claims quantum-safe but no Exhibit B found.
+    ExhibitMissing {
+        exhibit: char, // 'A' or 'B'
+        variant: PalimpsestVariant,
+    },
+    /// SPDX header says one variant but LICENSE file contains another.
+    HeaderLicenseMismatch {
+        file: PathBuf,
+        header_says: License,
+        license_file_says: License,
+    },
+}
+----
+
+=== Stage 5: Zone Audit
+
+Walk the repository, assign each file to a zone, and verify:
+
+1. Every file's SPDX header matches its zone's declared license
+2. No file is in multiple zones (zone overlap detection)
+3. Files not in any zone use the default license
+4. Proprietary zones have the correct proprietary header (not an open-source
+   SPDX identifier)
+
+[source,rust]
+----
+/// Audit result for a single file.
+#[derive(Debug)]
+pub struct FileAudit {
+    pub path: PathBuf,
+    pub zone: Option<String>,
+    pub expected_license: SpdxExpr,
+    pub actual_header: Option<SpdxExpr>,
+    pub status: AuditStatus,
+}
+
+#[derive(Debug)]
+pub enum AuditStatus {
+    /// SPDX header matches zone license.
+    Compliant,
+    /// SPDX header present but wrong license.
+    WrongLicense,
+    /// No SPDX header.
+    MissingHeader,
+    /// File is in a proprietary zone but has an open-source header.
+    ProprietaryViolation,
+    /// File is in an open-source zone but has a proprietary header.
+    OpenSourceViolation,
+    /// File could not be read.
+    Unreadable,
+}
+
+/// Full repository audit result.
+#[derive(Debug)]
+pub struct RepoAudit {
+    pub root: PathBuf,
+    pub license_map: LicenseMap,
+    pub files: Vec<FileAudit>,
+    pub family_errors: Vec<FamilyError>,
+    pub zone_overlaps: Vec<(PathBuf, Vec<String>)>,
+    pub compatibility_warnings: Vec<CompatWarning>,
+}
+----
+
+=== Stage 6: Compatibility Matrix
+
+Check that the licenses across zones are compatible with each other (e.g.,
+can PAGPL engine code and PAPL spec code be combined?):
+
+[source,rust]
+----
+/// Compatibility between two licenses.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub enum Compatibility {
+    /// Fully compatible — can be combined freely.
+    Compatible,
+    /// Compatible under conditions (e.g., file-level separation for MPL).
+    Conditional(String),
+    /// Incompatible — cannot be combined in a single binary/project.
+    Incompatible(String),
+    /// One is proprietary — combination depends on the open license's terms.
+    ProprietaryDepends(String),
+    /// Unknown — at least one license is unrecognised.
+    Unknown,
+}
+
+/// Check compatibility of two licenses.
+fn check_compatibility(a: &License, b: &License) -> Compatibility;
+----
+
+Key compatibility rules for palimpsest variants:
+
+[cols="2,2,2", options="header"]
+|===
+| License A | License B | Compatibility
+
+| PAGPL-1.0 | AGPL-3.0 | Compatible (PAGPL is a superset)
+| PAGPL-1.0 | GPL-3.0 | Compatible (AGPL is GPL-compatible)
+| PAGPL-1.0 | PMPL-1.0 | Conditional (file-level separation)
+| PAGPL-1.0 | Proprietary | ProprietaryDepends (AGPL prohibits)
+| PMPL-1.0 | Proprietary | Compatible (MPL allows per-file mixing)
+| PAPL-1.0 | Anything | Compatible (Apache is permissive)
+| PGPL-1.0 | AGPL-3.0 | Compatible (GPL→AGPL is allowed)
+| PGPL-1.0 | MIT | Compatible (MIT→GPL is allowed)
+|===
+
+== CLI Changes
+
+=== New Subcommands
+
+[source]
+----
+plasma family         # Show the palimpsest license family tree
+plasma zone           # Show/manage license zones for current repo
+plasma zone init      # Create .plasma.toml interactively
+plasma zone audit     # Audit all files against declared zones
+plasma zone fix       # Fix headers to match zones (with --fix)
+plasma compat         # Check compatibility between zones
+plasma daemon         # Start HTTP daemon for PanLL consumption
+plasma report         # Generate SARIF/JSON audit report
+----
+
+=== Modified Subcommands
+
+[source]
+----
+plasma init --license PAGPL-1.0    # Support any palimpsest variant (not just PMPL)
+plasma audit                        # Now zone-aware: reads .plasma.toml
+plasma migrate --to PAGPL-1.0      # Support any target (not just PMPL-2.0)
+plasma badge --variant PAGPL        # Badge for specific variant
+----
+
+== Daemon Mode (for PanLL)
+
+The daemon exposes the parser over HTTP for consumption by PanLL panels:
+
+=== Endpoints
+
+[cols="1,2,3", options="header"]
+|===
+| Method | Path | Description
+
+| GET
+| `/health`
+| Health check (returns 200 + version)
+
+| POST
+| `/api/v1/audit`
+| Full zone-aware audit. Body: `{"path": "/path/to/repo"}`.
+  Returns: `RepoAudit` as JSON.
+
+| POST
+| `/api/v1/parse-spdx`
+| Parse an SPDX expression. Body: `{"expr": "PAGPL-1.0-or-later"}`.
+  Returns: `SpdxExpr` as JSON.
+
+| POST
+| `/api/v1/compatibility`
+| Check compatibility. Body: `{"a": "PAGPL-1.0", "b": "MIT"}`.
+  Returns: `Compatibility` as JSON.
+
+| GET
+| `/api/v1/family`
+| Return the full palimpsest family tree as JSON.
+
+| POST
+| `/api/v1/zones`
+| Parse `.plasma.toml` and return `LicenseMap` as JSON.
+  Body: `{"path": "/path/to/repo"}`.
+
+| POST
+| `/api/v1/fix`
+| Apply fixes. Body: `{"path": "/path/to/repo", "dry_run": true}`.
+  Returns: list of proposed changes.
+|===
+
+=== Port Assignment
+
+[cols="1,1,2", options="header"]
+|===
+| Service | Port | Notes
+
+| plasma-daemon
+| 8098
+| Avoids collision with VeriSimDB (8095), PanLL dev (3000), IDApTIK (8080)
+|===
+
+== PanLL Integration
+
+=== Option 1: Panel with Daemon Backend (Recommended)
+
+[source]
+----
+PanLL                          plasma-daemon (Rust)
+┌────────────────────┐         ┌──────────────────┐
+│ PlasmaGovernance   │ ──HTTP──│ localhost:8098    │
+│ panel (ReScript)   │         │ /api/v1/audit     │
+│                    │         │ /api/v1/compat    │
+│ Subscribes to:     │         │ /api/v1/zones     │
+│  TopicGovernance   │         └──────────────────┘
+│  TopicSecurity     │                │
+│                    │                │ reads
+│ Publishes:         │         ┌──────▼──────┐
+│  PlasmaAudit*      │         │ .plasma.toml│
+│  PlasmaViolation*  │         │ source files│
+└────────────────────┘         └─────────────┘
+----
+
+*How it works:*
+
+1. PanLL starts → panel sends health check to `localhost:8098/health`
+2. User opens PlasmaGovernance panel → panel calls `/api/v1/audit`
+3. Results rendered in panel UI (zone map, file compliance, family tree)
+4. Panel publishes `PlasmaAuditCompleted` to PanelBus → Plaza picks it up
+5. Reposystem panel subscribes → cross-validates RSR compliance with license
+   compliance
+
+*Advantages:*
+
+* Parser runs natively (fast, full filesystem access)
+* Panel is a thin ReScript UI — easy to build and maintain
+* Daemon can also serve CI/CD (GitHub Actions calls same endpoint)
+* Independent deployment — parser updates don't require PanLL rebuild
+
+=== Option 2: WASM Embedded in PanLL (Not Recommended)
+
+Compile `plasma-parser` to WASM, load in PanLL's Gossamer runtime.
+
+*Disadvantages:*
+
+* WASM sandbox prevents filesystem access — need to proxy all file reads
+* Larger WASM bundle
+* Harder to debug
+* No benefit over HTTP for this use case
+
+=== Option 3: CLI Invocation from PanLL (Acceptable Fallback)
+
+PanLL shells out to `plasma zone audit --json` and parses stdout.
+
+*Disadvantages:*
+
+* Process spawn overhead per audit
+* No streaming results
+* Error handling is messier
+
+*Acceptable for:* Quick integration before daemon is built. Panel can start
+with CLI invocation and switch to daemon later.
+
+=== Recommended Path
+
+[cols="1,3", options="header"]
+|===
+| Phase | Integration
+
+| *Phase 0* (immediate)
+| CLI-only. `plasma zone audit --json` works standalone. No PanLL.
+
+| *Phase 1* (short-term)
+| PanLL panel shells out to CLI. Rough but functional.
+
+| *Phase 2* (medium-term)
+| `plasma daemon` running. Panel switches to HTTP. Full interactivity.
+
+| *Phase 3* (long-term)
+| Daemon integrates with OCaml PLASMA engine for governance policy evaluation.
+  Panel shows governance decisions, not just audits.
+|===
+
+=== PanLL Panel Registration
+
+[source,rescript]
+----
+// In PanelRegistry.res — add new panel variant
+| PlasmaGovernance => {
+    id: "plasma-governance",
+    name: "Plasma Governance",
+    icon: "shield-check",
+    clade: "governance/plasma",
+    backendEndpoint: Some("http://localhost:8098/api/v1"),
+  }
+----
+
+=== PanelBus Events
+
+[source,rescript]
+----
+// In PanelBus.res — add new event types
+type plasmaEvent =
+  | PlasmaAuditCompleted({repoPath: string, score: float, zones: int})
+  | PlasmaViolationDetected({
+      repoPath: string,
+      file: string,
+      violation: string,
+      severity: severity,
+    })
+  | PlasmaZoneConflict({repoPath: string, file: string, zones: array<string>})
+  | PlasmaFamilyValidated({variant: string, baseValid: bool, fallbackValid: bool})
+----
+
+=== Panel Manifest
+
+[source,json]
+----
+{
+  "$schema": "panll-harness/v2",
+  "service_id": "palimpsest-plasma",
+  "default_endpoint": "http://localhost:8098/api/v1",
+  "data_sources": {
+    "plasma://audit/{repo_path}": {
+      "method": "POST",
+      "path": "/audit",
+      "body": {"path": "{repo_path}"}
+    },
+    "plasma://zones/{repo_path}": {
+      "method": "POST",
+      "path": "/zones",
+      "body": {"path": "{repo_path}"}
+    },
+    "plasma://family": {
+      "method": "GET",
+      "path": "/family"
+    },
+    "plasma://compat": {
+      "method": "POST",
+      "path": "/compatibility"
+    }
+  },
+  "health_check": {
+    "path": "/health",
+    "interval_ms": 30000
+  },
+  "integrations": {
+    "plaza": {
+      "publishes": ["PlasmaAuditCompleted"],
+      "subscribes": []
+    },
+    "reposystem": {
+      "publishes": ["PlasmaViolationDetected"],
+      "subscribes": ["RsrComplianceChanged"]
+    }
+  }
+}
+----
+
+== Implementation Order
+
+=== Sprint 1: Parser Core (plasma-parser crate)
+
+[cols="1,1,3", options="header"]
+|===
+| # | Effort | Task
+
+| 1.1 | S | SPDX lexer — tokenise SPDX expressions
+| 1.2 | M | SPDX parser — build `SpdxExpr` AST from tokens
+| 1.3 | S | License resolution — map identifiers to `License` types
+| 1.4 | M | Family registry — define all palimpsest variant→base mappings
+| 1.5 | S | Family validation — base-fallback consistency checks
+| 1.6 | L | Zone configuration — parse `.plasma.toml`
+| 1.7 | L | Zone audit — walk repo, assign files to zones, check headers
+|===
+
+=== Sprint 2: CLI Integration
+
+[cols="1,1,3", options="header"]
+|===
+| # | Effort | Task
+
+| 2.1 | M | Rewrite `audit.rs` to use `plasma-parser` zone audit
+| 2.2 | M | Rewrite `migrate.rs` to support any palimpsest target
+| 2.3 | S | Extend `init.rs` with `--license` flag
+| 2.4 | M | Add `plasma zone` subcommand family
+| 2.5 | S | Add `plasma compat` subcommand
+| 2.6 | M | SARIF report output for GitHub Code Scanning
+|===
+
+=== Sprint 3: Compatibility & Reporting
+
+[cols="1,1,3", options="header"]
+|===
+| # | Effort | Task
+
+| 3.1 | L | Compatibility matrix implementation
+| 3.2 | M | JSON report format
+| 3.3 | M | SARIF report format
+| 3.4 | S | `plasma family` tree display
+|===
+
+=== Sprint 4: Daemon + PanLL
+
+[cols="1,1,3", options="header"]
+|===
+| # | Effort | Task
+
+| 4.1 | M | HTTP daemon (`axum` or `tiny_http`) on port 8098
+| 4.2 | S | Health endpoint
+| 4.3 | M | Audit endpoint (wraps zone audit)
+| 4.4 | S | SPDX parse endpoint
+| 4.5 | S | Compatibility endpoint
+| 4.6 | M | PanLL panel registration (ReScript)
+| 4.7 | L | PanLL panel UI (zone map, file table, family tree visualisation)
+| 4.8 | M | PanelBus event wiring
+|===
+
+== Appendix: Example Audit Output
+
+[source,json]
+----
+{
+  "root": "/home/hyper/Documents/hyperpolymath-repos/idaptik",
+  "license_map": {
+    "default_license": "PAGPL-1.0-or-later",
+    "zones": [
+      {"name": "engine", "license": "PAGPL-1.0-or-later", "file_count": 312},
+      {"name": "game-content", "license": "LicenseRef-Proprietary", "file_count": 87},
+      {"name": "tools", "license": "PMPL-1.0-or-later", "file_count": 45},
+      {"name": "specs", "license": "PAPL-1.0-or-later", "file_count": 12}
+    ]
+  },
+  "summary": {
+    "total_files": 456,
+    "compliant": 401,
+    "wrong_license": 38,
+    "missing_header": 17,
+    "proprietary_violation": 0,
+    "score": 0.879
+  },
+  "family_validation": {
+    "PAGPL-1.0-or-later": {
+      "base_present": true,
+      "fallback_consistent": true,
+      "exhibit_a_present": true,
+      "exhibit_b_present": true,
+      "status": "VALID"
+    }
+  },
+  "compatibility": {
+    "engine↔tools": "conditional (file-level separation for MPL)",
+    "engine↔specs": "compatible",
+    "engine↔game-content": "proprietary: AGPL prohibits in combined binary, OK as separate content"
+  },
+  "violations": [
+    {
+      "file": "src/engine/core/VM.res",
+      "zone": "engine",
+      "expected": "PAGPL-1.0-or-later",
+      "actual": "PMPL-1.0-or-later",
+      "status": "WRONG_LICENSE",
+      "fix": "Replace SPDX header"
+    }
+  ]
+}
+----
+
+== Appendix: `.plasma.toml` Schema Reference
+
+[source,toml]
+----
+# Required: project metadata.
+[project]
+name = "string"                # Repository name
+default-license = "SPDX-expr"  # Default for files not in any zone
+
+# Optional: repeated. Each [[zone]] defines a license region.
+[[zone]]
+name = "string"                # Human-readable zone name (unique)
+license = "SPDX-expr"          # SPDX expression for this zone
+paths = ["glob", ...]          # Glob patterns (relative to repo root)
+proprietary = false             # Optional: mark as proprietary (default: false)
+copyright = "string"           # Optional: copyright holder (for proprietary zones)
+
+# Optional: family-level overrides.
+[family]
+# Explicitly declare which palimpsest provisions are active.
+# Default: all true for palimpsest variants.
+emotional-lineage = true
+ai-notice = true
+ethical-use = true
+provenance-metadata = true
+quantum-safe = false            # Can opt out of quantum-safe if not ready
+lineage-chain = true
+governance = true
+----
