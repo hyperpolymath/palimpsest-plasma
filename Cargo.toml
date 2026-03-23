@@ -1,4 +1,8 @@
 # SPDX-License-Identifier: PMPL-2.0-or-later
+
+[workspace]
+members = [".", "plasma-parser"]
+
 [package]
 name = "palimpsest-plasma"
 version = "0.1.0"

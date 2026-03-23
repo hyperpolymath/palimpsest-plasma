@@ -868,6 +868,175 @@ type plasmaEvent =
 }
 ----
 
+== Advanced Capabilities
+
+=== Approximate License Matching (agrep)
+
+Real-world LICENSE files are frequently mangled: whitespace changes, line
+rewrapping, minor edits, encoding issues, typos in SPDX identifiers
+(`PMPL-1.0-or-latter`, `Apche-2.0`). The parser implements multi-level
+fuzzy matching:
+
+[cols="1,2,3", options="header"]
+|===
+| Level | Technique | What It Catches
+
+| *L0: Exact*
+| String comparison
+| Perfect SPDX identifiers
+
+| *L1: Normalised*
+| Case-fold, collapse whitespace, strip comments
+| `Mit License` → MIT, rewrapped GPL text
+
+| *L2: Levenshtein*
+| Edit distance ≤ 2 on SPDX identifiers
+| `PMPL-1.0-or-latter`, `Apche-2.0`
+
+| *L3: Trigram*
+| Character trigram similarity (Sørensen-Dice coefficient ≥ 0.7)
+| Heavily edited license text, partial matches
+
+| *L4: Structural*
+| Key phrase extraction (e.g., "permission is hereby granted, free of charge")
+| Licenses embedded in larger documents, preambles stripped
+|===
+
+Each match reports its confidence level so the audit can distinguish "certain
+MIT" from "probably MIT (85% trigram match)".
+
+=== OCR for License Images and PDFs
+
+Some repositories include LICENSE files as scanned images or PDFs (common in
+academic, government, and legacy projects). The parser optionally integrates
+with Tesseract OCR:
+
+[source]
+----
+plasma audit --ocr          # Enable OCR for image/PDF LICENSE files
+plasma audit --ocr-lang fra # OCR with French language model (for EUPL)
+----
+
+Implementation:
+
+* Detect LICENSE files with image extensions (.png, .jpg, .tiff, .pdf)
+* Shell out to `tesseract` (must be installed separately)
+* Feed OCR text through the same fuzzy matching pipeline
+* Report OCR confidence alongside license match confidence
+* Supports `--ocr-lang` for non-English license texts
+
+Dependency: `tesseract-ocr` system package. Not a Rust dependency — called
+via `std::process::Command`. Parser works without it; OCR features degrade
+gracefully.
+
+=== Internationalisation (i18n)
+
+Several important licenses are officially published in multiple languages:
+
+[cols="2,1,3", options="header"]
+|===
+| License | Languages | Notes
+
+| EUPL-1.2
+| 23 EU languages
+| All translations are legally equivalent
+
+| PMPL-1.0
+| English, Dutch
+| Dutch translations of ethics docs exist
+
+| CeCILL-2.1
+| French, English
+| French is the authoritative version
+
+| LPPL-1.3c
+| English
+| LaTeX community, but often in multilingual repos
+|===
+
+The parser maintains a *multilingual phrase database* — key legal phrases
+in each language mapped to their SPDX identifiers:
+
+[source,rust]
+----
+/// Multilingual license phrase for matching.
+struct I18nPhrase {
+    /// SPDX identifier this phrase maps to.
+    spdx: &'static str,
+    /// Language (ISO 639-1).
+    lang: &'static str,
+    /// Key phrase that identifies this license.
+    phrase: &'static str,
+}
+
+const I18N_PHRASES: &[I18nPhrase] = &[
+    // EUPL-1.2 in multiple languages
+    I18nPhrase { spdx: "EUPL-1.2", lang: "en",
+        phrase: "european union public licence" },
+    I18nPhrase { spdx: "EUPL-1.2", lang: "fr",
+        phrase: "licence publique de l'union européenne" },
+    I18nPhrase { spdx: "EUPL-1.2", lang: "de",
+        phrase: "open-source-lizenz für die europäische union" },
+    I18nPhrase { spdx: "EUPL-1.2", lang: "nl",
+        phrase: "openbare licentie van de europese unie" },
+    I18nPhrase { spdx: "EUPL-1.2", lang: "es",
+        phrase: "licencia pública de la unión europea" },
+    // PMPL in Dutch
+    I18nPhrase { spdx: "PMPL-1.0", lang: "nl",
+        phrase: "palimpsest-mpl licentie" },
+    // CeCILL in French
+    I18nPhrase { spdx: "CeCILL-2.1", lang: "fr",
+        phrase: "contrat de licence de logiciel libre" },
+];
+----
+
+=== What This Enables That No Other Parser Does
+
+[cols="2,3,1", options="header"]
+|===
+| Capability | Why It Matters | Who Else Does It
+
+| Structural family relationships
+| Knows PAGPL contains AGPL-3.0, validates fallback chains
+| Nobody
+
+| Zone-based mixed-license audit
+| First parser that correctly handles dual-licensed repos
+| Nobody
+
+| SPDX compound expression parsing
+| Handles `MIT OR Apache-2.0`, WITH clauses
+| spdx-rs (partial)
+
+| Compatibility matrix
+| Cross-zone compatibility checking
+| Nobody (standalone tools exist)
+
+| Multi-level fuzzy matching
+| Catches typos, rewrapping, partial edits
+| scancode (L1-L2 only)
+
+| OCR license detection
+| Handles image/PDF licenses in academic repos
+| Nobody
+
+| Multilingual license identification
+| Identifies EUPL in French, PMPL in Dutch
+| Nobody
+
+| SARIF output
+| Direct GitHub Code Scanning integration
+| licensee (partial)
+
+| Provenance chain validation
+| Verifies quantum-safe signature chains
+| Nobody
+
+| .plasma.toml zone configuration
+| Declarative license boundaries
+| REUSE.toml (simpler, no zones)
+|===
+
 == Appendix: `.plasma.toml` Schema Reference
 
 [source,toml]
