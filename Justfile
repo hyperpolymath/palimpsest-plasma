@@ -199,18 +199,18 @@ cookbook:
 man:
     #!/usr/bin/env bash
     mkdir -p docs/man
-    cat > docs/man/{{project}}.1 << EOF
-.TH PALIMPSEST-PLASMA 1 "$(date +%Y-%m-%d)" "{{version}}" "PLASMA Manual"
-.SH NAME
-{{project}} \- Governance automation engine for Palimpsest-MPL
-.SH SYNOPSIS
-.B just
-[recipe] [args...]
-.SH DESCRIPTION
-Governance automation engine for the Palimpsest-MPL ecosystem.
-.SH AUTHOR
-Hyperpolymath <hyperpolymath@proton.me>
-EOF
+    cat > docs/man/{{project}}.1 << 'MANEOF'
+    .TH PALIMPSEST-PLASMA 1 "$(date +%Y-%m-%d)" "{{version}}" "PLASMA Manual"
+    .SH NAME
+    {{project}} \- Governance automation engine for Palimpsest-MPL
+    .SH SYNOPSIS
+    .B just
+    [recipe] [args...]
+    .SH DESCRIPTION
+    Governance automation engine for the Palimpsest-MPL ecosystem.
+    .SH AUTHOR
+    Hyperpolymath <hyperpolymath@proton.me>
+    MANEOF
     echo "Generated: docs/man/{{project}}.1"
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -266,14 +266,15 @@ ci: deps quality
 
 # Install git hooks
 install-hooks:
-    @mkdir -p .git/hooks
-    @cat > .git/hooks/pre-commit << 'EOF'
-#!/bin/bash
-just fmt-check || exit 1
-just lint || exit 1
-EOF
-    @chmod +x .git/hooks/pre-commit
-    @echo "Git hooks installed"
+    #!/usr/bin/env bash
+    mkdir -p .git/hooks
+    cat > .git/hooks/pre-commit << 'HOOKEOF'
+    #!/bin/bash
+    just fmt-check || exit 1
+    just lint || exit 1
+    HOOKEOF
+    chmod +x .git/hooks/pre-commit
+    echo "Git hooks installed"
 
 # ═══════════════════════════════════════════════════════════════════════════════
 # SECURITY
