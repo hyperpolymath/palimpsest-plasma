@@ -823,7 +823,7 @@ type plasmaEvent =
 [source,json]
 ----
 {
-  "root": "/home/hyper/Documents/hyperpolymath-repos/idaptik",
+  "root": "$HOME/Documents/hyperpolymath-repos/idaptik",
   "license_map": {
     "default_license": "PAGPL-1.0-or-later",
     "zones": [

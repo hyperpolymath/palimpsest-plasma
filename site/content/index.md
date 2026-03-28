@@ -16,4 +16,4 @@ Palimpsest Plasma packages the Palimpsest-MPL License 1.0 assets, badge pack, an
 
 ## Building locally
 
-Install Elixir (1.15+), then from `/var/mnt/eclipse/repos/palimpsest-plasma/site` run `mix site.build`. The command regenerates `/var/mnt/eclipse/repos/palimpsest-plasma/site/_site` which GitHub Actions uploads to Pages.
+Install Elixir (1.15+), then from `/var$REPOS_DIR/palimpsest-plasma/site` run `mix site.build`. The command regenerates `/var$REPOS_DIR/palimpsest-plasma/site/_site` which GitHub Actions uploads to Pages.

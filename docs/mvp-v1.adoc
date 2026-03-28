@@ -41,8 +41,8 @@ Run the Palimpsest compliance tools from the canonical license repo:
 
 --
 ```bash
-cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-verify
-cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma --recursive --existence-only
+cd $REPOS_DIR/palimpsest-license/tools/pmpl-verify
+cargo run --manifest-path Cargo.toml -- $REPOS_DIR/palimpsest-plasma --recursive --existence-only
 ```
 --
 
@@ -57,12 +57,12 @@ Before rerunning `pmpl-verify`/`pmpl-audit`, use `pmpl-sign` to generate placeho
 
 --
 ```bash
-cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-sign
-for file in /mnt/eclipse/repos/palimpsest-plasma/LICENSE \
-            /mnt/eclipse/repos/palimpsest-plasma/docs/mvp-v1.adoc \
-            /mnt/eclipse/repos/palimpsest-plasma/docs/release-log.adoc \
-            /mnt/eclipse/repos/palimpsest-plasma/docs/release-notes.adoc \
-            /mnt/eclipse/repos/palimpsest-plasma/STATE.scm; do
+cd $REPOS_DIR/palimpsest-license/tools/pmpl-sign
+for file in $REPOS_DIR/palimpsest-plasma/LICENSE \
+            $REPOS_DIR/palimpsest-plasma/docs/mvp-v1.adoc \
+            $REPOS_DIR/palimpsest-plasma/docs/release-log.adoc \
+            $REPOS_DIR/palimpsest-plasma/docs/release-notes.adoc \
+            $REPOS_DIR/palimpsest-plasma/STATE.scm; do
   cargo run --manifest-path Cargo.toml -- "$file" --signer palimpsest-council --force
 done
 ```
@@ -75,8 +75,8 @@ For a deeper compliance sweep, use:
 
 --
 ```bash
-cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-audit
-cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma
+cd $REPOS_DIR/palimpsest-license/tools/pmpl-audit
+cargo run --manifest-path Cargo.toml -- $REPOS_DIR/palimpsest-plasma
 ```
 --
 

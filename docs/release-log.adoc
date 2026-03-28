@@ -22,8 +22,8 @@
 pmpl-verify run on 2026-01-20:
 
 ```
-cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-verify
-cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma --recursive --existence-only
+cd $REPOS_DIR/palimpsest-license/tools/pmpl-verify
+cargo run --manifest-path Cargo.toml -- $REPOS_DIR/palimpsest-plasma --recursive --existence-only
 
 Summary:
   Verified: 5
@@ -36,13 +36,13 @@ Signature files now exist for every listed artifact; rerun this command regularl
 pmpl-audit run on 2026-01-19:
 
 ```
-cd /mnt/eclipse/repos/palimpsest-license/tools/pmpl-audit
-cargo run --manifest-path Cargo.toml -- /mnt/eclipse/repos/palimpsest-plasma
+cd $REPOS_DIR/palimpsest-license/tools/pmpl-audit
+cargo run --manifest-path Cargo.toml -- $REPOS_DIR/palimpsest-plasma
 
 PMPL Compliance Audit Report
 ============================
 
-Repository: /mnt/eclipse/repos/palimpsest-plasma
+Repository: $REPOS_DIR/palimpsest-plasma
 
 License File:
   [PASS] Present (PMPL-1.0)
