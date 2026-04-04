@@ -1,4 +1,5 @@
 # TEST-NEEDS.md — palimpsest-plasma
+## CRG Grade: C — ACHIEVED 2026-04-04
 
 > Generated 2026-03-29 by punishing audit.
 
