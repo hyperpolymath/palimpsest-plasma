@@ -4,3 +4,4 @@ Contact: mailto:j.d.a.jewell@open.ac.uk
 Preferred-Languages: en
 Canonical: https://github.com/hyperpolymath/palimpsest-plasma/.well-known/security.txt
 Policy: https://github.com/hyperpolymath/palimpsest-plasma/blob/main/SECURITY.md
+Expires: 2027-12-31T23:59:59.000Z
