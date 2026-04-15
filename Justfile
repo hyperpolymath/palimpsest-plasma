@@ -16,6 +16,8 @@ set dotenv-load := true
 set positional-arguments := true
 
 # Project metadata
+import? "contractile.just"
+
 project := "palimpsest-plasma"
 version := "2.0.0-dev"
 tier := "infrastructure"
