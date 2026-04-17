@@ -1,0 +1,40 @@
+= RSR Compliance: palimpsest-plasma
+:toc:
+:sectnums:
+
+== Overview
+
+This document records Rhodium Standard Repository (RSR) compliance status for *palimpsest-plasma*.
+
+== Classification
+
+[cols="1,2"]
+|===
+|Attribute |Value
+
+|Project |palimpsest-plasma
+|License baseline |MPL-2.0 (legal primary)
+|Policy overlay |Palimpsest principles overlay
+|Primary Language |Rust + OCaml
+|RSR Tier |Tier 1
+|Compliance Status |Compliant (baseline)
+|Last Updated |2026-04-17
+|===
+
+== Compliance Checklist
+
+[cols="1,1,2"]
+|===
+|Requirement |Status |Notes
+
+|README present |✓ |`README.adoc`
+|Machine-readable metadata |✓ |`.machine_readable/`
+|Contractiles present |✓ |`contractiles/` + generated `contractile.just`
+|Well-known metadata |✓ |`.well-known/humans.txt`
+|Project licensing |✓ |PMPL licensing files present
+|Task runner |✓ |`Justfile`
+|===
+
+== Notes
+
+This file is a compliance anchor for automated `just validate-rsr` checks.

@@ -1,0 +1,12 @@
+# SPDX-License-Identifier: MPL-2.0
+# humanstxt.org
+
+/* TEAM */
+Lead: Jonathan D.A. Jewell
+Site: https://github.com/hyperpolymath
+Location: United Kingdom
+
+/* SITE */
+Software: palimpsest-plasma
+Standards: MPL-2.0 (primary legal license), RSR, Palimpsest overlay principles
+Languages: Rust, OCaml, Bash
