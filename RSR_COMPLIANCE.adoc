@@ -31,7 +31,7 @@ This document records Rhodium Standard Repository (RSR) compliance status for *p
 |Machine-readable metadata |✓ |`.machine_readable/`
 |Contractiles present |✓ |`contractiles/` + generated `contractile.just`
 |Well-known metadata |✓ |`.well-known/humans.txt`
-|Project licensing |✓ |PMPL licensing files present
+|Project licensing |✓ |MPL-2.0 baseline license with Palimpsest overlay policy
 |Task runner |✓ |`Justfile`
 |===
 
