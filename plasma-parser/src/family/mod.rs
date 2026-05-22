@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // License family type system — defines the core types for the palimpsest
@@ -70,7 +70,7 @@ impl std::fmt::Display for BaseLicense {
             BaseLicense::LGPL21 => write!(f, "LGPL-2.1"),
             BaseLicense::LGPL3 => write!(f, "LGPL-3.0"),
             BaseLicense::AGPL3 => write!(f, "AGPL-3.0"),
-            BaseLicense::MPL2 => write!(f, "MPL-2.0"),
+            BaseLicense::MPL2 => write!(f, "PMPL-1.0-or-later"),
             BaseLicense::BSD2 => write!(f, "BSD-2-Clause"),
             BaseLicense::BSD3 => write!(f, "BSD-3-Clause"),
             BaseLicense::ISC => write!(f, "ISC"),
@@ -210,10 +210,10 @@ impl std::fmt::Display for PalimpsestLicense {
 /// Known palimpsest variants.
 ///
 /// Each variant maps to a specific base license. The variant name is the
-/// SPDX-style prefix used in headers (e.g., "PMPL" in "PMPL-2.0-or-later").
+/// SPDX-style prefix used in headers (e.g., "PMPL" in "PPMPL-1.0-or-later").
 #[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub enum PalimpsestVariant {
-    /// Palimpsest-MPL (base: MPL-2.0). Published.
+    /// Palimpsest-MPL (base: PMPL-1.0-or-later). Published.
     PMPL,
     /// Palimpsest-AGPL (base: AGPL-3.0). Proposed.
     PAGPL,

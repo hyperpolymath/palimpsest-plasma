@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // plasma audit — check all source files for correct SPDX headers.
@@ -88,7 +88,7 @@ pub fn run(path: &str, fix: bool) -> Result<()> {
             if fix {
                 let prefix = comment_prefix(ext);
                 let header = format!(
-                    "{prefix} SPDX-License-Identifier: PMPL-2.0-or-later\n{prefix} Copyright (c) 2026 CHANGE-ME\n\n"
+                    "{prefix} SPDX-License-Identifier: PPMPL-1.0-or-later\n{prefix} Copyright (c) 2026 CHANGE-ME\n\n"
                 );
                 let updated = format!("{header}{content}");
                 fs::write(path, updated)?;

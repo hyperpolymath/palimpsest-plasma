@@ -1,14 +1,14 @@
 #![forbid(unsafe_code)]
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // palimpsest-plasma — Palimpsest license adoption toolkit.
 //
-// One-command PMPL-2.0 adoption for any project:
+// One-command PPMPL-1.0-or-later adoption for any project:
 //   plasma init     — add LICENSE, SPDX headers, Covenant
 //   plasma audit    — check all files for correct SPDX headers
 //   plasma badge    — generate shields.io badge markdown
-//   plasma migrate  — convert from MIT/Apache/GPL to PMPL-2.0
+//   plasma migrate  — convert from MIT/Apache/GPL to PPMPL-1.0-or-later
 //   plasma verify   — verify provenance chain integrity
 
 use anyhow::Result;
@@ -19,7 +19,7 @@ mod badge;
 mod init;
 mod migrate;
 
-/// palimpsest-plasma — adopt PMPL-2.0 in one command
+/// palimpsest-plasma — adopt PPMPL-1.0-or-later in one command
 #[derive(Parser)]
 #[command(name = "plasma", version, about, long_about = None)]
 struct Cli {
@@ -29,7 +29,7 @@ struct Cli {
 
 #[derive(Subcommand)]
 enum Commands {
-    /// Add PMPL-2.0 license, SPDX headers, and Covenant to a project.
+    /// Add PPMPL-1.0-or-later license, SPDX headers, and Covenant to a project.
     Init {
         /// Path to the project root (default: current directory)
         #[arg(short, long, default_value = ".")]
@@ -59,7 +59,7 @@ enum Commands {
         style: String,
     },
 
-    /// Migrate from another license to PMPL-2.0.
+    /// Migrate from another license to PPMPL-1.0-or-later.
     Migrate {
         /// Path to the project root
         #[arg(short, long, default_value = ".")]

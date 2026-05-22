@@ -1,4 +1,4 @@
-SPDX-License-Identifier: PMPL-2.0-or-later
+SPDX-License-Identifier: PPMPL-1.0-or-later
 SPDX-FileCopyrightText: 2026 Palimpsest Stewardship Council
 
 ================================================================================
@@ -14,7 +14,7 @@ PREAMBLE
 --------------------------------------------------------------------------------
 
 This License extends the Mozilla Public License 2.0 (MPL-2.0) with provisions
-for strengthened attribution and cryptographic provenance. The base MPL-2.0
+for strengthened attribution and cryptographic provenance. The base PMPL-1.0-or-later
 terms apply except where explicitly modified below.
 
 Like a palimpsest manuscript where each layer builds upon what came before,
@@ -30,14 +30,14 @@ SECTION 1: BASE LICENSE
 --------------------------------------------------------------------------------
 
 This License incorporates the full text of Mozilla Public License 2.0 by
-reference. The complete MPL-2.0 text is available at:
+reference. The complete PMPL-1.0-or-later text is available at:
 https://www.mozilla.org/en-US/MPL/2.0/
 
-All terms, conditions, and definitions from MPL-2.0 apply except where
+All terms, conditions, and definitions from PMPL-1.0-or-later apply except where
 explicitly modified below.
 
-Where this License and MPL-2.0 conflict, this License takes precedence.
-Where this License is silent, MPL-2.0 applies.
+Where this License and PMPL-1.0-or-later conflict, this License takes precedence.
+Where this License is silent, PMPL-1.0-or-later applies.
 
 --------------------------------------------------------------------------------
 SECTION 2: ADDITIONAL DEFINITIONS
@@ -57,7 +57,7 @@ SECTION 2: ADDITIONAL DEFINITIONS
 SECTION 3: STRENGTHENED ATTRIBUTION
 --------------------------------------------------------------------------------
 
-In addition to the notice requirements of MPL-2.0 Section 3.4:
+In addition to the notice requirements of PMPL-1.0-or-later Section 3.4:
 
 3.1. Attribution Preservation
     You must not strip, alter, or obscure Attribution Notices from Covered
@@ -124,13 +124,13 @@ SECTION 5: GOVERNANCE
 SECTION 6: COMPATIBILITY
 --------------------------------------------------------------------------------
 
-6.1. MPL-2.0 Compatibility
+6.1. PMPL-1.0-or-later Compatibility
     Covered Software under this License may be combined with software
-    under MPL-2.0. In such combinations, the MPL-2.0 terms apply to the
-    MPL-2.0 files, and this License applies to the PMPL-2.0 files.
+    under PMPL-1.0-or-later. In such combinations, the PMPL-1.0-or-later terms apply to the
+    PMPL-1.0-or-later files, and this License applies to the PPMPL-1.0-or-later files.
 
 6.2. Secondary Licenses
-    The Secondary License provisions of MPL-2.0 Section 3.3 apply to
+    The Secondary License provisions of PMPL-1.0-or-later Section 3.3 apply to
     this License. The following licenses are designated as Secondary
     Licenses: GNU General Public License v2.0 or later, GNU Lesser
     General Public License v2.1 or later, GNU Affero General Public

@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // LICENSE file content analysis — detects license type from file content
@@ -166,7 +166,7 @@ pub fn detect_license_from_content(content: &str) -> Option<ContentMatch> {
         if lower.contains(entry.phrase) {
             let license = match entry.spdx {
                 "EUPL-1.2" => BaseLicense::EUPL12,
-                "PMPL-1.0" => BaseLicense::MPL2, // PMPL falls back to MPL-2.0
+                "PMPL-1.0" => BaseLicense::MPL2, // PMPL falls back to PMPL-1.0-or-later
                 _ => BaseLicense::Other(entry.spdx.to_string()),
             };
             return Some(ContentMatch {

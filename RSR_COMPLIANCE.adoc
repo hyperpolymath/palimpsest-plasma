@@ -13,7 +13,7 @@ This document records Rhodium Standard Repository (RSR) compliance status for *p
 |Attribute |Value
 
 |Project |palimpsest-plasma
-|License baseline |MPL-2.0 (legal primary)
+|License baseline |PMPL-1.0-or-later (legal primary)
 |Policy overlay |Palimpsest principles overlay
 |Primary Language |Rust + OCaml
 |RSR Tier |Tier 1
@@ -31,7 +31,7 @@ This document records Rhodium Standard Repository (RSR) compliance status for *p
 |Machine-readable metadata |✓ |`.machine_readable/`
 |Contractiles present |✓ |`contractiles/` + generated `contractile.just`
 |Well-known metadata |✓ |`.well-known/humans.txt`
-|Project licensing |✓ |MPL-2.0 baseline license with Palimpsest overlay policy
+|Project licensing |✓ |PMPL-1.0-or-later baseline license with Palimpsest overlay policy
 |Task runner |✓ |`Justfile`
 |===
 

@@ -1,7 +1,7 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
-// plasma migrate — convert from MIT/Apache/GPL to PMPL-2.0.
+// plasma migrate — convert from MIT/Apache/GPL to PPMPL-1.0-or-later.
 
 use anyhow::{Context, Result};
 use std::fs;
@@ -19,12 +19,12 @@ const KNOWN_LICENSES: &[&str] = &[
     "BSD-2-Clause",
     "BSD-3-Clause",
     "ISC",
-    "MPL-2.0",
+    "PMPL-1.0-or-later",
     "Unlicense",
     "0BSD",
 ];
 
-/// Run the migration: detect current license, replace with PMPL-2.0.
+/// Run the migration: detect current license, replace with PPMPL-1.0-or-later.
 pub fn run(path: &str, from: Option<&str>) -> Result<()> {
     let root = Path::new(path);
 
@@ -35,7 +35,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         detect_license(root)?
     };
 
-    println!("  Migrating from {} → PMPL-2.0-or-later", current);
+    println!("  Migrating from {} → PPMPL-1.0-or-later", current);
     println!();
 
     // Replace LICENSE file
@@ -49,14 +49,14 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
     }
 
     // Write new license
-    let pmpl_text = include_str!("../LICENSE-PMPL-2.0.txt");
+    let pmpl_text = include_str!("../LICENSE-PPMPL-1.0-or-later.txt");
     fs::write(&license_path, pmpl_text)
         .context("Failed to write LICENSE")?;
-    println!("  REPLACED: LICENSE (PMPL-2.0)");
+    println!("  REPLACED: LICENSE (PPMPL-1.0-or-later)");
 
     // Update SPDX headers in source files
     let old_spdx = format!("SPDX-License-Identifier: {current}");
-    let new_spdx = "SPDX-License-Identifier: PMPL-2.0-or-later".to_string();
+    let new_spdx = "SPDX-License-Identifier: PPMPL-1.0-or-later".to_string();
     let mut updated_count = 0u32;
 
     for entry in walkdir::WalkDir::new(root)
@@ -80,7 +80,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
 
     if updated_count > 0 {
         println!(
-            "  UPDATED: {} file(s) — SPDX headers changed to PMPL-2.0-or-later",
+            "  UPDATED: {} file(s) — SPDX headers changed to PPMPL-1.0-or-later",
             updated_count
         );
     }
@@ -91,7 +91,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         let content = fs::read_to_string(&cargo_path)?;
         let old_field = format!("license = \"{current}\"");
         if content.contains(&old_field) {
-            let updated = content.replace(&old_field, "license = \"PMPL-2.0-or-later\"");
+            let updated = content.replace(&old_field, "license = \"PPMPL-1.0-or-later\"");
             fs::write(&cargo_path, updated)?;
             println!("  UPDATED: Cargo.toml license field");
         }
@@ -103,7 +103,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         let content = fs::read_to_string(&pkg_path)?;
         let old_field = format!("\"license\": \"{current}\"");
         if content.contains(&old_field) {
-            let updated = content.replace(&old_field, "\"license\": \"PMPL-2.0-or-later\"");
+            let updated = content.replace(&old_field, "\"license\": \"PPMPL-1.0-or-later\"");
             fs::write(&pkg_path, updated)?;
             println!("  UPDATED: package.json license field");
         }
@@ -158,7 +158,7 @@ fn detect_from_content(content: &str) -> Result<String> {
         return Ok("AGPL-3.0".to_string());
     }
     if lower.contains("mozilla public license") && lower.contains("2.0") {
-        return Ok("MPL-2.0".to_string());
+        return Ok("PMPL-1.0-or-later".to_string());
     }
     if lower.contains("bsd 2-clause") || (lower.contains("redistribution") && !lower.contains("3.")) {
         return Ok("BSD-2-Clause".to_string());

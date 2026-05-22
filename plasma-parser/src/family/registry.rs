@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // Palimpsest family registry — maps all palimpsest variant names to their
@@ -37,7 +37,7 @@ pub const REGISTRY: &[RegistryEntry] = &[
     RegistryEntry {
         variant: PalimpsestVariant::PMPL,
         full_name: "Palimpsest Mozilla Public License",
-        description: "Palimpsest layer on MPL-2.0 — file-level copyleft with provenance",
+        description: "Palimpsest layer on PMPL-1.0-or-later — file-level copyleft with provenance",
         base: BaseLicense::MPL2,
         published: true,
     },

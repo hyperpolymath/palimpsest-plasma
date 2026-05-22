@@ -27,10 +27,10 @@ SECTION 1: BASE LICENSE
 --------------------------------------------------------------------------------
 
 This License incorporates the full text of Mozilla Public License 2.0 by
-reference. The complete MPL-2.0 text is available at:
+reference. The complete PMPL-1.0-or-later text is available at:
 https://www.mozilla.org/en-US/MPL/2.0/
 
-All terms, conditions, and definitions from MPL-2.0 apply except where
+All terms, conditions, and definitions from PMPL-1.0-or-later apply except where
 explicitly modified by the Exhibits in this License.
 
 --------------------------------------------------------------------------------
@@ -61,7 +61,7 @@ SECTION 2: ADDITIONAL DEFINITIONS
 SECTION 3: ETHICAL USE REQUIREMENTS
 --------------------------------------------------------------------------------
 
-In addition to the rights and obligations under MPL-2.0:
+In addition to the rights and obligations under PMPL-1.0-or-later:
 
 3.1. Emotional Lineage Preservation
     You must make reasonable efforts to preserve and communicate the
@@ -125,12 +125,12 @@ SECTION 5: GOVERNANCE
 SECTION 6: COMPATIBILITY
 --------------------------------------------------------------------------------
 
-6.1. MPL-2.0 Compatibility
+6.1. PMPL-1.0-or-later Compatibility
     Covered Software under this License may be combined with software under
-    MPL-2.0. The combined work must comply with both licenses.
+    PMPL-1.0-or-later. The combined work must comply with both licenses.
 
 6.2. Secondary Licenses
-    The Secondary License provisions of MPL-2.0 Section 3.3 apply to this
+    The Secondary License provisions of PMPL-1.0-or-later Section 3.3 apply to this
     License.
 
 --------------------------------------------------------------------------------

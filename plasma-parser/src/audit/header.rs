@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // SPDX header extraction — reads the first N lines of a source file and
@@ -75,7 +75,7 @@ mod tests {
 
     #[test]
     fn test_extract_rust_header() {
-        let content = "// SPDX-License-Identifier: PMPL-2.0-or-later\n// Copyright (c) 2026\n";
+        let content = "// SPDX-License-Identifier: PPMPL-1.0-or-later\n// Copyright (c) 2026\n";
         let expr = extract_spdx_from_content(content);
         assert!(expr.is_some());
     }

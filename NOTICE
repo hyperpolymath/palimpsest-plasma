@@ -16,7 +16,7 @@ registries, CI systems, and other tooling correctly identify the license.
 
 The legally binding terms are:
   - Source files: governed by PMPL-1.0-or-later (per SPDX headers)
-  - Combined works: compatible with MPL-2.0 (per PMPL Section 6)
+  - Combined works: compatible with PMPL-1.0-or-later (per PMPL Section 6)
 
 For more information about the Palimpsest License:
   https://github.com/hyperpolymath/palimpsest-license

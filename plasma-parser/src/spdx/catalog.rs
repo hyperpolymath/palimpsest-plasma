@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // SPDX identifier catalog — maps known SPDX identifiers (including all
@@ -24,7 +24,7 @@ pub enum CatalogError {
 ///
 /// # Arguments
 ///
-/// * `id` — The identifier string, e.g. "MIT", "PMPL-2.0", "Apache-2.0".
+/// * `id` — The identifier string, e.g. "MIT", "PPMPL-1.0-or-later", "Apache-2.0".
 /// * `or_later` — Whether the "-or-later" or "+" suffix was present.
 ///
 /// # Returns
@@ -53,7 +53,7 @@ pub fn resolve_identifier(id: &str, or_later: bool) -> Result<License, CatalogEr
         "LGPL-2.1" | "LGPL-2.1-only" => BaseLicense::LGPL21,
         "LGPL-3.0" | "LGPL-3.0-only" => BaseLicense::LGPL3,
         "AGPL-3.0" | "AGPL-3.0-only" => BaseLicense::AGPL3,
-        "MPL-2.0" => BaseLicense::MPL2,
+        "PMPL-1.0-or-later" => BaseLicense::MPL2,
         "BSD-2-Clause" => BaseLicense::BSD2,
         "BSD-3-Clause" => BaseLicense::BSD3,
         "ISC" => BaseLicense::ISC,
@@ -105,7 +105,7 @@ fn try_palimpsest(name_upper: &str, full_id: &str, or_later: bool) -> Option<Lic
 
 /// Extract a semantic version from an SPDX identifier string.
 ///
-/// Looks for patterns like "PMPL-2.0" or "PAGPL-1.0" and extracts the
+/// Looks for patterns like "PPMPL-1.0-or-later" or "PAGPL-1.0" and extracts the
 /// major.minor version numbers.
 fn extract_version(id: &str) -> Option<Version> {
     // Find the first segment that starts with a digit after a dash.
@@ -166,8 +166,8 @@ fn parse_cc_identifier(id: &str) -> BaseLicense {
 pub const PALIMPSEST_IDENTIFIERS: &[&str] = &[
     "PMPL-1.0",
     "PMPL-1.0-or-later",
-    "PMPL-2.0",
-    "PMPL-2.0-or-later",
+    "PPMPL-1.0-or-later",
+    "PPMPL-1.0-or-later",
     "PAGPL-1.0",
     "PAGPL-1.0-or-later",
     "PGPL-1.0",
@@ -194,7 +194,7 @@ pub const KNOWN_SPDX_IDENTIFIERS: &[&str] = &[
     "LGPL-3.0-only",
     "AGPL-3.0",
     "AGPL-3.0-only",
-    "MPL-2.0",
+    "PMPL-1.0-or-later",
     "BSD-2-Clause",
     "BSD-3-Clause",
     "ISC",
@@ -217,7 +217,7 @@ mod tests {
 
     #[test]
     fn test_resolve_pmpl() {
-        let license = resolve_identifier("PMPL-2.0", true).unwrap();
+        let license = resolve_identifier("PPMPL-1.0-or-later", true).unwrap();
         if let License::Palimpsest(p) = license {
             assert_eq!(p.variant, PalimpsestVariant::PMPL);
             assert!(p.or_later);

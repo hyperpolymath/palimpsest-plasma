@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // SPDX expression tokeniser — converts raw SPDX expression strings into a
@@ -17,7 +17,7 @@ pub enum Token {
     Dash,
     /// A dot character '.'.
     Dot,
-    /// The compound keyword "or-later" (as found in "PMPL-2.0-or-later").
+    /// The compound keyword "or-later" (as found in "PPMPL-1.0-or-later").
     OrLater,
     /// The keyword "OR" (dual licensing operator).
     Or,

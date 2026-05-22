@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // SPDX expression parsing module — lexer, parser, and identifier catalog.
@@ -259,7 +259,7 @@ impl Parser {
 /// use plasma_parser::spdx::parse_spdx_expr;
 ///
 /// let expr = parse_spdx_expr("MIT OR Apache-2.0").unwrap();
-/// let simple = parse_spdx_expr("PMPL-2.0-or-later").unwrap();
+/// let simple = parse_spdx_expr("PPMPL-1.0-or-later").unwrap();
 /// ```
 pub fn parse_spdx_expr(input: &str) -> Result<SpdxExpr, SpdxParseError> {
     let tokens = Lexer::new(input).tokenize();
@@ -297,7 +297,7 @@ mod tests {
 
     #[test]
     fn test_palimpsest_or_later() {
-        let expr = parse_spdx_expr("PMPL-2.0-or-later").unwrap();
+        let expr = parse_spdx_expr("PPMPL-1.0-or-later").unwrap();
         if let SpdxExpr::Simple(License::Palimpsest(p)) = &expr {
             assert!(p.or_later);
         } else {

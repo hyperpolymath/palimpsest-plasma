@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
 = Palimpsest Family Parser Specification
 Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
@@ -14,7 +14,7 @@ The Palimpsest Family Parser replaces the current naive string-matching in
 `plasma audit` and `plasma migrate` with a structured parser that understands:
 
 * The palimpsest license family as a *type system* — base + layer + fallback
-* SPDX compound expressions (`MIT OR Apache-2.0`, `PMPL-2.0-or-later WITH ...`)
+* SPDX compound expressions (`MIT OR Apache-2.0`, `PPMPL-1.0-or-later WITH ...`)
 * Mixed-license repositories (e.g., PAGPL engine + proprietary content)
 * License zone boundaries within a single repository
 * Fallback chain validation (does the declared fallback match the base?)
@@ -185,7 +185,7 @@ pub struct PalimpsestLicense {
 /// Known palimpsest variants.
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum PalimpsestVariant {
-    /// Palimpsest-MPL (base: MPL-2.0). Existing, published.
+    /// Palimpsest-MPL (base: PMPL-1.0-or-later). Existing, published.
     PMPL,
     /// Palimpsest-AGPL (base: AGPL-3.0). Proposed.
     PAGPL,
@@ -262,7 +262,7 @@ repository root (or in `.machine_readable/6a2/`):
 [source,toml]
 ----
 # .plasma.toml — license zone configuration for palimpsest-plasma
-# SPDX-License-Identifier: PMPL-2.0-or-later
+# SPDX-License-Identifier: PPMPL-1.0-or-later
 
 [project]
 name = "idaptik"
@@ -329,7 +329,7 @@ Tokens: [Ident("PAGPL"), Dash, Number(1), Dot, Number(0), Dash, OrLater]
 Input:  "MIT OR Apache-2.0"
 Tokens: [Ident("MIT"), Or, Ident("Apache"), Dash, Number(2), Dot, Number(0)]
 
-Input:  "PMPL-2.0-or-later WITH Classpath-exception-2.0"
+Input:  "PPMPL-1.0-or-later WITH Classpath-exception-2.0"
 Tokens: [Ident("PMPL"), Dash, Number(2), Dot, Number(0), Dash, OrLater,
          With, Ident("Classpath-exception"), Dash, Number(2), Dot, Number(0)]
 ----
@@ -543,7 +543,7 @@ plasma report         # Generate SARIF/JSON audit report
 ----
 plasma init --license PAGPL-1.0    # Support any palimpsest variant (not just PMPL)
 plasma audit                        # Now zone-aware: reads .plasma.toml
-plasma migrate --to PAGPL-1.0      # Support any target (not just PMPL-2.0)
+plasma migrate --to PAGPL-1.0      # Support any target (not just PPMPL-1.0-or-later)
 plasma badge --variant PAGPL        # Badge for specific variant
 ----
 

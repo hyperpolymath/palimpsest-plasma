@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: PMPL-2.0-or-later
+// SPDX-License-Identifier: PPMPL-1.0-or-later
 // Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
 //
 // License compatibility matrix — determines whether two licenses can
@@ -197,7 +197,7 @@ fn check_base_compat(a: &BaseLicense, b: &BaseLicense) -> Compatibility {
 
         (BaseLicense::GPL3, BaseLicense::MPL2)
         | (BaseLicense::MPL2, BaseLicense::GPL3) => Compatibility::Conditional(
-            "MPL-2.0 Section 3.3 allows relicensing under GPL".to_string(),
+            "PMPL-1.0-or-later Section 3.3 allows relicensing under GPL".to_string(),
         ),
 
         (BaseLicense::AGPL3, BaseLicense::MPL2)

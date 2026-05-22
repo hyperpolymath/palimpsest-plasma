@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-2.0-or-later
+# SPDX-License-Identifier: PPMPL-1.0-or-later
 
 [workspace]
 members = [".", "plasma-parser"]
@@ -8,8 +8,8 @@ name = "palimpsest-plasma"
 version = "0.1.0"
 edition = "2024"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
-description = "Palimpsest license adoption toolkit — add PMPL-2.0 to any project in one command"
-license = "PMPL-2.0-or-later"
+description = "Palimpsest license adoption toolkit — add PPMPL-1.0-or-later to any project in one command"
+license = "PPMPL-1.0-or-later"
 repository = "https://github.com/hyperpolymath/palimpsest-plasma"
 keywords = ["license", "palimpsest", "pmpl", "spdx", "provenance"]
 categories = ["command-line-utilities", "development-tools"]

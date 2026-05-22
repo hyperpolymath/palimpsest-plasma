@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: MPL-2.0
+# SPDX-License-Identifier: PMPL-1.0-or-later
 # humanstxt.org
 
 /* TEAM */
@@ -8,5 +8,5 @@ Location: United Kingdom
 
 /* SITE */
 Software: palimpsest-plasma
-Standards: MPL-2.0 (primary legal license), RSR, Palimpsest overlay principles
+Standards: PMPL-1.0-or-later (primary legal license), RSR, Palimpsest overlay principles
 Languages: Rust, OCaml, Bash
