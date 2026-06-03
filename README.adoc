@@ -1,5 +1,8 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma
+image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/palimpsest-plasma"]
+
 :toc:
 :toc-placement!:
 
@@ -103,10 +106,9 @@ workflow in `.github/workflows/nimble-site.yml` deploys the generated pages.
 
 == License
 
-This project is licensed under the **Palimpsest-MPL License 1.0 (PMPL-1.0)**.
-Use SPDX identifier **PMPL-1.0-or-later** in file headers and metadata.
+This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
 
-See `LICENSE` for the full legal text.
+SPDX-License-Identifier: MPL-2.0
 
 == Author
 
