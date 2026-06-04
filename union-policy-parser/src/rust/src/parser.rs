@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
-
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //! A2ML Parser — Attested Markup Language Implementation.
 //!
 //! This module implements the "Module 0" parser for the A2ML format. It uses 

@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: PPMPL-1.0-or-later
-// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // Fallback validation — ensures that a palimpsest license's declared fallback
 // is consistent with its base license, and that the LICENSE file actually

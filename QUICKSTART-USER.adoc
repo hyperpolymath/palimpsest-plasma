@@ -1,4 +1,5 @@
-// SPDX-License-Identifier: PMPL-1.0-or-later
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // Template: QUICKSTART-USER.adoc — 5-minute path to working software
 // Replace palimpsest-plasma, Palimpsest Plasma — See README.adoc for details., just run, Palimpsest Plasma started successfully. with actuals
 = palimpsest-plasma — Quick Start for Users
