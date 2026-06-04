@@ -1,5 +1,5 @@
-// SPDX-License-Identifier: PPMPL-1.0-or-later
-// Copyright (c) 2026 Jonathan D.A. Jewell (hyperpolymath) <j.d.a.jewell@open.ac.uk>
+// SPDX-License-Identifier: MPL-2.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
 // SPDX header extraction — reads the first N lines of a source file and
 // extracts the SPDX-License-Identifier value.

@@ -1,3 +1,5 @@
+-- SPDX-License-Identifier: MPL-2.0
+-- Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 ||| UNION-POLICY-PARSER — ABI Type Definitions
 |||
 ||| This module defines the Application Binary Interface for the policy

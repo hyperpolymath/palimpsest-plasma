@@ -17,6 +17,7 @@ jobs:
   test-k9-wrappers:
     name: Test K9 Contract Wrappers
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     strategy:
       matrix:
         k9_contract:
@@ -68,6 +69,7 @@ jobs:
   test-k9-signing:
     name: Test K9 Ed25519 Signing
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - name: Checkout repository
         uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11  # v4
@@ -97,6 +99,7 @@ jobs:
   integration-test:
     name: Integration Test (K9 + union-policy-parser)
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     needs: [test-k9-wrappers]
     steps:
       - name: Checkout repository
