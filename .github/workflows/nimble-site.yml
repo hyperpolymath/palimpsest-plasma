@@ -1,18 +1,15 @@
 # SPDX-License-Identifier: PMPL-1.0-or-later
 name: NimblePublisher Site
-
 on:
   push:
     branches: [main]
   pull_request:
     branches: [main]
   workflow_dispatch:
-
 permissions:
   contents: read
   pages: write
   id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
