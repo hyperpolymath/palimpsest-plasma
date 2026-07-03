@@ -7,12 +7,13 @@ authors:
     family-names: "Jewell"
     email: "j.d.a.jewell@open.ac.uk"
     affiliation: "hyperpolymath"
-version: 0.1.0
-date-released: 2026-02-12
-license: "PMPL-1.0-or-later"
+version: 0.2.0
+date-released: 2026-07-02
+license: "MPL-2.0"
 repository-code: "https://github.com/hyperpolymath/palimpsest-plasma"
 keywords:
-  - "plasma"
-  - "framework"
-  - "palimpsest"
-abstract: "A framework for dynamic, self-modifying software systems."
+  - "policy-engine"
+  - "compliance"
+  - "spdx"
+  - "deterministic"
+abstract: "Deterministic, typed policy engine: machine-readable deontic policies evaluated against repository state with reproducible results."

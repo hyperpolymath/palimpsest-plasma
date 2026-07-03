@@ -1,114 +1,139 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma
-image:https://img.shields.io/badge/OpenSSF-Best_Practices-green?logo=openssourcesecurity[OpenSSF Best Practices,link="https://www.bestpractices.dev/en/projects/new?repo_url=https://github.com/hyperpolymath/palimpsest-plasma"]
-
 :toc:
 :toc-placement!:
-
-image:assets/badges/svg/badge-standard.svg[Palimpsest License v1.0]
 
 toc::[]
 
 == Overview
 
-**palimpsest-plasma** is the official governance automation engine for the
-Palimpsest-MPL ecosystem. It is an OCaml-based system that interprets the
-licence, exhibits, and governance rules as typed, machine-readable policies, and
-evaluates real-world repository states against those obligations.
+**palimpsest-plasma** is a deterministic, typed policy engine for the agentic
+era. You write policies as machine-readable, deontic rules — obligations,
+prohibitions, permissions over repository state — and `plasma check` evaluates
+a repository against them *exactly*: same policy, same repository, same
+findings, byte for byte, every time.
 
-PLASMA stands for the operational, programmable substrate that keeps the
-Palimpsest-MPL ecosystem correct, compliant, and narratively coherent over time.
+That precision is the point. When neural/LLM tooling operates on a codebase,
+something deterministic has to define what "correct" means and verify it
+afterwards. Plasma is that something.
 
-== Core Responsibilities
+== What it is
 
-=== Compliance & Verification
+* A **policy engine**: typed rules in TOML or JSON, evaluated by a pure,
+  total function over a collected fact snapshot. No clocks, no randomness,
+  no ambient state. See link:docs/engine-v0-design.adoc[engine-v0-design.adoc]
+  for the normative semantics.
+* A **license/SPDX toolkit**: `plasma audit` checks SPDX headers against a
+  zone-aware license map (`.plasma.toml`), powered by a real SPDX expression
+  parser; `plasma init`, `migrate`, and `badge` handle license adoption for
+  any SPDX license.
+* A **fact source for agent verification**: `plasma facts` emits the exact
+  JSON snapshot the evaluator sees; `plasma check --format sarif` emits
+  SARIF 2.1.0 with stable `plasma/<rule-id>` rule identifiers.
 
-* Validate SPDX headers, provenance manifests, exhibit references, governance
-  metadata, and release requirements
-* Detect violations, omissions, inconsistencies, and structural drift
-* Produce actionable findings for maintainers and auditors
+== What it is not
 
-=== Corrective, Adaptive, and Perfective Maintenance
+* **Not the PMPL governance engine.** The Palimpsest license (PMPL) is a
+  separate, future project. This repo's parser *recognises* Palimpsest-family
+  SPDX identifiers, but the project itself is licensed plainly: code under
+  MPL-2.0, documentation under CC-BY-SA-4.0.
+* **Not an OCaml system.** Earlier documentation described an OCaml core that
+  was never built. The engine is Rust, implementing the design in
+  link:docs/policy-ast-v0.1.adoc[policy-ast-v0.1.adoc], and its policy format
+  is specified so a future formal core (OCaml/Catala) can generate or verify
+  the same policies.
 
-* Suggest or apply fixes (missing headers, outdated links, incorrect exhibit
-  references)
-* Adapt to structural changes in the repository
-* Improve documentation, governance artefacts, and provenance flows
+== Sibling projects
 
-=== Governance Runtime
+Plasma is the policy-definition and compliance-evaluation member of a
+planned trio for keeping automated agents honest:
 
-* Enforce Council decisions
-* Track exhibit lifecycle changes
-* Validate versioning rules
-* Ensure governance processes are followed
+* **somethings-fishy** — forensic investigation of bot-inflicted damage
+* **did-you-actually-do-that** — verification that agents did what they claimed
 
-=== Policy Engine
+The integration contract is plasma's deterministic output: JSON findings,
+SARIF results, and `plasma facts` snapshots (diffable before/after an agent
+run).
 
-* Parse and evaluate obligations, prohibitions, permissions, and conditions
-* Support versioned policy schemas with migrations
-* Allow exhibits to extend or modify rules
+== Quickstart
 
-=== Audit & Reporting
+[source,bash]
+----
+cargo build --release
+./target/release/plasma check .            # evaluate against the bundled repo-hygiene policy
+./target/release/plasma check . --format json
+./target/release/plasma facts .            # the fact snapshot the evaluator sees
+./target/release/plasma policy validate plasma-engine/policies/repo-hygiene.plasma.toml
+./target/release/plasma audit .            # SPDX header audit (MPL-2.0 default)
+----
 
-* Generate structured audit logs
-* Produce compliance reports
-* Support legal, governance, and provenance reviews
+`plasma check` exits 0 when no violation at or above the severity threshold
+exists (default: `error`), 1 otherwise — ready for CI and git hooks.
 
-=== Integration
+== Writing a policy
 
-* CLI tool for local checks
-* Git hooks for pre-commit/pre-push enforcement
-* GitHub Actions for CI enforcement
-* Optional daemon/cron mode for periodic audits
+[source,toml]
+----
+schema_version = { major = 0, minor = 1 }
+id = "my-policy"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "license-file-present"
+modality = "obligation"
+severity = "error"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+action = { type = "present" }
+rationale = "Every repository must carry its license text."
+----
+
+Rules bind a deontic modality (`obligation`, `prohibition`, `permission`) to
+a subject, resource, optional condition, and action. Subjects expand over the
+repository (`file-pattern` matches globs); conditions compose with
+`all`/`any`/`not`. The full vocabulary and its exact semantics are in
+link:docs/engine-v0-design.adoc[engine-v0-design.adoc].
+
+== Workspace layout
+
+[cols="1,3"]
+|===
+| Crate | Purpose
+
+| `plasma-parser`
+| SPDX expression lexer/parser (including Palimpsest-family identifiers),
+  license family types, zone auditing (`.plasma.toml`), compatibility matrix,
+  JSON/SARIF reports.
+
+| `plasma-engine`
+| Policy AST, versioned schema loading, fact collection, the pure evaluator,
+  and finding/report rendering. Depends on plasma-parser.
+
+| root (`plasma` binary)
+| The CLI: `check`, `facts`, `policy`, `audit`, `init`, `badge`, `migrate`.
+|===
 
 == Architecture
 
-OCaml core for stability, correctness, and long-term maintainability. The engine
-is structured in three layers:
+See link:docs/architecture.adoc[docs/architecture.adoc] for the engine design,
+link:docs/policy-ast-v0.1.adoc[docs/policy-ast-v0.1.adoc] for the original
+typed-AST design, link:docs/engine-v0-design.adoc[docs/engine-v0-design.adoc]
+for the normative v0 semantics and Catala-readiness guarantees, and
+link:TOPOLOGY.md[TOPOLOGY.md] for the project map and honest completion
+dashboard.
 
-* **core/** -- Canonical PLASMA substrate: Policy AST, schemas, evaluation,
-  migrations, facts, findings, actions, governance runtime
-* **integration/** -- Surfaces: CLI, git hooks, CI, daemon
-* **adapters/** -- IO and environment-specific collectors/parsers: SPDX, exhibits,
-  repo topology
+== Static site
 
-See link:docs/architecture.adoc[docs/architecture.adoc] for the full design,
-link:docs/policy-ast-v0.1.adoc[docs/policy-ast-v0.1.adoc] for the typed AST
-specification, and link:TOPOLOGY.md[TOPOLOGY.md] for a visual architecture map.
-
-== Sub-Projects
-
-=== union-policy-parser
-
-A Rust-based policy validation engine for union contracts (NUJ, IWW, UCU) using
-A2ML (Attested Markup Language). Parses and validates employment contracts
-against union standards with formal proofs and grievance generation. See
-`union-policy-parser/` for full details.
-
-== MVP v1 Bundle
-
-The **MVP v1** bundle provides a deployable PMPL-1.0 experience:
-
-* **Canonical license tooling** -- `LICENSE` text, ECOSYSTEM mapping, and badges
-  aligned with the Palimpsest Stewardship Council’s PMPL-1.0 release
-* **Badge & documentation assets** -- `assets/badges/` pack and `docs/mvp-v1.adoc`
-* **Compliance readiness** -- SPDX metadata, automated checks, audit commands
-* **Audit/playback support** -- `pmpl-verify`/`pmpl-audit` provenance verification
-
-See `docs/mvp-v1.adoc` for the full deliverables checklist and compliance commands.
-
-== Static Site
-
-Compliance guidance builds through a local Elixir mix project at `site/`. Run
-`mix site.build` from that folder to regenerate `site/_site`. The GitHub Actions
-workflow in `.github/workflows/nimble-site.yml` deploys the generated pages.
+Compliance guidance builds through a local Elixir mix project at `site/`.
+Run `mix site.build` from that folder to regenerate `site/_site`. The GitHub
+Actions workflow in `.github/workflows/nimble-site.yml` deploys the pages.
 
 == License
 
-This project is licensed under the Mozilla Public License, v. 2.0. See the `LICENSE` file for details.
-
-SPDX-License-Identifier: MPL-2.0
+Code is licensed under the Mozilla Public License 2.0 (see `LICENSE`).
+Documentation is licensed under CC-BY-SA-4.0 (see `LICENSES/CC-BY-SA-4.0.txt`).
+Every file carries an SPDX header; `NOTICE` has the details.
 
 == Author
 

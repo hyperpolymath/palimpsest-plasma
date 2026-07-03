@@ -1,20 +1,27 @@
-# SPDX-License-Identifier: PPMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 
 [workspace]
-members = [".", "plasma-parser"]
+members = [".", "plasma-parser", "plasma-engine"]
 
 [package]
 name = "palimpsest-plasma"
-version = "0.1.0"
-edition = "2024"
+version = "0.2.0"
+edition = "2021"
+rust-version = "1.74"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
-description = "Palimpsest license adoption toolkit — add PPMPL-1.0-or-later to any project in one command"
+description = "Deterministic, typed policy engine — define machine-readable policies and check repositories against them"
 license = "MPL-2.0"
 repository = "https://github.com/hyperpolymath/palimpsest-plasma"
-keywords = ["license", "palimpsest", "pmpl", "spdx", "provenance"]
+keywords = ["policy", "compliance", "spdx", "audit", "agentic"]
 categories = ["command-line-utilities", "development-tools"]
 
+[[bin]]
+name = "plasma"
+path = "src/main.rs"
+
 [dependencies]
+plasma-parser = { path = "plasma-parser" }
+plasma-engine = { path = "plasma-engine" }
 clap = { version = "4", features = ["derive"] }
 anyhow = "1"
 walkdir = "2"

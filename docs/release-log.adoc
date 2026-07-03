@@ -1,9 +1,37 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma Release Log
 :toc:
 
-== Release Summary (v1.1)
+== Release Summary (v0.2.0)
+
+**Version:** 0.2.0
+**Legal:** MPL-2.0 (code), CC-BY-SA-4.0 (documentation)
+**Release date:** 2026-07-02
+**Theme:** identity pivot + engine v0. The project is now a deterministic,
+typed policy engine; the Palimpsest license moves to its own future project.
+
+**Key artifacts:**
+
+* `plasma-engine/` – policy AST, versioned schema, fact collection, pure
+  evaluator, human/JSON/SARIF rendering
+* `plasma` binary – `check`, `facts`, `policy validate`, plus parser-backed
+  `audit` and license-agnostic `init`/`migrate`/`badge`
+* `plasma-engine/policies/repo-hygiene.plasma.toml` – bundled, self-applied
+  policy (`tests/check_selftest.rs` gates the build on it)
+* `docs/engine-v0-design.adoc` – normative semantics + Catala-readiness
+
+**Verification:** `cargo test --workspace` (66 tests), `plasma check .`
+(0 violations), byte-identical JSON across repeated runs.
+
+**Removed:** union-policy-parser sub-project, MVP tarballs, corrupted
+PMPL license text, stale signature files. The version numbering restarts
+honestly at 0.2.0 — the "v1.x" entries below record documentation-bundle
+releases from the earlier PMPL-toolkit identity.
+
+'''
+
+== Historical: Release Summary (v1.1)
 
 **Version:** 1.1 (MVP v1 continuity)  
 **Legal:** Palimpsest-MPL License 1.0 (PMPL-1.0-or-later)  

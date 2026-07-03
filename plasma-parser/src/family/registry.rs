@@ -7,9 +7,7 @@
 // Each variant in the palimpsest family extends a different well-known base
 // license while sharing the same palimpsest provisions layer.
 
-use crate::family::{
-    BaseLicense, PalimpsestLayer, PalimpsestLicense, PalimpsestVariant, Version,
-};
+use crate::family::{BaseLicense, PalimpsestLayer, PalimpsestLicense, PalimpsestVariant, Version};
 
 /// A registry entry describing one palimpsest variant.
 ///

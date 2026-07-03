@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 // SPDX-FileCopyrightText: 2026 Jonathan D.A. Jewell (hyperpolymath)
 = Palimpsest Family Parser Specification
@@ -9,10 +9,27 @@ v0.1, 2026-03-23
 :sectnums:
 :icons: font
 
+[IMPORTANT]
+====
+**Status.** The `plasma-parser` crate this document specifies is *real and
+implemented*: the SPDX lexer/parser/catalog, license family type system,
+zone scanner, compatibility matrix, and JSON/SARIF reporters all exist in
+`plasma-parser/src/` with tests, and `plasma audit` now consumes them (via
+`plasma-parser/src/audit/scan.rs`), replacing the old string matching.
+
+The *consumers* described below beyond the CLI — an HTTP daemon
+(`plasma-daemon`, port 8098), a PanLL/Gossamer bridge, OCR of scanned
+licenses, and a C FFI to an OCaml engine — are **aspirational** and not
+built. There is no OCaml engine; a future formal core (if built) would
+*verify* the Rust engine, not consume this parser over FFI (see
+`docs/engine-v0-design.adoc`). Treat the daemon/FFI/PanLL sections as
+design sketches, not descriptions of shipped code.
+====
+
 == Overview
 
-The Palimpsest Family Parser replaces the current naive string-matching in
-`plasma audit` and `plasma migrate` with a structured parser that understands:
+The Palimpsest Family Parser is the structured SPDX/license engine behind
+`plasma audit` (replacing the earlier naive string-matching). It understands:
 
 * The palimpsest license family as a *type system* — base + layer + fallback
 * SPDX compound expressions (`MIT OR Apache-2.0`, `PPMPL-1.0-or-later WITH ...`)
@@ -20,9 +37,9 @@ The Palimpsest Family Parser replaces the current naive string-matching in
 * License zone boundaries within a single repository
 * Fallback chain validation (does the declared fallback match the base?)
 
-This is a Rust library crate (`plasma-parser`) consumed by the existing
-`plasma` CLI binary, the planned OCaml PLASMA governance engine (via C FFI),
-and a PanLL panel (via Gossamer HTTP bridge or WASM).
+It is a Rust library crate (`plasma-parser`) consumed today by the `plasma`
+CLI binary. Additional consumers (an HTTP daemon, a PanLL panel) are
+planned, not implemented — see the status note above.
 
 == Architecture
 
@@ -263,7 +280,7 @@ repository root (or in `.machine_readable/6a2/`):
 [source,toml]
 ----
 # .plasma.toml — license zone configuration for palimpsest-plasma
-# SPDX-License-Identifier: PPMPL-1.0-or-later
+# SPDX-License-Identifier: CC-BY-SA-4.0
 
 [project]
 name = "idaptik"

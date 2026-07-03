@@ -1,6 +1,5 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # ECOSYSTEM.a2ml — Ecosystem position
-# Converted from ECOSYSTEM.scm on 2026-03-15
 
 [metadata]
 project = "palimpsest-plasma"
@@ -8,3 +7,21 @@ ecosystem = "hyperpolymath"
 
 [position]
 type = "component"
+role = "policy definition and deterministic compliance evaluation"
+
+# The agent-honesty trio. Sibling repos are planned/external; the
+# integration contract is plasma's deterministic output.
+[related-projects.somethings-fishy]
+status = "planned"
+role = "forensic investigation of bot-inflicted damage"
+consumes = "plasma findings (JSON), SARIF results with stable plasma/<rule-id> identifiers"
+
+[related-projects.did-you-actually-do-that]
+status = "planned"
+role = "verification that agents did what they claimed"
+consumes = "plasma facts snapshots (diffable before/after), pass findings as positive evidence"
+
+[related-projects.palimpsest-license]
+status = "separate future project"
+role = "the PMPL license itself"
+note = "plasma-parser recognises Palimpsest-family SPDX identifiers; nothing more"

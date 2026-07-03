@@ -13,22 +13,20 @@ const MAX_HEADER_LINES: usize = 15;
 
 /// File extensions that should have SPDX headers, grouped by comment style.
 pub const AUDITABLE_EXTENSIONS: &[&str] = &[
-    "rs", "zig", "idr", "js", "ts", "jsx", "tsx", "res", "resi", "ex", "exs",
-    "gleam", "jl", "hs", "ml", "mli", "nim", "pony", "py", "rb", "go", "c",
-    "h", "cpp", "hpp", "java", "kt", "scala", "sh", "bash", "zsh", "toml",
-    "yaml", "yml", "ncl", "nix", "scm", "v", "ada", "adb", "ads",
+    "rs", "zig", "idr", "js", "ts", "jsx", "tsx", "res", "resi", "ex", "exs", "gleam", "jl", "hs",
+    "ml", "mli", "nim", "pony", "py", "rb", "go", "c", "h", "cpp", "hpp", "java", "kt", "scala",
+    "sh", "bash", "zsh", "toml", "yaml", "yml", "ncl", "nix", "scm", "v", "ada", "adb", "ads",
 ];
 
 /// Returns the comment prefix for a given file extension.
 pub fn comment_prefix(ext: &str) -> &'static str {
     match ext {
-        "rs" | "zig" | "js" | "ts" | "jsx" | "tsx" | "res" | "resi" | "go"
-        | "c" | "h" | "cpp" | "hpp" | "java" | "kt" | "scala" | "pony"
-        | "v" => "//",
+        "rs" | "zig" | "js" | "ts" | "jsx" | "tsx" | "res" | "resi" | "go" | "c" | "h" | "cpp"
+        | "hpp" | "java" | "kt" | "scala" | "pony" | "v" => "//",
         "idr" | "hs" | "ml" | "mli" => "--",
         "ada" | "adb" | "ads" => "--",
-        "ex" | "exs" | "gleam" | "nim" | "py" | "rb" | "sh" | "bash"
-        | "zsh" | "toml" | "yaml" | "yml" | "ncl" | "nix" | "jl" => "#",
+        "ex" | "exs" | "gleam" | "nim" | "py" | "rb" | "sh" | "bash" | "zsh" | "toml" | "yaml"
+        | "yml" | "ncl" | "nix" | "jl" => "#",
         "scm" => ";;",
         _ => "//",
     }
@@ -50,6 +48,16 @@ pub fn extract_spdx_header(path: &Path) -> Option<SpdxExpr> {
 
 /// Extract SPDX expression from file content string.
 pub fn extract_spdx_from_content(content: &str) -> Option<SpdxExpr> {
+    let raw = extract_spdx_raw_from_content(content)?;
+    parse_spdx_expr(&raw).ok()
+}
+
+/// Extract the raw (unparsed) SPDX-License-Identifier value from file content.
+///
+/// Unlike [`extract_spdx_from_content`], this distinguishes "no header"
+/// (`None`) from "header present but unparsable" (`Some(raw)`), letting
+/// callers defer or report parse failures themselves.
+pub fn extract_spdx_raw_from_content(content: &str) -> Option<String> {
     for line in content.lines().take(MAX_HEADER_LINES) {
         let trimmed = line.trim();
         // Strip comment prefixes.
@@ -62,8 +70,7 @@ pub fn extract_spdx_from_content(content: &str) -> Option<SpdxExpr> {
             .trim();
 
         if let Some(rest) = stripped.strip_prefix("SPDX-License-Identifier:") {
-            let spdx_str = rest.trim();
-            return parse_spdx_expr(spdx_str).ok();
+            return Some(rest.trim().to_string());
         }
     }
     None

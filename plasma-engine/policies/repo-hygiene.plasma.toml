@@ -1,0 +1,47 @@
+# SPDX-License-Identifier: MPL-2.0
+# repo-hygiene — the policy plasma ships with and checks itself against.
+#
+# Demonstrates the v0 schema: deontic rules over repository subjects,
+# with severities, rationales, and glob-based subject expansion.
+
+schema_version = { major = 0, minor = 1 }
+id = "repo-hygiene"
+version = { major = 0, minor = 1 }
+
+[[rules]]
+id = "license-file-present"
+modality = "obligation"
+severity = "error"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+action = { type = "present" }
+rationale = "Every repository must carry its license text."
+source = "repo policy / REUSE spec"
+
+[[rules]]
+id = "readme-present"
+modality = "obligation"
+severity = "error"
+subject = { type = "repo" }
+resource = { type = "file", path = "README*" }
+action = { type = "present" }
+rationale = "Every repository must explain what it is."
+
+[[rules]]
+id = "spdx-header-required"
+modality = "obligation"
+severity = "warning"
+subject = { type = "file-pattern", patterns = ["**/*.rs", "**/*.toml", "**/*.sh", "**/*.ex", "**/*.exs"] }
+resource = { type = "header" }
+action = { type = "present" }
+rationale = "Machine-checkable licensing requires an SPDX header per source file."
+
+[[rules]]
+id = "spdx-header-parses"
+modality = "obligation"
+severity = "warning"
+subject = { type = "file-pattern", patterns = ["**/*.rs", "**/*.toml", "**/*.sh", "**/*.ex", "**/*.exs"] }
+resource = { type = "header" }
+condition = { type = "has-spdx-header" }
+action = { type = "valid" }
+rationale = "An SPDX header that does not parse is worse than none: it looks compliant without being checkable."

@@ -1,44 +1,70 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma — Show Me The Receipts
 :toc:
 :icons: font
 
-The README makes claims. This file backs them up.
+The README makes claims. This file backs them up — against files that
+actually exist. (An earlier version of this document cited OCaml sources
+that were never written; that failure mode is precisely what this project
+now exists to prevent.)
 
 == Core Claims
 
-=== Claim 1: OCaml-Based Governance Automation Engine for PMPL-1.0 Ecosystem
+=== Claim 1: Deterministic, typed policy engine
 
-*From README:* "palimpsest-plasma is the official governance automation engine for the Palimpsest-MPL ecosystem. It is an OCaml-based system that interprets the licence, exhibits, and governance rules as typed, machine-readable policies, and evaluates real-world repository states against those obligations."
+*From README:* "You write policies as machine-readable, deontic rules and
+`plasma check` evaluates a repository against them exactly."
 
-*Evidence:* The system is structured in three layers: `core/` (canonical PLASMA substrate: Policy AST, schemas, evaluation, migrations, facts, findings, actions, governance runtime), `integration/` (surfaces: CLI, git hooks, CI, daemon), and `adapters/` (IO and environment-specific collectors/parsers: SPDX, exhibits, repo topology). The OCaml core at `core/policy_ast.ml` defines a strongly-typed AST for obligations, prohibitions, permissions, and conditions. The evaluation engine at `core/evaluation.ml` applies policies to repository facts, producing findings and recommended actions. See `docs/architecture.adoc` and `docs/policy-ast-v0.1.adoc` for full design specifications. **Caveat:** The governance runtime is still in active development; some complex governance scenarios may not yet be fully supported.
+*Evidence:* The typed AST is `plasma-engine/src/ast.rs` (subjects, resources,
+composable conditions, deontic modalities, actions, overlays). The evaluator
+is `plasma-engine/src/eval.rs` — a pure function with no IO; every fact it
+sees comes from `plasma-engine/src/facts.rs` (BTree-ordered, no timestamps).
+Determinism is enforced by test: `tests/check_selftest.rs`
+(`check_json_is_deterministic`) runs `plasma check` twice and asserts
+byte-identical JSON, and `plasma-engine/src/eval.rs` has the same check at
+unit level (`test_determinism_identical_runs`). Unsupported constructs are
+rejected at load in `plasma-engine/src/schema.rs`, so evaluation is total.
 
-=== Claim 2: Union Policy Parser for Employment Contract Validation via A2ML
+=== Claim 2: Self-demonstrating
 
-*From README:* "union-policy-parser: A Rust-based policy validation engine for union contracts (NUJ, IWW, UCU) using A2ML (Attested Markup Language). Parses and validates employment contracts against union standards with formal proofs and grievance generation."
+*From README:* "`plasma check .` evaluates this very repository."
 
-*Evidence:* The `union-policy-parser/` subdirectory contains a Rust implementation that uses A2ML (Attested Markup Language) to encode union contract rules (NUJ — National Union of Journalists, IWW — Industrial Workers of the World, UCU — University and College Union). The parser at `union-policy-parser/src/parser.rs` reads A2ML contract files and validates them against union standards. Formal proofs at `union-policy-parser/src/proofs/` verify that grievance generation is deterministic and fair. The tool generates human-readable grievance reports with justification chains. See `union-policy-parser/README.adoc` for full details. **Caveat:** Union contract rules are complex and may vary by jurisdiction; this tool encodes current understanding but requires periodic updates as contracts evolve.
+*Evidence:* The bundled policy `plasma-engine/policies/repo-hygiene.plasma.toml`
+requires a LICENSE, a README, and parseable SPDX headers on source files.
+`tests/check_selftest.rs` (`check_self_passes`) fails the build if this
+repository stops satisfying its own shipped policy.
+
+=== Claim 3: Real SPDX machinery
+
+*From README:* "`plasma audit` checks SPDX headers against a zone-aware
+license map, powered by a real SPDX expression parser."
+
+*Evidence:* The recursive-descent SPDX parser is
+`plasma-parser/src/spdx/mod.rs` with lexer (`spdx/lexer.rs`) and identifier
+catalog (`spdx/catalog.rs`, including Palimpsest-family extensions). Zone
+mapping from `.plasma.toml` is `plasma-parser/src/zone/boundary.rs`; the
+repository scanner is `plasma-parser/src/audit/scan.rs`; the CLI wiring is
+`src/audit.rs` — which uses that parser rather than substring matching.
+
+== Test suite
+
+`cargo test --workspace`: 66 tests at the time of writing — inline units in
+plasma-parser (SPDX parsing, catalog, zones, compat, content detection) and
+plasma-engine (schema validation, evaluation semantics, SARIF shape), plus
+the root self-tests described above.
 
 == Technology Choices
 
 [cols="1,2"]
 |===
-| Technology | Learn More
+| Technology | Why
 
-| **OCaml** | Strong static types, pattern matching, functional paradigm
-| **Rust** | Systems programming, formal proofs (union-policy-parser)
-| **A2ML** | Attested Markup Language for contract encoding
-| **Elixir** | Static site generation (site/ folder) for compliance guidance
+| **Rust** | One toolchain for parser, engine, and CLI; `#![forbid(unsafe_code)]` across all three crates
+| **TOML + JSON policies** | TOML for humans, JSON for interchange; both deserialize to the same serde model (`docs/engine-v0-design.adoc`)
+| **SARIF 2.1.0** | Stable `plasma/<rule-id>` namespace for GitHub Code Scanning and sibling tools
+| **Elixir (NimblePublisher)** | Static site generation for the guidance site (`site/`)
 |===
-
-== Dogfooded Across The Account
-
-Palimpsest Plasma validates compliance across the hyperpolymath ecosystem:
-- All repositories must satisfy PLASMA policies (via CI integration at `.github/workflows/`)
-- License tooling in `docs/mvp-v1.adoc` provides canonical PMPL-1.0 guidance
-- Badge and documentation assets in `assets/badges/` are used across all hyperpolymath projects
-- Union policy validation supports internal team governance (NUJ, IWW, UCU contracts)
 
 == File Map
 
@@ -46,23 +72,19 @@ Palimpsest Plasma validates compliance across the hyperpolymath ecosystem:
 |===
 | Path | What's There
 
-| `core/policy_ast.ml` | OCaml AST for policies: obligations, prohibitions, permissions, conditions
-| `core/evaluation.ml` | Policy evaluation engine: applies policies to facts, produces findings
-| `core/schemas.ml` | Versioned policy schemas with migrations
-| `core/governance_runtime.ml` | Enforces council decisions, tracks exhibit lifecycle
-| `integration/cli.ml` | CLI entry point for local checks
-| `integration/git_hooks.ml` | Git pre-commit/pre-push integration
-| `integration/github_actions.ml` | GitHub Actions CI workflow
-| `adapters/spdx_parser.ml` | Parses SPDX headers and manifests
-| `adapters/exhibit_loader.ml` | Loads Palimpsest exhibits
-| `adapters/repo_topology.ml` | Analyzes repository structure
-| `union-policy-parser/src/parser.rs` | Rust parser for A2ML contract files
-| `union-policy-parser/src/proofs/` | Formal proofs of grievance determinism
-| `docs/architecture.adoc` | System architecture and design
-| `docs/policy-ast-v0.1.adoc` | Formal policy AST specification
-| `docs/mvp-v1.adoc` | MVP v1 deliverables and compliance checklist
-| `site/` | Elixir mix project for compliance guidance (static site generation)
-| `assets/badges/` | Badge SVGs and documentation assets
+| `plasma-engine/src/ast.rs` | Typed policy AST: subjects, resources, conditions, modalities, actions, overlays
+| `plasma-engine/src/schema.rs` | Versioned loading (TOML/JSON), load-time rejection of reserved constructs
+| `plasma-engine/src/facts.rs` | Fact collection — the only impure module
+| `plasma-engine/src/eval.rs` | Pure, total evaluator with the deontic matrix
+| `plasma-engine/src/report/` | Human and SARIF renderers
+| `plasma-engine/policies/repo-hygiene.plasma.toml` | The bundled, self-applied policy
+| `plasma-parser/src/spdx/` | SPDX lexer, parser, identifier catalog
+| `plasma-parser/src/zone/` | `.plasma.toml` license zones
+| `plasma-parser/src/audit/` | Header extraction, repo scanning, LICENSE content detection
+| `src/` | The `plasma` CLI: check, facts, policy, audit, init, badge, migrate
+| `docs/engine-v0-design.adoc` | Normative semantics + Catala-readiness guarantees
+| `docs/policy-ast-v0.1.adoc` | Historical OCaml-typed design (lineage)
+| `site/` | Elixir mix project for the guidance site
 |===
 
 == Questions?

@@ -1,19 +1,31 @@
-<!--
-SPDX-License-Identifier: MPL-2.0
-Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
--->
+# SPDX-License-Identifier: CC-BY-SA-4.0
+# Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 %{
-  title: "Release Distribution",
-  slug: "release",
-  description: "Packaging instructions for MVP v1.1.",
-  date: ~D[2026-01-20]
+  title: "Releases",
+  slug: "releases",
+  description: "Release history and how to build from source.",
+  date: ~D[2026-07-02]
 }
 ---
 
-## Release bundle
+## v0.2.0 — Engine v0
 
-* `LICENSE` – PMPL-1.0-or-later text
-* `.machine_readable/STATE.scm`, `.machine_readable/ECOSYSTEM.scm` – provenance metadata
-* `docs/release-log.adoc`, `docs/release-notes.adoc` – audit highlights
-* `assets/badges/` – canonical badge files
-* `mvp-v1.1-release.tar.gz` – distributable archive
+The current release is a deterministic, typed policy engine. See
+`docs/release-notes.adoc` and `CHANGELOG.md` for the full list of changes.
+
+Highlights:
+
+* `plasma-engine` — policy AST, versioned schema, pure evaluator
+* `plasma check` / `facts` / `policy validate`, plus parser-backed `audit`
+* Licensing unified: code MPL-2.0, documentation CC-BY-SA-4.0
+
+## Building from source
+
+```
+git clone https://github.com/hyperpolymath/palimpsest-plasma.git
+cd palimpsest-plasma
+cargo build --release
+cargo test --workspace
+```
+
+The binary is `target/release/plasma`.

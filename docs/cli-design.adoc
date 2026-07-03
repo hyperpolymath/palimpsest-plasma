@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma — CLI & Integration Design
 :toc:
@@ -9,198 +9,95 @@ toc::[]
 
 == CLI Interface
 
-One binary, narratively clear subcommands, machine-readable output where useful.
+One binary (`plasma`), narratively clear subcommands, machine-readable
+output where useful.
 
-=== Subcommands
+=== Implemented (v0.2)
 
 [source]
 ----
-plasma check [PATH] [--policy FILE] [--format human|json]
-plasma fix [PATH] [--apply] [--policy FILE]
-plasma audit [PATH] [--output FILE] [--format json]
-plasma governance apply-decision DECISION_ID [--source FILE]
-plasma migrate policy [--input FILE] [--output FILE]
+plasma check [PATH] [--policy FILE] [--format human|json|sarif]
+             [--severity error|warning|info] [--quiet] [--verbose]
+plasma facts [PATH]
+plasma policy validate FILE
+plasma audit [--path PATH] [--license SPDX-EXPR] [--fix]
+plasma init [--path PATH] [--license SPDX-ID] [--author NAME]
+plasma badge [--license SPDX-ID] [--style STYLE]
+plasma migrate [--path PATH] [--from SPDX-ID] [--to SPDX-ID]
 ----
 
 === `plasma check`
 
-Validate a repository against a policy.
+Evaluate a repository against a policy.
 
-* **Input:** repo path, policy file (optional — default is the canonical PMPL
-  policy bundle)
-* **Output:** exit code non-zero on violations; rich text or JSON
+* **Input:** repo path (default `.`), policy file (default: the bundled
+  repo-hygiene policy)
+* **Output:** exit 0 when no violation at or above the severity threshold
+  exists; exit 1 otherwise. Human text, JSON (the full `Evaluation`), or
+  SARIF 2.1.0.
 * **Flags:**
-  - `--policy FILE` — custom policy file
-  - `--format human|json` — output format (default: human)
-  - `--severity warning|error` — minimum severity threshold
-  - `--quiet` — exit code only, no output
+  - `--policy FILE` — custom policy (`.toml` or `.json`)
+  - `--format human|json|sarif` (default: human)
+  - `--severity error|warning|info` — failure threshold (default: error)
+  - `--quiet` — exit code only
+  - `--verbose` — include satisfied (pass) findings
 
-=== `plasma fix`
+=== `plasma facts`
 
-Plan or apply corrective actions based on findings.
+Dump the deterministic fact snapshot the evaluator sees, as JSON. This is
+the diffable before/after artifact for agent-verification tooling.
 
-* **Without `--apply`:** show planned actions (dry-run)
-* **With `--apply`:** perform changes, log diff summary, create backup
-* **Flags:**
-  - `--policy FILE` — custom policy file
-  - `--apply` — actually modify the repo
-  - `--backup` — create backup before applying changes (default: true)
+=== `plasma policy validate`
+
+Parse and schema-check a policy file; print rule counts on success. Fails
+with a precise error on schema-version mismatch, duplicate rule ids, or
+reserved constructs.
 
 === `plasma audit`
 
-Generate structured audit logs for external systems.
+Zone-aware SPDX header audit powered by plasma-parser. Reads `.plasma.toml`
+when present; otherwise expects `--license` (default MPL-2.0) everywhere.
+`--fix` inserts missing headers using each file's zone-expected license.
+Exits non-zero on non-compliance so CI fails.
 
-* **Output:** JSON audit log suitable for legal, governance, and provenance
-  reviews
-* **Flags:**
-  - `--output FILE` — write to file instead of stdout
-  - `--format json` — output format
-  - `--since DATE` — audit since date
-  - `--verbose` — include positive findings (rule-passed)
+=== `plasma init` / `migrate` / `badge`
 
-=== `plasma governance`
+License adoption for any SPDX identifier (MPL-2.0 default). `init` embeds
+the full MPL-2.0 text and writes stubs plus a warning for other licenses;
+`migrate` rewrites LICENSE (with backup) and sweeps SPDX headers from the
+detected or given `--from` to `--to`; `badge` emits shields.io markup with
+proper `-`→`--` escaping.
 
-Connect Council decisions and exhibit changes to policy updates.
+== Roadmap surfaces (not yet implemented)
 
-* `apply-decision DECISION_ID` — look up a Council decision, apply as overlay
-* `--source FILE` — decision definition file
-* `list-exhibits` — show active, superseded, deprecated exhibits
+* `plasma fix` — findings → planned corrective actions, dry-run and
+  `--apply` modes with backups (v0.3)
+* Git hooks (pre-commit/pre-push wrapping `plasma check --quiet`) and a
+  reference GitHub Action / GitLab job (v0.4)
+* `plasma governance` / decision registries — awaits `consistent-with`
+  semantics
+* Daemon/cron mode for periodic audits
 
-=== `plasma migrate`
+A future `.plasma.toml` extension will let a repository pin its own policy
+file so `plasma check` needs no flags at all.
 
-Migrate policy files between schema versions.
+== Exit codes
 
-* `policy --input FILE --output FILE` — migrate a policy to latest schema
-* `--target-version MAJOR.MINOR` — migrate to specific version
-* `--dry-run` — show migration plan without writing
+[cols="1,3"]
+|===
+| Code | Meaning
 
-== Integration Surfaces
-
-=== Git Hooks
-
-PLASMA provides scripts for pre-commit and pre-push enforcement.
-
-[source,bash]
-----
-# .git/hooks/pre-commit
-#!/bin/bash
-plasma check . --quiet --severity error || exit 1
-----
-
-Configuration via `.plasma.toml`:
-
-[source,toml]
-----
-[hooks]
-pre-commit = true
-pre-push = true
-severity = "error"
-policy = "policies/base.json"
-----
-
-=== GitHub Actions
-
-Reference workflow for CI enforcement:
-
-[source,yaml]
-----
-name: PLASMA Compliance
-on: [push, pull_request]
-
-jobs:
-  check:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Run PLASMA check
-        run: plasma check . --format json > plasma-report.json
-      - name: Upload report
-        uses: actions/upload-artifact@v4
-        with:
-          name: plasma-report
-          path: plasma-report.json
-----
-
-=== Daemon Mode
-
-Minimal "scan and log" loop for periodic audits:
-
-[source]
-----
-plasma daemon [--interval 1h] [--output-dir /var/log/plasma/]
-----
-
-Writes timestamped audit logs to the output directory. Suitable for cron or
-systemd timer integration.
+| 0 | Clean: no violation at or above the threshold
+| 1 | Violations at or above the threshold (check), or non-compliant files (audit)
+| 2 | Usage or IO error (bad flags, unreadable policy, missing path)
+|===
 
 == Output Formats
 
-=== Human Output
-
-[source]
-----
-PLASMA Check — /path/to/repo
-Policy: pmpl-1.0-base (v0.1)
-
-[ERROR] Missing SPDX header in src/main.ml
-        Rule: spdx-header-required (Obligation)
-        Source: PMPL-1.0 §3.1
-
-[WARNING] Exhibit E-001 reference outdated
-          Rule: exhibit-ref-current (Obligation)
-          Source: Governance Playbook §2.4
-
-2 findings (1 error, 1 warning)
-----
-
-=== JSON Output
-
-[source,json]
-----
-{
-  "path": "/path/to/repo",
-  "policy": {"id": "pmpl-1.0-base", "version": {"major": 0, "minor": 1}},
-  "findings": [
-    {
-      "rule_id": "spdx-header-required",
-      "subject": {"type": "file", "path": "src/main.ml"},
-      "severity": "error",
-      "kind": "compliance",
-      "message": "Missing SPDX header",
-      "source": "PMPL-1.0 §3.1"
-    }
-  ],
-  "summary": {"errors": 1, "warnings": 1, "info": 0}
-}
-----
-
-== Action Planner Output
-
-=== Dry-Run
-
-[source]
-----
-PLASMA Fix — /path/to/repo (dry-run)
-
-[1] Add SPDX header to src/main.ml
-    License: PMPL-1.0-or-later
-    Reason: spdx-header-required (Obligation)
-
-[2] Update exhibit reference in .machine_readable/ECOSYSTEM.scm
-    From: E-001-v1 → E-001-v2
-    Reason: exhibit-ref-current (Obligation)
-
-2 actions planned. Run with --apply to execute.
-----
-
-=== Apply Mode
-
-[source]
-----
-PLASMA Fix — /path/to/repo (applying)
-
-[1] ✓ Added SPDX header to src/main.ml
-[2] ✓ Updated exhibit reference in .machine_readable/ECOSYSTEM.scm
-
-2 actions applied. Backup at .plasma-backup/2026-02-20T10:00:00/
-----
+* **Human** — violations with rule id, subject, message, rationale, and
+  source; a one-line summary. Pass findings shown with `--verbose`.
+* **JSON** — the `Evaluation` structure serialized directly; deterministic
+  (byte-identical for identical inputs).
+* **SARIF 2.1.0** — `plasma/<rule-id>` rule namespace, levels
+  `error|warning|note`, pass findings as `kind: "pass"` under `--verbose`.
+  Uploadable to GitHub Code Scanning.

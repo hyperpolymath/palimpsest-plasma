@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma — Contractiles
 :toc:
@@ -7,14 +7,24 @@
 
 toc::[]
 
+[NOTE]
+====
+Contractiles are a **roadmap** concept for reversible policy commitments
+(see ROADMAP.adoc, "Future Directions"). This document is a design sketch;
+the v0.2 engine implements one-directional deontic rules (obligation /
+prohibition / permission), not reversible contractiles. The wording below
+predates the identity pivot and uses "PLASMA engine" / "Palimpsest-MPL"
+loosely — read it as design intent, not shipped behaviour.
+====
+
 == What Are Contractiles?
 
-Contractiles are a governance-grade primitive within the PLASMA engine. The word
-sits between "contract" and "tensile" — a unit that contracts, binds, or
-tightens around a constraint or intention. Within the Palimpsest-MPL ecosystem,
-contractiles serve as the smallest unit of binding in governance: something that
-tightens obligations around a state, but can also relax or release under defined
-conditions.
+Contractiles are a governance-grade primitive intended for the policy
+engine. The word sits between "contract" and "tensile" — a unit that
+contracts, binds, or tightens around a constraint or intention.
+Contractiles serve as the smallest unit of binding in governance: something
+that tightens obligations around a state, but can also relax or release
+under defined conditions.
 
 == Conceptual Roles
 

@@ -14,7 +14,7 @@
       <p class="lead"><%= page.description || "Palimpsest compliance guidance" %></p>
       <nav>
         <%= for item <- nav do %>
-          <a href="/<%= item.url %>"><%= item.title %></a>
+          <a href="/<%= item.slug %>.html"><%= item.title %></a>
         <% end %>
       </nav>
     </header>
@@ -22,7 +22,7 @@
       <%= content %>
     </main>
     <footer>
-      <p>&copy; 2026 Palimpsest Plasma · PMPL-1.0-or-later</p>
+      <p>&copy; 2026 Palimpsest Plasma · code MPL-2.0 · docs CC-BY-SA-4.0</p>
     </footer>
   </body>
 </html>

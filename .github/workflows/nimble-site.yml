@@ -1,4 +1,4 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 name: NimblePublisher Site
 on:
   push:
@@ -34,11 +34,20 @@ jobs:
           path: site/_site
   deploy:
     needs: build
+    # Only deploy from the default branch — never from a pull request, which
+    # would publish unmerged content to the live Pages site.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       pages: write
       contents: read
+      # Required by actions/deploy-pages for OIDC token minting.
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     steps:
       - name: Deploy to GitHub Pages
+        id: deployment
         uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

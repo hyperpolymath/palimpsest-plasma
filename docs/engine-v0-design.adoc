@@ -1,0 +1,214 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Plasma Engine v0 — Normative Design
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
+
+== Status
+
+This document is the **normative specification** of the plasma-engine v0
+policy format and evaluation semantics, as implemented in
+`plasma-engine/src/`. It supersedes the OCaml-typed sketch in
+link:policy-ast-v0.1.adoc[policy-ast-v0.1.adoc] (kept as design lineage).
+
+Divergences from that sketch, all deliberate:
+
+* `exhibit` → **overlay** — the mechanism (additive policy extension) is
+  retained; the license-specific vocabulary is not.
+* Rules carry an explicit **severity** (`error` | `warning` | `info`,
+  default `error`).
+* PMPL-specific conditions (`C_HasProvenanceManifest`,
+  `C_HasExhibitReference`) are dropped; `spdx-license-is` is added.
+* `S_File` gains a multi-subject form `file-pattern` (a list of globs — the
+  `glob` crate has no brace expansion, so `**/*.{rs,toml}` must be written
+  as two patterns).
+
+== Document format
+
+A policy is a TOML (authoring) or JSON (interchange) document deserialized
+into the types in `plasma-engine/src/ast.rs`. Enums are internally tagged:
+an object with a `type` field in kebab-case, e.g.
+`{ type = "file", path = "LICENSE*" }`. This encoding — not the Rust types —
+is the interchange contract.
+
+[source,toml]
+----
+schema_version = { major = 0, minor = 1 }   # mandatory, checked first
+id = "policy-id"
+version = { major = 1, minor = 0 }          # the policy's own version
+
+[[rules]]
+id = "unique-rule-id"                        # duplicate ids are a load error
+modality = "obligation"                      # obligation | prohibition | permission
+severity = "error"                           # optional; error | warning | info
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+condition = { type = "true" }                # optional; defaults to true
+action = { type = "present" }
+rationale = "why this rule exists"           # optional
+source = "provenance of the rule"            # optional
+
+[[overlays]]                                 # optional
+id = "overlay-id"
+applies_to = []
+
+[[overlays.effects]]
+type = "add-rules"
+# rules = [ ... same shape as above ... ]
+----
+
+=== Vocabulary
+
+Subjects (`type =`):
+`repo` · `file {path}` · `file-pattern {patterns: [glob…]}` ·
+`metadata {key}` · `release {tag}` (reserved).
+
+Resources: `file {path}` (path may be a glob) · `header` ·
+`manifest {path}` · `governance-field {key}` · `release` (reserved).
+
+Conditions: `true` · `not {of}` · `all {of: […]}` · `any {of: […]}` ·
+`repo-has-file {path}` · `has-spdx-header` · `spdx-license-is {expr}` ·
+`governance-flag-set {key, value}` · `version-at-least {version}` ·
+`file-matches-pattern {path, pattern}` (reserved).
+
+Actions: `present` · `absent` · `valid` · `consistent-with {id}` (reserved).
+
+Modalities: `obligation` · `prohibition` · `permission`.
+
+=== Load-time rejection
+
+Every construct the v0 evaluator cannot give exact semantics to is rejected
+at **load**, never mid-evaluation (`plasma-engine/src/schema.rs`):
+
+* `schema_version` ≠ 0.1 → `UnsupportedSchemaVersion`
+* duplicate rule ids (across base rules and overlay-added rules)
+* reserved constructs: subject `release`, resource `release`, action
+  `consistent-with`, condition `file-matches-pattern` (v0 facts carry no
+  file contents), overlay effects `modify-rules` / `override-rules`
+
+Consequence: **any policy that loads, evaluates** — `evaluate` is total.
+
+== Fact collection
+
+`plasma-engine/src/facts.rs` is the only impure module. All repository
+knowledge flows through the `FactSet`; the evaluator never touches the
+filesystem. Collection rules, pinned so an independent implementation can
+reproduce identical facts:
+
+* **Walk**: every regular file under the root; an entry is skipped when its
+  name starts with `.` or is one of `target`, `node_modules`, `vendor`,
+  `_build`, `deps`. Paths are recorded relative to the root, `/`-separated.
+* **SPDX headers**: for files whose extension is in
+  `plasma_parser::audit::header::AUDITABLE_EXTENSIONS`, the raw
+  `SPDX-License-Identifier:` value from the first **15 lines**
+  (`MAX_HEADER_LINES`), comment prefixes `//`, `#`, `--`, `;;` stripped.
+  The raw string is stored; parsing is deferred to evaluation (still pure —
+  a function of the stored string).
+* **Metadata**: v0 collects `version` from the root `Cargo.toml`
+  `[package]` table when present.
+* **Git**: `is_repo` and `head_ref` read directly from `.git/HEAD` — no
+  subprocess, no clock.
+* All collections are `BTreeMap`/`BTreeSet`: iteration order, and therefore
+  finding order, is deterministic. The fact set contains **no timestamps**.
+
+== Evaluation semantics
+
+`evaluate(policy, facts)` (`plasma-engine/src/eval.rs`):
+
+1. Effective rules = base rules ++ overlay `add-rules` (in document order).
+   Findings from overlay rules carry `source = "overlay:<id>"` when the
+   rule declares no source of its own.
+2. Each rule's subject expands to concrete instances: `repo` → itself;
+   `file` → that path; `file-pattern` → every collected file matching any
+   pattern; `metadata` → that key.
+3. The condition is evaluated as a total predicate of (facts, instance).
+   If false, the rule is **not applicable** to that instance: no finding.
+4. If applicable, the deontic matrix produces exactly one finding
+   (violation or pass) per instance.
+
+=== Condition denotations
+
+|===
+| Condition | Denotation
+
+| `repo-has-file p` | ∃ f ∈ files. glob(p, f)
+| `has-spdx-header` | instance is a path f ∧ headers[f] = Some(_)
+| `spdx-license-is e` | header of instance parses ∧ parse(header) = parse(e); if either side fails to parse, exact-text comparison
+| `governance-flag-set k v` | metadata[k] = v (absent key ⇒ false)
+| `version-at-least v` | numeric dotted comparison of metadata["version"] against v; absent or non-numeric ⇒ false
+| `not / all / any` | strict boolean composition
+|===
+
+Glob semantics: `glob::Pattern` over `/`-separated relative paths, with one
+extension: a `\**/` prefix also matches zero directories (`**/*.rs` matches
+`main.rs`). A malformed pattern matches nothing.
+
+=== Deontic matrix
+
+"exists" is resource existence for the instance; "valid" is structural
+validity (for `header`: the SPDX expression parses; for everything else in
+v0, validity coincides with existence).
+
+|===
+| Modality | Action | Violation iff
+
+| obligation | present | ¬exists
+| obligation | absent | exists
+| obligation | valid | ¬valid
+| prohibition | present | exists
+| prohibition | absent | ¬exists
+| prohibition | valid | valid
+| permission | any | never (emits a pass finding)
+|===
+
+Satisfied rules emit **pass** findings (`status = "pass"`), retained in the
+`Evaluation` and rendered with `--verbose`. This gives claim-verification
+tooling positive evidence, not just the absence of complaints.
+
+== Output contracts
+
+* **JSON** (`plasma check --format json`): the `Evaluation` structure
+  serialized directly — root, policy id/version, schema version, ordered
+  findings, summary counts. Deterministic: identical inputs produce
+  byte-identical output.
+* **SARIF 2.1.0** (`--format sarif`): one SARIF rule per policy rule,
+  `ruleId = "plasma/<rule-id>"` — a **stable namespace**; consumers key on
+  it. Severity maps to `error` | `warning` | `note`. Pass findings appear
+  only with `--verbose`, as `kind: "pass"`. Repo- and metadata-scoped
+  findings carry no artifact location (SARIF permits this).
+* **Facts** (`plasma facts`): the `FactSet` as JSON — the diffable
+  before/after snapshot for agent-verification tooling.
+
+== Formalization guarantees (Catala-readiness)
+
+The v0 engine commits to properties a future formal core (OCaml/Catala) can
+rely on, so that core can *generate* policies in this format or *verify*
+this evaluator against a formal semantics:
+
+1. **Determinism** — `evaluate` is a pure function `Policy × FactSet →
+   Evaluation`: no IO, clocks, randomness, or environment reads; BTree
+   ordering everywhere; byte-identical JSON for identical inputs.
+2. **Totality** — no panics on any loadable policy; every partial case has
+   the defined false/absent semantics tabulated above; unsupported
+   constructs are rejected at load, never mid-evaluation.
+3. **Versioned schema** — `schema_version` is mandatory and checked first;
+   the loader refuses other versions with a distinct error.
+4. **No ambient state** — all repository knowledge flows through the
+   `FactSet`, whose collection procedure is specified above.
+5. **Closed condition algebra** — conditions form a boolean algebra over
+   the finite predicate vocabulary denoted above; nothing else can appear.
+6. **Stable rule namespace** — `plasma/<rule-id>` in SARIF is the
+   interchange contract with sibling tooling (`somethings-fishy`,
+   `did-you-actually-do-that`).
+
+== Roadmap interaction
+
+Reserved constructs (`release` subjects/resources, `consistent-with`,
+`file-matches-pattern`, `modify-rules`/`override-rules`) parse today and
+gain semantics in later minor versions alongside their fact sources
+(release facts, content facts, decision registries). The schema version
+gates all of it: a policy using future semantics will not load on an engine
+that cannot honour it.

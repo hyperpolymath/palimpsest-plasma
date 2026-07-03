@@ -27,7 +27,9 @@ defmodule PalimpsestSite do
   BUILD: Orchestrates the full static site generation cycle.
   """
   def build do
-    pages = pages()
+    # NimblePublisher's `as: :pages` option populates the `@pages` module
+    # attribute with the parsed Page structs (inlined here at compile time).
+    pages = @pages
     template = File.read!(@template_path)
 
     # REFRESH: Atomic reset of the output directory.
@@ -44,5 +46,29 @@ defmodule PalimpsestSite do
     end)
   end
 
-  # ... [Private rendering and path helpers]
+  # Render one page by evaluating the EEx template with the bindings the
+  # template expects as bare variables: `page`, `nav` (all pages, for the
+  # menu), `content`, and `site_title`.
+  defp render_page(template, page, pages) do
+    EEx.eval_string(template,
+      page: page,
+      nav: pages,
+      content: page.content,
+      site_title: "Palimpsest Plasma"
+    )
+  end
+
+  # Copy the static asset directory into the output tree, if present.
+  defp copy_assets do
+    assets_src = Path.expand("../assets", __DIR__)
+
+    if File.dir?(assets_src) do
+      File.cp_r!(assets_src, Path.join(@output_dir, "assets"))
+    end
+  end
+
+  # Map a page slug to its output filename. The "index" slug becomes the
+  # site root; everything else gets its own directory-style path.
+  defp page_filename("index"), do: "index.html"
+  defp page_filename(slug), do: "#{slug}.html"
 end

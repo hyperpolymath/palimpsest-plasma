@@ -114,30 +114,20 @@ fn check_palimpsest_compat(a: &License, b: &License) -> Option<Compatibility> {
 
     match &palimpsest.variant {
         PalimpsestVariant::PAGPL => match &other_base {
-            BaseLicense::AGPL3 => {
-                Some(Compatibility::Compatible)
-            }
-            BaseLicense::GPL3 => {
-                Some(Compatibility::Compatible)
-            }
+            BaseLicense::AGPL3 => Some(Compatibility::Compatible),
+            BaseLicense::GPL3 => Some(Compatibility::Compatible),
             BaseLicense::MPL2 => Some(Compatibility::Conditional(
                 "file-level separation required (AGPL copyleft vs MPL per-file)".to_string(),
             )),
             _ => None,
         },
         PalimpsestVariant::PMPL => match &other_base {
-            BaseLicense::MPL2 => {
-                Some(Compatibility::Compatible)
-            }
+            BaseLicense::MPL2 => Some(Compatibility::Compatible),
             _ => None,
         },
         PalimpsestVariant::PGPL => match &other_base {
-            BaseLicense::AGPL3 => {
-                Some(Compatibility::Compatible)
-            }
-            BaseLicense::GPL3 => {
-                Some(Compatibility::Compatible)
-            }
+            BaseLicense::AGPL3 => Some(Compatibility::Compatible),
+            BaseLicense::GPL3 => Some(Compatibility::Compatible),
             BaseLicense::MIT | BaseLicense::BSD3 | BaseLicense::BSD2 => {
                 Some(Compatibility::Compatible)
             }
@@ -189,26 +179,31 @@ fn check_base_compat(a: &BaseLicense, b: &BaseLicense) -> Compatibility {
 
     // Copyleft vs copyleft.
     match (a, b) {
-        (BaseLicense::GPL3, BaseLicense::AGPL3)
-        | (BaseLicense::AGPL3, BaseLicense::GPL3) => Compatibility::Compatible,
+        (BaseLicense::GPL3, BaseLicense::AGPL3) | (BaseLicense::AGPL3, BaseLicense::GPL3) => {
+            Compatibility::Compatible
+        }
 
-        (BaseLicense::GPL3, BaseLicense::LGPL3)
-        | (BaseLicense::LGPL3, BaseLicense::GPL3) => Compatibility::Compatible,
+        (BaseLicense::GPL3, BaseLicense::LGPL3) | (BaseLicense::LGPL3, BaseLicense::GPL3) => {
+            Compatibility::Compatible
+        }
 
-        (BaseLicense::GPL3, BaseLicense::MPL2)
-        | (BaseLicense::MPL2, BaseLicense::GPL3) => Compatibility::Conditional(
-            "PMPL-1.0-or-later Section 3.3 allows relicensing under GPL".to_string(),
-        ),
+        (BaseLicense::GPL3, BaseLicense::MPL2) | (BaseLicense::MPL2, BaseLicense::GPL3) => {
+            Compatibility::Conditional(
+                "PMPL-1.0-or-later Section 3.3 allows relicensing under GPL".to_string(),
+            )
+        }
 
-        (BaseLicense::AGPL3, BaseLicense::MPL2)
-        | (BaseLicense::MPL2, BaseLicense::AGPL3) => Compatibility::Conditional(
-            "file-level separation required (AGPL copyleft vs MPL per-file)".to_string(),
-        ),
+        (BaseLicense::AGPL3, BaseLicense::MPL2) | (BaseLicense::MPL2, BaseLicense::AGPL3) => {
+            Compatibility::Conditional(
+                "file-level separation required (AGPL copyleft vs MPL per-file)".to_string(),
+            )
+        }
 
-        (BaseLicense::GPL2, BaseLicense::GPL3)
-        | (BaseLicense::GPL3, BaseLicense::GPL2) => Compatibility::Incompatible(
-            "GPL-2.0-only and GPL-3.0 are incompatible without 'or later' clause".to_string(),
-        ),
+        (BaseLicense::GPL2, BaseLicense::GPL3) | (BaseLicense::GPL3, BaseLicense::GPL2) => {
+            Compatibility::Incompatible(
+                "GPL-2.0-only and GPL-3.0 are incompatible without 'or later' clause".to_string(),
+            )
+        }
 
         _ => Compatibility::Unknown,
     }
@@ -248,17 +243,18 @@ mod tests {
     fn test_mpl_proprietary_compatible() {
         let mpl = License::Base(BaseLicense::MPL2);
         let prop = License::Base(BaseLicense::Proprietary);
-        assert_eq!(
-            check_compatibility(&mpl, &prop),
-            Compatibility::Compatible
-        );
+        assert_eq!(check_compatibility(&mpl, &prop), Compatibility::Compatible);
     }
 
     #[test]
     fn test_papl_anything_compatible() {
         use crate::family::{PalimpsestLayer, PalimpsestLicense, Version};
 
-        let version = Version { major: 1, minor: 0, patch: 0 };
+        let version = Version {
+            major: 1,
+            minor: 0,
+            patch: 0,
+        };
         let papl = License::Palimpsest(PalimpsestLicense {
             variant: PalimpsestVariant::PAPL,
             version: version.clone(),
@@ -268,9 +264,6 @@ mod tests {
             or_later: true,
         });
         let agpl = License::Base(BaseLicense::AGPL3);
-        assert_eq!(
-            check_compatibility(&papl, &agpl),
-            Compatibility::Compatible
-        );
+        assert_eq!(check_compatibility(&papl, &agpl), Compatibility::Compatible);
     }
 }
