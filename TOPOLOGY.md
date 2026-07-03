@@ -1,46 +1,44 @@
 <!--
-SPDX-License-Identifier: MPL-2.0
+SPDX-License-Identifier: CC-BY-SA-4.0
 Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 -->
 <!-- TOPOLOGY.md — Project architecture map and completion dashboard -->
-<!-- Last updated: 2026-02-20 -->
+<!-- Last updated: 2026-07-02 -->
 
 # Palimpsest Plasma — Project Topology
 
 ## System Architecture
 
 ```
-                   ┌──────────────────────────────────────────────────────────┐
-                   │                   PLASMA ENGINE                          │
-                   │                                                          │
-                   │  ┌────────────────────────────────────────────────────┐  │
-                   │  │                    CORE (OCaml)                    │  │
-                   │  │                                                    │  │
-                   │  │  Policy AST ──► Eval Engine ──► Action Planner    │  │
-                   │  │       │              │               │             │  │
-                   │  │  Schema &        Findings &      Suggest /        │  │
-                   │  │  Migration       Severity        Apply            │  │
-                   │  │       │              │               │             │  │
-                   │  │  Governance ◄── Contractiles ──► Audit Logs       │  │
-                   │  │  Runtime                                          │  │
-                   │  └────────────────────────────────────────────────────┘  │
-                   │                          │                               │
-                   │  ┌───────────────┐  ┌────┴──────┐  ┌──────────────┐    │
-                   │  │  ADAPTERS     │  │INTEGRATION│  │ UNION POLICY │    │
-                   │  │               │  │           │  │  PARSER      │    │
-                   │  │ Repo Scanner  │  │ CLI       │  │              │    │
-                   │  │ SPDX Parser   │  │ Git Hooks │  │ A2ML Parser  │    │
-                   │  │ Exhibit Parse │  │ CI/CD     │  │ Validator    │    │
-                   │  │ Metadata I/O  │  │ Daemon    │  │ Grievance Gen│    │
-                   │  └───────────────┘  └───────────┘  └──────────────┘    │
-                   └──────────────────────────────────────────────────────────┘
-                                          │
-                   ┌──────────────────────┼──────────────────────────────────┐
-                   │            PALIMPSEST-MPL ECOSYSTEM                     │
-                   │                      │                                  │
-                   │  palimpsest-license   palimpsest-governance             │
-                   │  (PMPL-1.0 text)     (Council processes)               │
-                   └──────────────────────────────────────────────────────────┘
+                 ┌─────────────────────────────────────────────────────┐
+                 │                  plasma (CLI)                       │
+                 │  check · facts · policy · audit · init · badge ·    │
+                 │  migrate                                            │
+                 └────────────┬───────────────────────┬────────────────┘
+                              │                       │
+                 ┌────────────▼────────────┐ ┌────────▼────────────────┐
+                 │      plasma-engine      │ │      plasma-parser      │
+                 │                         │ │                         │
+                 │  Policy AST (deontic)   │ │  SPDX lexer + parser    │
+                 │  Schema load/validate   │ │  Identifier catalog     │
+                 │  Fact collection (IO)   │ │  License family types   │
+                 │  Pure evaluator         │ │  Zones (.plasma.toml)   │
+                 │  Findings → human/      │ │  Repo scanner           │
+                 │  JSON/SARIF             │ │  Compat matrix          │
+                 └────────────┬────────────┘ └─────────────────────────┘
+                              │        (engine depends on parser)
+                              ▼
+        ┌──────────────────────────────────────────────────────────────┐
+        │              AGENT-HONESTY TRIO (planned siblings)           │
+        │                                                              │
+        │  palimpsest-plasma      somethings-fishy    did-you-actually-│
+        │  (policy definition +   (forensic bot-      do-that (claim   │
+        │  deterministic          damage              verification)    │
+        │  evaluation)            investigation)                       │
+        │                                                              │
+        │  Contract: JSON findings · SARIF plasma/<rule-id> ·          │
+        │            plasma facts snapshots (diffable)                 │
+        └──────────────────────────────────────────────────────────────┘
 ```
 
 ## Completion Dashboard
@@ -48,55 +46,48 @@ Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 ```
 COMPONENT                          STATUS              NOTES
 ─────────────────────────────────  ──────────────────  ─────────────────────────────────
-MVP v1 BUNDLE (COMPLETE)
-  Canonical License Tooling         ██████████ 100%    PMPL-1.0 alignment stable
-  Badge & Documentation Assets      ██████████ 100%    v1.0 brand pack shipped
-  Compliance Readiness              ██████████ 100%    SPDX metadata verified
-  Audit/Playback Support            ████████░░  80%    pmpl-verify examples active
-  Citation & Metadata               ██████████ 100%    CITATION.cff + codemeta.json
+PLASMA-PARSER (Rust)
+  SPDX Lexer/Parser/Catalog         █████████░  90%    42 unit tests; PMPL/PPMPL drift fixed
+  License Family Types              ████████░░  80%    Registry + fallback chains
+  Zone System (.plasma.toml)        ████████░░  80%    Boundary parsing, overlap detection
+  Repo Scanner (scan_repo)          ████████░░  80%    Deterministic walk, zone-aware
+  Compat Matrix                     ███████░░░  70%    Pairwise checks; no report surface yet
+  JSON/SARIF Reports                ████████░░  80%    RepoAudit renderers
 
-UNION POLICY PARSER (Rust/A2ML)
-  A2ML Parser                       ██████████ 100%    nom-based, full test suite
-  Union Schemas (NUJ/IWW/UCU/+3)   ██████████ 100%    7 schemas with attestations
-  Contract Validator                ██████████ 100%    3 modes: Lax/Checked/Attested
-  Grievance Generator               ██████████ 100%    JSON/Markdown/HTML output
-  Idris2 ABI + Zig FFI             ████████░░  80%    Template stubs, needs customisation
+PLASMA-ENGINE (Rust)
+  Policy AST v0.1                   █████████░  90%    Typed, serde TOML/JSON
+  Schema Load + Validation          █████████░  90%    Load-time rejection of reserved constructs
+  Fact Collection                   ████████░░  80%    Files, headers, Cargo version, git HEAD
+  Pure Evaluator                    █████████░  90%    Total; deterministic; 19 unit tests
+  Human/SARIF Rendering             ████████░░  80%    Stable plasma/<rule-id> namespace
+  Overlays (add-rules)              ████████░░  80%    modify/override reserved for v0.3
 
-PLASMA ENGINE (OCaml — IN DESIGN)
-  Policy AST v0.1                   ██░░░░░░░░  20%    Types specified, not implemented
-  Schema Migration Framework        ░░░░░░░░░░   0%    Design complete
-  Evaluation Engine                 ░░░░░░░░░░   0%    Design complete
-  Action Planner                    ░░░░░░░░░░   0%    Design complete
-  Governance Runtime                ░░░░░░░░░░   0%    Design complete
-  Contractiles                      █░░░░░░░░░  10%    Concept documented
+CLI (plasma)
+  check / facts / policy validate   █████████░  90%    Self-tested against this repo
+  audit (parser-backed)             ████████░░  80%    Zone-aware; --fix
+  init / migrate / badge            ████████░░  80%    License-agnostic, MPL-2.0 default
+  fix (action planner)              ░░░░░░░░░░   0%    Roadmap v0.3
+  Git hooks / CI action / daemon    ░░░░░░░░░░   0%    Roadmap v0.4
 
-INTEGRATION SURFACES
-  CLI (plasma check/fix/audit)      ░░░░░░░░░░   0%    Design complete (cli-design.adoc)
-  Git Hooks                         ░░░░░░░░░░   0%    Planned
-  GitHub Actions                    ░░░░░░░░░░   0%    Planned
-  Daemon/Cron Mode                  ░░░░░░░░░░   0%    Planned
-
-STATIC SITE & INFRASTRUCTURE
-  Elixir Site (NimblePublisher)     ██████████ 100%    mix site.build verified
-  Justfile Automation               ██████████ 100%    Standard build tasks
-  .machine_readable/                ██████████ 100%    STATE tracking active
-  Multi-Forge Synchronization       ██████████ 100%    GH/GL sync stable
+INFRASTRUCTURE
+  Elixir Site (NimblePublisher)     ███████░░░  70%    Render helpers restored; CI-verified
+  Justfile (cargo)                  █████████░  90%    Rewritten from stale OCaml recipes
+  .machine_readable/                ███████░░░  70%    STATE/ECOSYSTEM truth-updated
+  CI (GitHub reusables + GitLab)    ██████░░░░  60%    Reusables externally pinned/unverifiable
 
 ─────────────────────────────────────────────────────────────────────────────
-OVERALL:                            ████░░░░░░  40%    MVP done; engine in design phase
+OVERALL:                            █████░░░░░  ~50%   Engine v0 shipped; planner + surfaces ahead
 ```
 
 ## Key Dependencies
 
 ```
-Policy AST ───► Eval Engine ────► Action Planner ──► CLI / Hooks / CI
-     │               │                │
-     ▼               ▼                ▼
-Migration ───► Fact Adapters ──► Governance Runtime ──► Audit Logs
-     │               │                │
-     ▼               ▼                ▼
-Contractiles  Union Policy      Exhibit Lifecycle
-              Parser (A2ML)     (Council Decisions)
+Policy AST ──► Schema Loader ──► Pure Evaluator ──► Findings ──► human/JSON/SARIF
+                                      ▲
+Fact Collector (walk, SPDX headers, ──┘
+metadata, git) ── uses plasma-parser header extraction
+
+plasma audit ──► plasma-parser scan_repo ──► zone map (.plasma.toml)
 ```
 
 ## Update Protocol
@@ -110,3 +101,5 @@ This file is maintained by both humans and AI agents. When updating:
 
 Progress bars use: `█` (filled) and `░` (empty), 10 characters wide.
 Percentages: 0%, 10%, 20%, ... 100% (in 10% increments).
+Honesty rule: a component that does not compile or run is 0–20%,
+whatever its design documents say.

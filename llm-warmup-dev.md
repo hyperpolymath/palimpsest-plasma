@@ -12,9 +12,9 @@ See README.adoc for overview.
 - `just build` — build the project
 - `just test` — run tests
 - `just doctor` — diagnose issues
-- `just heal` — attempt auto-repair
+- `just check` — run plasma against this repo (dogfood)
 
 ## Quick Context
-- License: PMPL-1.0-or-later
+- License: MPL-2.0 (code), CC-BY-SA-4.0 (docs)
 - Part of hyperpolymath ecosystem
 - See EXPLAINME.adoc for architecture

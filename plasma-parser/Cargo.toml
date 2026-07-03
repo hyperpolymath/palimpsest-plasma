@@ -1,13 +1,13 @@
-# SPDX-License-Identifier: PPMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 [package]
 name = "plasma-parser"
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
-description = "Core parser library for the palimpsest license family — SPDX expressions, zone auditing, compatibility checking"
+description = "License/SPDX parsing library — SPDX expressions (including Palimpsest-family identifiers), zone auditing, compatibility checking"
 license = "MPL-2.0"
 repository = "https://github.com/hyperpolymath/palimpsest-plasma"
-keywords = ["license", "palimpsest", "pmpl", "spdx", "parser"]
+keywords = ["license", "spdx", "parser", "audit", "compliance"]
 categories = ["parser-implementations", "development-tools"]
 
 [dependencies]

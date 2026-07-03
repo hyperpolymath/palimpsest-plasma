@@ -271,7 +271,9 @@ impl std::fmt::Display for License {
 #[derive(Debug, Clone, Error, Serialize, Deserialize)]
 pub enum FamilyError {
     /// Fallback license does not match the declared base.
-    #[error("fallback mismatch for {variant}: base is {declared_base}, fallback is {declared_fallback}")]
+    #[error(
+        "fallback mismatch for {variant}: base is {declared_base}, fallback is {declared_fallback}"
+    )]
     FallbackMismatch {
         variant: PalimpsestVariant,
         declared_base: BaseLicense,
@@ -291,10 +293,12 @@ pub enum FamilyError {
         variant: PalimpsestVariant,
     },
     /// SPDX header in a file says one license but the LICENSE file says another.
+    // The `License` fields are boxed to keep `FamilyError` small (it is
+    // returned by value in `Result`s throughout the family module).
     #[error("header/license mismatch in {}: header says {header_says}, LICENSE says {license_file_says}", file.display())]
     HeaderLicenseMismatch {
         file: PathBuf,
-        header_says: License,
-        license_file_says: License,
+        header_says: Box<License>,
+        license_file_says: Box<License>,
     },
 }

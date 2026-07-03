@@ -1,11 +1,14 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
-// plasma migrate — convert from MIT/Apache/GPL to PPMPL-1.0-or-later.
+// plasma migrate — convert a project from one license to another.
 
 use anyhow::{Context, Result};
 use std::fs;
 use std::path::Path;
+
+/// The full MPL-2.0 license text (embedded for offline use).
+const MPL_2_0_TEXT: &str = include_str!("../LICENSES/MPL-2.0.txt");
 
 /// Known license identifiers we can migrate from.
 const KNOWN_LICENSES: &[&str] = &[
@@ -19,13 +22,14 @@ const KNOWN_LICENSES: &[&str] = &[
     "BSD-2-Clause",
     "BSD-3-Clause",
     "ISC",
+    "MPL-2.0",
     "PMPL-1.0-or-later",
     "Unlicense",
     "0BSD",
 ];
 
-/// Run the migration: detect current license, replace with PPMPL-1.0-or-later.
-pub fn run(path: &str, from: Option<&str>) -> Result<()> {
+/// Run the migration: detect current license, replace with the target license.
+pub fn run(path: &str, from: Option<&str>, to: &str) -> Result<()> {
     let root = Path::new(path);
 
     // Detect current license
@@ -35,7 +39,12 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         detect_license(root)?
     };
 
-    println!("  Migrating from {} → PPMPL-1.0-or-later", current);
+    if current == to {
+        println!("  Nothing to do: project already uses {current}");
+        return Ok(());
+    }
+
+    println!("  Migrating from {current} → {to}");
     println!();
 
     // Replace LICENSE file
@@ -43,20 +52,28 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
     if license_path.exists() {
         // Back up old license
         let backup = root.join(format!("LICENSE.{}.bak", current.replace('/', "-")));
-        fs::copy(&license_path, &backup)
-            .context("Failed to back up LICENSE")?;
+        fs::copy(&license_path, &backup).context("Failed to back up LICENSE")?;
         println!("  BACKED UP: LICENSE → {}", backup.display());
     }
 
     // Write new license
-    let pmpl_text = include_str!("../LICENSE-PPMPL-1.0-or-later.txt");
-    fs::write(&license_path, pmpl_text)
-        .context("Failed to write LICENSE")?;
-    println!("  REPLACED: LICENSE (PPMPL-1.0-or-later)");
+    if to == "MPL-2.0" {
+        fs::write(&license_path, MPL_2_0_TEXT).context("Failed to write LICENSE")?;
+        println!("  REPLACED: LICENSE (MPL-2.0)");
+    } else {
+        fs::write(
+            &license_path,
+            format!(
+                "SPDX-License-Identifier: {to}\n\nTODO: replace this stub with the full {to} license text.\n"
+            ),
+        )
+        .context("Failed to write LICENSE stub")?;
+        println!("  REPLACED: LICENSE with a {to} stub — add the full license text manually");
+    }
 
     // Update SPDX headers in source files
     let old_spdx = format!("SPDX-License-Identifier: {current}");
-    let new_spdx = "SPDX-License-Identifier: PPMPL-1.0-or-later".to_string();
+    let new_spdx = format!("SPDX-License-Identifier: {to}");
     let mut updated_count = 0u32;
 
     for entry in walkdir::WalkDir::new(root)
@@ -79,10 +96,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
     }
 
     if updated_count > 0 {
-        println!(
-            "  UPDATED: {} file(s) — SPDX headers changed to PPMPL-1.0-or-later",
-            updated_count
-        );
+        println!("  UPDATED: {updated_count} file(s) — SPDX headers changed to {to}");
     }
 
     // Update Cargo.toml license field
@@ -91,7 +105,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         let content = fs::read_to_string(&cargo_path)?;
         let old_field = format!("license = \"{current}\"");
         if content.contains(&old_field) {
-            let updated = content.replace(&old_field, "license = \"PPMPL-1.0-or-later\"");
+            let updated = content.replace(&old_field, &format!("license = \"{to}\""));
             fs::write(&cargo_path, updated)?;
             println!("  UPDATED: Cargo.toml license field");
         }
@@ -103,7 +117,7 @@ pub fn run(path: &str, from: Option<&str>) -> Result<()> {
         let content = fs::read_to_string(&pkg_path)?;
         let old_field = format!("\"license\": \"{current}\"");
         if content.contains(&old_field) {
-            let updated = content.replace(&old_field, "\"license\": \"PPMPL-1.0-or-later\"");
+            let updated = content.replace(&old_field, &format!("\"license\": \"{to}\""));
             fs::write(&pkg_path, updated)?;
             println!("  UPDATED: package.json license field");
         }
@@ -126,9 +140,7 @@ fn detect_license(root: &Path) -> Result<String> {
                 return detect_from_content(&fs::read_to_string(p)?);
             }
         }
-        anyhow::bail!(
-            "No LICENSE file found. Use --from to specify the current license."
-        );
+        anyhow::bail!("No LICENSE file found. Use --from to specify the current license.");
     }
 
     let content = fs::read_to_string(&license_path)?;
@@ -139,7 +151,12 @@ fn detect_license(root: &Path) -> Result<String> {
 fn detect_from_content(content: &str) -> Result<String> {
     let lower = content.to_lowercase();
 
-    if lower.contains("mit license") || lower.contains("permission is hereby granted, free of charge") {
+    if lower.contains("palimpsest") {
+        return Ok("PMPL-1.0-or-later".to_string());
+    }
+    if lower.contains("mit license")
+        || lower.contains("permission is hereby granted, free of charge")
+    {
         return Ok("MIT".to_string());
     }
     if lower.contains("apache license") && lower.contains("version 2.0") {
@@ -158,9 +175,10 @@ fn detect_from_content(content: &str) -> Result<String> {
         return Ok("AGPL-3.0".to_string());
     }
     if lower.contains("mozilla public license") && lower.contains("2.0") {
-        return Ok("PMPL-1.0-or-later".to_string());
+        return Ok("MPL-2.0".to_string());
     }
-    if lower.contains("bsd 2-clause") || (lower.contains("redistribution") && !lower.contains("3.")) {
+    if lower.contains("bsd 2-clause") || (lower.contains("redistribution") && !lower.contains("3."))
+    {
         return Ok("BSD-2-Clause".to_string());
     }
     if lower.contains("bsd 3-clause") {
@@ -171,9 +189,6 @@ fn detect_from_content(content: &str) -> Result<String> {
     }
     if lower.contains("unlicense") || lower.contains("this is free and unencumbered") {
         return Ok("Unlicense".to_string());
-    }
-    if lower.contains("palimpsest") {
-        return Ok("PMPL-1.0".to_string());
     }
 
     anyhow::bail!(

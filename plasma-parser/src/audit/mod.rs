@@ -6,6 +6,9 @@
 
 pub mod content;
 pub mod header;
+pub mod scan;
+
+pub use scan::scan_repo;
 
 use crate::family::FamilyError;
 use crate::spdx::SpdxExpr;

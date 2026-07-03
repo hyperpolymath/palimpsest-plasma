@@ -33,11 +33,7 @@ pub enum CatalogError {
 /// (in practice, unrecognised identifiers fall through to `BaseLicense::Other`).
 pub fn resolve_identifier(id: &str, or_later: bool) -> Result<License, CatalogError> {
     // Extract the name portion (before any version) for palimpsest matching.
-    let name_part = id
-        .split('-')
-        .next()
-        .unwrap_or(id)
-        .to_uppercase();
+    let name_part = id.split('-').next().unwrap_or(id).to_uppercase();
 
     // Try palimpsest variants first.
     if let Some(license) = try_palimpsest(&name_part, id, or_later) {
@@ -53,7 +49,7 @@ pub fn resolve_identifier(id: &str, or_later: bool) -> Result<License, CatalogEr
         "LGPL-2.1" | "LGPL-2.1-only" => BaseLicense::LGPL21,
         "LGPL-3.0" | "LGPL-3.0-only" => BaseLicense::LGPL3,
         "AGPL-3.0" | "AGPL-3.0-only" => BaseLicense::AGPL3,
-        "PMPL-1.0-or-later" => BaseLicense::MPL2,
+        "MPL-2.0" => BaseLicense::MPL2,
         "BSD-2-Clause" => BaseLicense::BSD2,
         "BSD-3-Clause" => BaseLicense::BSD3,
         "ISC" => BaseLicense::ISC,
@@ -78,7 +74,9 @@ pub fn resolve_identifier(id: &str, or_later: bool) -> Result<License, CatalogEr
 /// palimpsest prefix, or `None` otherwise.
 fn try_palimpsest(name_upper: &str, full_id: &str, or_later: bool) -> Option<License> {
     let (variant, base) = match name_upper {
-        "PMPL" => (PalimpsestVariant::PMPL, BaseLicense::MPL2),
+        // "PPMPL" is a historical double-P spelling of the PMPL identifier;
+        // both resolve to the same variant.
+        "PMPL" | "PPMPL" => (PalimpsestVariant::PMPL, BaseLicense::MPL2),
         "PAGPL" => (PalimpsestVariant::PAGPL, BaseLicense::AGPL3),
         "PGPL" => (PalimpsestVariant::PGPL, BaseLicense::GPL3),
         "PAPL" => (PalimpsestVariant::PAPL, BaseLicense::Apache2),
@@ -115,8 +113,14 @@ fn extract_version(id: &str) -> Option<Version> {
             if first_char.is_ascii_digit() {
                 let version_parts: Vec<&str> = part.split('.').collect();
                 let major = version_parts.first()?.parse().ok()?;
-                let minor = version_parts.get(1).and_then(|s| s.parse().ok()).unwrap_or(0);
-                let patch = version_parts.get(2).and_then(|s| s.parse().ok()).unwrap_or(0);
+                let minor = version_parts
+                    .get(1)
+                    .and_then(|s| s.parse().ok())
+                    .unwrap_or(0);
+                let patch = version_parts
+                    .get(2)
+                    .and_then(|s| s.parse().ok())
+                    .unwrap_or(0);
                 return Some(Version {
                     major,
                     minor,
@@ -166,7 +170,7 @@ fn parse_cc_identifier(id: &str) -> BaseLicense {
 pub const PALIMPSEST_IDENTIFIERS: &[&str] = &[
     "PMPL-1.0",
     "PMPL-1.0-or-later",
-    "PPMPL-1.0-or-later",
+    "PPMPL-1.0",
     "PPMPL-1.0-or-later",
     "PAGPL-1.0",
     "PAGPL-1.0-or-later",
@@ -194,7 +198,7 @@ pub const KNOWN_SPDX_IDENTIFIERS: &[&str] = &[
     "LGPL-3.0-only",
     "AGPL-3.0",
     "AGPL-3.0-only",
-    "PMPL-1.0-or-later",
+    "MPL-2.0",
     "BSD-2-Clause",
     "BSD-3-Clause",
     "ISC",

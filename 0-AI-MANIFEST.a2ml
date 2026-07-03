@@ -1,32 +1,37 @@
-# SPDX-License-Identifier: PMPL-1.0-or-later
+# SPDX-License-Identifier: MPL-2.0
 # STOP - CRITICAL READING REQUIRED
 
 **THIS FILE MUST BE READ FIRST BY ALL AI AGENTS**
 
 ## WHAT IS THIS?
 
-This is the AI manifest for **palimpsest-plasma** — the governance automation
-engine for the Palimpsest-MPL ecosystem.
+This is the AI manifest for **palimpsest-plasma** — a deterministic, typed
+**policy engine** for the agentic era.
 
-PLASMA is an OCaml-based system that interprets licence, exhibits, and governance
-rules as typed, machine-readable policies, evaluates repository state against
-obligations, and produces findings, actions, and audit reports.
+You write policies as machine-readable deontic rules (obligations,
+prohibitions, permissions over repository state); `plasma check` evaluates a
+repository against them with byte-for-byte reproducible results. The project
+is implemented in **Rust** (three crates). It is the policy-definition and
+compliance-evaluation member of a planned trio with `somethings-fishy`
+(forensic bot-damage investigation) and `did-you-actually-do-that` (agent
+claim verification).
+
+**The Palimpsest license (PMPL) is a SEPARATE, FUTURE project.** This repo's
+parser merely recognises PMPL SPDX identifiers. Do not reintroduce PMPL as
+this project's identity.
 
 ## CANONICAL LOCATIONS (UNIVERSAL RULE)
 
-### Machine-Readable Metadata: `.machine_readable/` ONLY
+### Machine-Readable Metadata: `.machine_readable/6a2/` ONLY
 
-These 6 SCM files MUST exist in `.machine_readable/` directory ONLY:
-1. **.machine_readable/6a2/STATE.a2ml** - Project state, progress, blockers
-2. **.machine_readable/6a2/META.a2ml** - Architecture decisions, governance
-3. **.machine_readable/6a2/ECOSYSTEM.a2ml** - Position in ecosystem, relationships
-4. **.machine_readable/6a2/AGENTIC.a2ml** - AI agent interaction patterns
-5. **.machine_readable/6a2/NEUROSYM.a2ml** - Neurosymbolic integration config
-6. **.machine_readable/6a2/PLAYBOOK.a2ml** - Operational runbook
+1. **STATE.a2ml** - Project state, progress, blockers
+2. **META.a2ml** - Architecture decisions, governance
+3. **ECOSYSTEM.a2ml** - Position in ecosystem, sibling projects
+4. **AGENTIC.a2ml** - AI agent interaction patterns
+5. **NEUROSYM.a2ml** - Neurosymbolic integration config
+6. **PLAYBOOK.a2ml** - Operational runbook
 
-**CRITICAL:** If ANY of these files exist in the root directory, this is an ERROR.
-
-### Bot Directives: `.bot_directives/` ONLY
+### Bot Directives: `.machine_readable/bot_directives/`
 
 Bot-specific instructions for rhodibot, echidnabot, sustainabot, glambot,
 seambot, finishbot.
@@ -38,14 +43,23 @@ seambot, finishbot.
 
 ## CORE INVARIANTS
 
-1. **No SCM duplication** - Root must NOT contain .machine_readable/6a2/STATE.a2ml, .machine_readable/6a2/META.a2ml, etc.
-2. **Single source of truth** - `.machine_readable/` is authoritative
-3. **No stale metadata** - If root SCMs exist, they are OUT OF DATE
-4. **License consistency** - All code PMPL-1.0-or-later unless platform requires PMPL-1.0-or-later
-5. **Author attribution** - Always "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"
-6. **OCaml core** - PLASMA engine is OCaml; do not rewrite in other languages
-7. **Deontic operators** - Obligation/Prohibition/Permission are first-class AST values
-8. **Immutable base policy** - Exhibits extend but never mutate the base policy
+1. **Rust core** - The engine, parser, and CLI are Rust. Do not rewrite in
+   another language. (A future OCaml/Catala *formal core* may verify the
+   engine, per docs/engine-v0-design.adoc — that is verification, not a
+   reimplementation of the runtime.)
+2. **Determinism** - `evaluate` is pure and total: no clocks, randomness, IO,
+   or ambient state; BTree ordering everywhere. Preserve this.
+3. **Reject at load, never mid-run** - unsupported policy constructs fail
+   schema validation up front, so any policy that loads evaluates.
+4. **Deontic operators** - Obligation/Prohibition/Permission are first-class
+   AST values.
+5. **Overlays extend, never mutate** - overlays add rules; base policy is
+   immutable.
+6. **License consistency** - Code MPL-2.0; documentation CC-BY-SA-4.0. Every
+   file carries an SPDX header.
+7. **Author attribution** - Always "Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>".
+8. **Single source of truth** - `.machine_readable/6a2/` is authoritative for
+   project state.
 
 ## REPOSITORY STRUCTURE
 
@@ -55,76 +69,66 @@ palimpsest-plasma/
 ├── README.adoc                   # Project overview
 ├── ROADMAP.adoc                  # Implementation milestones
 ├── TOPOLOGY.md                   # Architecture diagram + dashboard
-├── LICENSE                       # PMPL-1.0-or-later
-├── Justfile                      # Build automation
+├── LICENSE                       # MPL-2.0
+├── Justfile                      # Build automation (cargo)
 │
-├── src/                          # PLASMA engine (OCaml) — TO BE BUILT
-│   ├── core/                     # Policy AST, eval, migration, findings
-│   ├── integration/              # CLI, git hooks, CI, daemon
-│   └── adapters/                 # Repo scan, SPDX, exhibits, metadata
+├── src/                          # the `plasma` CLI binary (Rust)
+│   ├── main.rs                   # check/facts/policy/audit/init/badge/migrate
+│   ├── check.rs facts_cmd.rs policy_cmd.rs
+│   └── audit.rs init.rs migrate.rs badge.rs
 │
-├── union-policy-parser/          # Sub-project: A2ML contract validation (Rust)
-│   ├── src/rust/                 # Parser, validator, reporter, schemas
-│   ├── src/abi/                  # Idris2 ABI definitions
-│   ├── ffi/zig/                  # Zig FFI implementation
-│   ├── schemas/                  # Union policy schemas (A2ML)
-│   └── examples/                 # Example contracts
+├── plasma-engine/                # the policy engine (Rust)
+│   ├── src/ast.rs schema.rs facts.rs eval.rs finding.rs
+│   ├── src/report/               # human + SARIF renderers
+│   └── policies/repo-hygiene.plasma.toml   # bundled, self-applied policy
+│
+├── plasma-parser/                # SPDX/license machinery (Rust)
+│   └── src/{spdx,family,zone,audit,compat,report}/
 │
 ├── docs/                         # Documentation
-│   ├── architecture.adoc         # Full system architecture
-│   ├── policy-ast-v0.1.adoc     # Typed AST specification
-│   ├── cli-design.adoc          # CLI and integration design
-│   ├── contractiles.adoc        # Contractiles concept
-│   ├── mvp-v1.adoc              # MVP v1 deliverables
-│   └── release-log.adoc         # Release history
+│   ├── engine-v0-design.adoc     # NORMATIVE semantics + Catala-readiness
+│   ├── architecture.adoc         # System architecture, data flow
+│   ├── policy-ast-v0.1.adoc      # Historical OCaml-typed design (lineage)
+│   └── cli-design.adoc           # CLI and integration design
 │
 ├── site/                         # Elixir/NimblePublisher static site
-├── assets/badges/                # Badge SVGs
-├── contractiles/                 # RSR operational contractiles (k9/dust/lust/must/trust)
-├── .machine_readable/            # SCM files (6 files)
-├── .bot_directives/              # Bot instructions
+├── .machine_readable/            # a2ml metadata + bot directives + contractiles
 └── .github/workflows/            # CI/CD workflows
 ```
 
 ## KEY DOCUMENTS
 
-Read these for full context:
-
-- `docs/architecture.adoc` - Three-layer architecture, data flow, eval loop
-- `docs/policy-ast-v0.1.adoc` - Complete OCaml type definitions for the AST
-- `docs/cli-design.adoc` - CLI subcommands and integration surfaces
-- `docs/contractiles.adoc` - Contractiles: reversible governance primitives
-- `ROADMAP.adoc` - Implementation milestones from v1.0 through v3.x
+- `docs/engine-v0-design.adoc` - NORMATIVE: policy format, evaluation
+  semantics, determinism/totality guarantees. Read before touching the engine.
+- `docs/architecture.adoc` - Crate layout, data flow.
+- `docs/policy-ast-v0.1.adoc` - Historical typed-AST design (lineage only).
+- `docs/cli-design.adoc` - CLI subcommands and roadmap surfaces.
+- `ROADMAP.adoc` - Milestones v0.2 → v1.0.
 
 ## SESSION STARTUP CHECKLIST
 
-1. Read THIS file (0-AI-MANIFEST.a2ml) first
-2. Understand canonical locations (.machine_readable/, .bot_directives/)
-3. Know the invariants (no SCM duplication, OCaml core, deontic operators)
-4. Read `.machine_readable/6a2/STATE.a2ml` for current status
-5. Read `docs/architecture.adoc` for system design
-6. Check `ROADMAP.adoc` for current milestone
+1. Read THIS file first
+2. Read `.machine_readable/6a2/STATE.a2ml` for current status
+3. Read `docs/engine-v0-design.adoc` before changing the engine
+4. Verify with `cargo test --workspace` and `plasma check .`
 
 ## LIFECYCLE HOOKS
 
 ### on-enter (Session Start)
-
 1. Read and acknowledge this manifest
 2. Read `.machine_readable/6a2/STATE.a2ml`
-3. Check for blockers
-4. State understanding of canonical locations and invariants
+3. State understanding of the Rust-core / determinism invariants
 
 ### on-exit (Session End)
-
 1. Update `.machine_readable/6a2/STATE.a2ml` if changes made
-2. Document new blockers
+2. Ensure `cargo test --workspace` passes and `plasma check .` is clean
 3. Summarize outcomes
 
 ## META
 
 - **Format Version:** 2.0.0
 - **Created:** 2026-01-10
-- **Updated:** 2026-02-20
+- **Updated:** 2026-07-02
 - **Maintained By:** Jonathan D.A. Jewell (hyperpolymath)
-- **License:** PMPL-1.0-or-later
+- **License:** MPL-2.0
 - **Protocol:** https://github.com/hyperpolymath/0-ai-gatekeeper-protocol

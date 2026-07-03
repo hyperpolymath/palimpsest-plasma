@@ -69,12 +69,16 @@ pub fn levenshtein(a: &str, b: &str) -> usize {
 ///
 /// Returns a value between 0.0 (no similarity) and 1.0 (identical).
 pub fn trigram_similarity(a: &str, b: &str) -> f64 {
-    let trigrams_a: Vec<&str> = a.as_bytes().windows(3).map(|w| {
-        std::str::from_utf8(w).unwrap_or("")
-    }).collect();
-    let trigrams_b: Vec<&str> = b.as_bytes().windows(3).map(|w| {
-        std::str::from_utf8(w).unwrap_or("")
-    }).collect();
+    let trigrams_a: Vec<&str> = a
+        .as_bytes()
+        .windows(3)
+        .map(|w| std::str::from_utf8(w).unwrap_or(""))
+        .collect();
+    let trigrams_b: Vec<&str> = b
+        .as_bytes()
+        .windows(3)
+        .map(|w| std::str::from_utf8(w).unwrap_or(""))
+        .collect();
 
     if trigrams_a.is_empty() && trigrams_b.is_empty() {
         return 1.0;
@@ -83,10 +87,7 @@ pub fn trigram_similarity(a: &str, b: &str) -> f64 {
         return 0.0;
     }
 
-    let matches = trigrams_a
-        .iter()
-        .filter(|t| trigrams_b.contains(t))
-        .count();
+    let matches = trigrams_a.iter().filter(|t| trigrams_b.contains(t)).count();
 
     (2.0 * matches as f64) / (trigrams_a.len() + trigrams_b.len()) as f64
 }
@@ -111,7 +112,10 @@ const LICENSE_PHRASES: &[(&str, BaseLicense)] = &[
     ("bsd 3-clause", BaseLicense::BSD3),
     ("bsd 2-clause", BaseLicense::BSD2),
     ("mit license", BaseLicense::MIT),
-    ("permission is hereby granted, free of charge", BaseLicense::MIT),
+    (
+        "permission is hereby granted, free of charge",
+        BaseLicense::MIT,
+    ),
     ("isc license", BaseLicense::ISC),
     ("the unlicense", BaseLicense::Unlicense),
     ("this is free and unencumbered", BaseLicense::Unlicense),
@@ -119,7 +123,9 @@ const LICENSE_PHRASES: &[(&str, BaseLicense)] = &[
 
 /// Multilingual license phrase entry.
 struct I18nPhrase {
-    /// ISO 639-1 language code.
+    /// ISO 639-1 language code. Not yet surfaced in match results; kept so
+    /// the phrase table stays self-describing.
+    #[allow(dead_code)]
     lang: &'static str,
     /// Key phrase (lowercase) that identifies the license.
     phrase: &'static str,
@@ -134,16 +140,48 @@ struct I18nPhrase {
 /// Integration point for LOL (Lots Of Languages) corpus and polyglot-i18n.
 const I18N_PHRASES: &[I18nPhrase] = &[
     // EUPL-1.2 translations (23 official EU languages — key ones here)
-    I18nPhrase { lang: "fr", phrase: "licence publique de l'union européenne", spdx: "EUPL-1.2" },
-    I18nPhrase { lang: "de", phrase: "open-source-lizenz für die europäische union", spdx: "EUPL-1.2" },
-    I18nPhrase { lang: "nl", phrase: "openbare licentie van de europese unie", spdx: "EUPL-1.2" },
-    I18nPhrase { lang: "es", phrase: "licencia pública de la unión europea", spdx: "EUPL-1.2" },
-    I18nPhrase { lang: "it", phrase: "licenza pubblica dell'unione europea", spdx: "EUPL-1.2" },
-    I18nPhrase { lang: "pt", phrase: "licença pública da união europeia", spdx: "EUPL-1.2" },
+    I18nPhrase {
+        lang: "fr",
+        phrase: "licence publique de l'union européenne",
+        spdx: "EUPL-1.2",
+    },
+    I18nPhrase {
+        lang: "de",
+        phrase: "open-source-lizenz für die europäische union",
+        spdx: "EUPL-1.2",
+    },
+    I18nPhrase {
+        lang: "nl",
+        phrase: "openbare licentie van de europese unie",
+        spdx: "EUPL-1.2",
+    },
+    I18nPhrase {
+        lang: "es",
+        phrase: "licencia pública de la unión europea",
+        spdx: "EUPL-1.2",
+    },
+    I18nPhrase {
+        lang: "it",
+        phrase: "licenza pubblica dell'unione europea",
+        spdx: "EUPL-1.2",
+    },
+    I18nPhrase {
+        lang: "pt",
+        phrase: "licença pública da união europeia",
+        spdx: "EUPL-1.2",
+    },
     // CeCILL (French free software license)
-    I18nPhrase { lang: "fr", phrase: "contrat de licence de logiciel libre", spdx: "CeCILL-2.1" },
+    I18nPhrase {
+        lang: "fr",
+        phrase: "contrat de licence de logiciel libre",
+        spdx: "CeCILL-2.1",
+    },
     // PMPL Dutch translation
-    I18nPhrase { lang: "nl", phrase: "palimpsest-mpl licentie", spdx: "PMPL-1.0" },
+    I18nPhrase {
+        lang: "nl",
+        phrase: "palimpsest-mpl licentie",
+        spdx: "PMPL-1.0",
+    },
 ];
 
 /// Detect the license from a LICENSE file's content using multi-level matching.
@@ -224,7 +262,8 @@ mod tests {
 
     #[test]
     fn test_detect_mit() {
-        let content = "MIT License\n\nCopyright (c) 2026 Someone\n\nPermission is hereby granted...";
+        let content =
+            "MIT License\n\nCopyright (c) 2026 Someone\n\nPermission is hereby granted...";
         let m = detect_license_from_content(content).unwrap();
         assert_eq!(m.license, BaseLicense::MIT);
         assert_eq!(m.confidence, MatchConfidence::Certain);

@@ -17,6 +17,58 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-07-02
+
+Identity pivot: palimpsest-plasma is a deterministic, typed policy engine
+for the agentic era. The Palimpsest license (PMPL) becomes a separate
+future project.
+
+### Added
+
+- feat(engine): new `plasma-engine` crate — typed policy AST (deontic
+  modalities, composable conditions, overlays), versioned TOML/JSON schema
+  loading with load-time rejection of reserved constructs, deterministic
+  fact collection, a pure/total evaluator, human/JSON/SARIF rendering
+- feat(cli): `plasma check` (policy evaluation, exit-code gated),
+  `plasma facts` (deterministic fact snapshot), `plasma policy validate`
+- feat(cli): bundled repo-hygiene policy; the repo checks itself in tests
+- feat(parser): `scan_repo` — deterministic zone-aware repository scanner
+- feat(parser): raw SPDX header extraction (`extract_spdx_raw_from_content`)
+- docs: `docs/engine-v0-design.adoc` — normative semantics and
+  Catala-readiness guarantees
+
+### Changed
+
+- **BREAKING**: binary renamed `palimpsest-plasma` → `plasma`
+- **BREAKING**: licensing unified — code MPL-2.0, documentation
+  CC-BY-SA-4.0; all SPDX headers swept (PMPL/PPMPL identifiers survive only
+  as parseable inputs to plasma-parser)
+- `plasma audit` rewritten on plasma-parser (real SPDX expression parsing,
+  `.plasma.toml` zone awareness) instead of substring matching
+- `plasma init`/`migrate`/`badge` genericized to any SPDX license
+  (MPL-2.0 default); Covenant embedding removed
+- Root crate moved to edition 2021; workspace versions unified at 0.2.0
+- README/EXPLAINME/TOPOLOGY/ROADMAP/architecture/cli-design rewritten to
+  describe what exists (the OCaml engine described previously was never
+  built; the design lives on in docs/policy-ast-v0.1.adoc as lineage)
+
+### Fixed
+
+- Workspace compiles again (init/migrate embedded a nonexistent license
+  file)
+- SPDX catalog PMPL/PPMPL identifier drift (2 failing tests now pass)
+- codemeta.json/CITATION.cff described an unrelated boilerplate project
+
+### Removed
+
+- union-policy-parser sub-project (mostly non-compiling scaffolding;
+  preserved in git history, belongs in its own repository)
+- Corrupted `LICENSE-PMPL-2.0.txt`, stale MVP release tarballs, badge
+  pack, signature files of removed artifacts, `PALIMPSEST-COVENANT.md`,
+  `docs/mvp-v1.adoc`
+
+## [0.1.0] - 2026-05/06 (previously listed as Unreleased)
+
 ### Added
 
 - feat(crg): add crg-grade and crg-badge justfile recipes (#5)

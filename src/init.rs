@@ -1,20 +1,17 @@
 // SPDX-License-Identifier: MPL-2.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 //
-// plasma init — add PPMPL-1.0-or-later to any project in one command.
+// plasma init — add a license and SPDX headers to a project in one command.
 
 use anyhow::{Context, Result};
 use std::fs;
 use std::path::Path;
 
-/// The full PPMPL-1.0-or-later license text (embedded for offline use).
-const PMPL_2_0_TEXT: &str = include_str!("../LICENSE-PPMPL-1.0-or-later.txt");
+/// The full MPL-2.0 license text (embedded for offline use).
+const MPL_2_0_TEXT: &str = include_str!("../LICENSES/MPL-2.0.txt");
 
-/// The Palimpsest Community Covenant text.
-const COVENANT_TEXT: &str = include_str!("../PALIMPSEST-COVENANT.md");
-
-/// Run the init command: add LICENSE, SPDX headers, and optional Covenant.
-pub fn run(path: &str, author: Option<&str>, covenant: bool) -> Result<()> {
+/// Run the init command: add LICENSE and SPDX metadata for the chosen license.
+pub fn run(path: &str, license: &str, author: Option<&str>) -> Result<()> {
     let root = Path::new(path);
 
     if !root.exists() {
@@ -28,78 +25,50 @@ pub fn run(path: &str, author: Option<&str>, covenant: bool) -> Result<()> {
     let license_path = root.join("LICENSE");
     if license_path.exists() {
         println!("  SKIP: LICENSE already exists (use `plasma migrate` to convert)");
+    } else if license == "MPL-2.0" {
+        fs::write(&license_path, MPL_2_0_TEXT).context("Failed to write LICENSE")?;
+        println!("  CREATED: LICENSE (MPL-2.0)");
     } else {
-        fs::write(&license_path, PMPL_2_0_TEXT)
-            .context("Failed to write LICENSE")?;
-        println!("  CREATED: LICENSE (PPMPL-1.0-or-later)");
+        fs::write(
+            &license_path,
+            format!(
+                "SPDX-License-Identifier: {license}\n\nTODO: replace this stub with the full {license} license text.\n"
+            ),
+        )
+        .context("Failed to write LICENSE stub")?;
+        println!("  CREATED: LICENSE stub for {license} — add the full license text manually");
     }
 
-    // 2. Write PALIMPSEST-COVENANT.md if requested
-    if covenant {
-        let covenant_path = root.join("PALIMPSEST-COVENANT.md");
-        if covenant_path.exists() {
-            println!("  SKIP: PALIMPSEST-COVENANT.md already exists");
-        } else {
-            fs::write(&covenant_path, COVENANT_TEXT)
-                .context("Failed to write PALIMPSEST-COVENANT.md")?;
-            println!("  CREATED: PALIMPSEST-COVENANT.md");
-        }
-    }
-
-    // 3. Add SPDX header to common config files if they exist
+    // 2. Add SPDX header to common config files if they exist
     let spdx_header = format!(
-        "# SPDX-License-Identifier: PPMPL-1.0-or-later\n# SPDX-FileCopyrightText: {} {}\n",
-        year, author_name
+        "# SPDX-License-Identifier: {license}\n# SPDX-FileCopyrightText: {year} {author_name}\n"
     );
 
     // Check for Cargo.toml and update license field
     let cargo_path = root.join("Cargo.toml");
     if cargo_path.exists() {
         let content = fs::read_to_string(&cargo_path)?;
-        if !content.contains("PMPL") && !content.contains("SPDX-License-Identifier") {
-            // Add SPDX header at top
+        if !content.contains("SPDX-License-Identifier") {
             let updated = format!("{spdx_header}{content}");
             fs::write(&cargo_path, updated)?;
             println!("  UPDATED: Cargo.toml (added SPDX header)");
         }
 
-        // Update license field if present
-        if content.contains("license = \"MIT\"")
-            || content.contains("license = \"Apache-2.0\"")
-            || content.contains("license = \"\"")
-        {
-            let updated = content
-                .replace("license = \"MIT\"", "license = \"PPMPL-1.0-or-later\"")
-                .replace(
-                    "license = \"Apache-2.0\"",
-                    "license = \"PPMPL-1.0-or-later\"",
-                )
-                .replace("license = \"\"", "license = \"PPMPL-1.0-or-later\"");
+        // Update license field if empty or a common default
+        let content = fs::read_to_string(&cargo_path)?;
+        if content.contains("license = \"\"") {
+            let updated = content.replace("license = \"\"", &format!("license = \"{license}\""));
             fs::write(&cargo_path, updated)?;
-            println!("  UPDATED: Cargo.toml license field → PPMPL-1.0-or-later");
+            println!("  UPDATED: Cargo.toml license field → {license}");
         }
     }
 
-    // Check for package.json and update license field
+    // Check for package.json and note the license field
     let pkg_path = root.join("package.json");
     if pkg_path.exists() {
         let content = fs::read_to_string(&pkg_path)?;
-        if content.contains("\"license\": \"MIT\"")
-            || content.contains("\"license\": \"Apache-2.0\"")
-            || content.contains("\"license\": \"ISC\"")
-        {
-            let updated = content
-                .replace("\"license\": \"MIT\"", "\"license\": \"PPMPL-1.0-or-later\"")
-                .replace(
-                    "\"license\": \"Apache-2.0\"",
-                    "\"license\": \"PPMPL-1.0-or-later\"",
-                )
-                .replace(
-                    "\"license\": \"ISC\"",
-                    "\"license\": \"PPMPL-1.0-or-later\"",
-                );
-            fs::write(&pkg_path, updated)?;
-            println!("  UPDATED: package.json license → PPMPL-1.0-or-later");
+        if !content.contains(&format!("\"license\": \"{license}\"")) {
+            println!("  NOTE: package.json found — set \"license\": \"{license}\" manually");
         }
     }
 
@@ -107,19 +76,16 @@ pub fn run(path: &str, author: Option<&str>, covenant: bool) -> Result<()> {
     let mix_path = root.join("mix.exs");
     if mix_path.exists() {
         let content = fs::read_to_string(&mix_path)?;
-        if !content.contains("PMPL") {
-            println!("  NOTE: mix.exs found — manually update licenses field to [\"PPMPL-1.0-or-later\"]");
+        if !content.contains(license) {
+            println!("  NOTE: mix.exs found — manually update licenses field to [\"{license}\"]");
         }
     }
 
     println!();
-    println!("  Palimpsest-MPL 2.0 applied to {}", path);
+    println!("  {license} applied to {path}");
     println!("  Next steps:");
     println!("    1. Run `plasma audit` to check SPDX headers on source files");
     println!("    2. Add badge to README: `plasma badge`");
-    if covenant {
-        println!("    3. Reference the Covenant in your CONTRIBUTING.md");
-    }
 
     Ok(())
 }

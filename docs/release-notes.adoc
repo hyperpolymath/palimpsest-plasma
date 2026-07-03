@@ -1,30 +1,39 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
-= Palimpsest Plasma MVP v1 Release Notes (v1.1)
+= Palimpsest Plasma Release Notes
 :toc:
 
-== Summary
+== v0.2.0 — 2026-07-02
 
-Palimpsest Plasma MVP v1 packages the canonical Palimpsest-MPL License 1.0 tooling,
-badge assets, compliance documentation, and audit logs so projects can adopt PMPL-1.0
-with confidence. Key deliverables:
+palimpsest-plasma is now a **deterministic, typed policy engine**: write
+machine-readable deontic policies (obligations, prohibitions, permissions
+over repository state) and evaluate repositories against them with
+byte-for-byte reproducible results.
 
-* `LICENSE` – PMPL-1.0-or-later text
-* `ECOSYSTEM.scm`, `STATE.scm` – metadata describing release state and milestones
-* `assets/badges/` – v1 badge family and README
-* `docs/mvp-v1.adoc` – roadmap, compliance guidance, audit commands
-* `docs/release-log.adoc` – audit output from `pmpl-verify`/`pmpl-audit`
-* `*.sig` files (`LICENSE.sig`, `docs/*.sig`, `STATE.scm.sig`) – provenance metadata
-* `mvp-v1-release.tar.gz` – bundle containing the above assets
+Highlights:
 
-== Audit Highlights
+* New `plasma-engine` crate — typed policy AST, versioned TOML/JSON schema
+  with load-time rejection of anything the evaluator cannot honour, pure
+  and total evaluation, deterministic fact collection.
+* New CLI surface — `plasma check` (human/JSON/SARIF, exit-code gated),
+  `plasma facts` (diffable fact snapshots), `plasma policy validate`.
+* `plasma audit` rebuilt on the plasma-parser SPDX machinery — real
+  expression parsing and `.plasma.toml` zone awareness.
+* Self-demonstrating: the repo ships a repo-hygiene policy and its test
+  suite fails if the repo stops satisfying it.
+* Licensing unified: code MPL-2.0, docs CC-BY-SA-4.0. The Palimpsest
+  license (PMPL) is a separate future project.
+* Removed: the union-policy-parser sub-project (preserved in git history).
 
-* `pmpl-verify` (existence-only) – Verified: 5, Missing: 110, Failed: 0  
-  Signature files (`*.sig`) are now included in the release bundle; rerun this command
-  periodically to track the growing set of verified artefacts as more `.sig` blocks land.
-* `pmpl-audit` – PASS; license file recognized as PMPL-1.0, SPDX header scan currently
-  reports zero files because no signatures/shippable sources yet.
+Verification: `cargo test --workspace` (66 tests) and `plasma check .`
+(0 violations) both gate the release.
 
-== Distribution
+== Historical: MVP v1 (v1.1) — 2026-01-20
 
-Upload `mvp-v1-release.tar.gz` plus this release notes doc to your release channel (GitHub release, CDN, etc.). Mention the audit commands/output so partners see the compliance readiness. If you need me to help craft the GitHub release description or confirm the upload, let me know.
+_The earlier PMPL-toolkit identity shipped documentation/badge bundles
+("MVP v1"). Those artifacts (badge pack, `docs/mvp-v1.adoc`, `*.sig`
+files, release tarballs) were removed in v0.2.0; this entry remains as a
+record. Its audit claims (`pmpl-verify`: 5 verified / 110 missing;
+`pmpl-audit`: PASS with zero files scanned) depended on tooling in the
+external palimpsest-license repository and are not reproducible from this
+repository._

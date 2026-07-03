@@ -1,4 +1,4 @@
-// SPDX-License-Identifier: MPL-2.0
+// SPDX-License-Identifier: CC-BY-SA-4.0
 // Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
 = Palimpsest Plasma — Policy AST v0.1
 :toc:
@@ -7,6 +7,16 @@
 :source-highlighter: rouge
 
 toc::[]
+
+[IMPORTANT]
+====
+**Status: historical design lineage.** This document is the original
+OCaml-typed sketch of the policy AST. The normative specification — as
+implemented in Rust in `plasma-engine/src/` — is
+link:engine-v0-design.adoc[engine-v0-design.adoc], which documents the
+deliberate divergences (exhibits generalised to overlays, per-rule
+severity, license-specific conditions replaced by `spdx-license-is`).
+====
 
 == Purpose
 

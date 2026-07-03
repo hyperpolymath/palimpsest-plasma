@@ -1,22 +1,18 @@
 Licensing Notice
 ================
 
-This project is authored by Jonathan D.A. Jewell (hyperpolymath) and
-is licensed under the Palimpsest License (PMPL-1.0-or-later).
+This project is authored by Jonathan D.A. Jewell (hyperpolymath).
 
-The PMPL-1.0-or-later is a philosophical extension of the Mozilla Public
-License 2.0, adding provisions for cryptographic provenance, emotional
-lineage preservation, and quantum-safe signatures. The full PMPL text is
-available in LICENSES/PMPL-1.0-or-later.txt.
+Licensing:
+  - Source code and configuration: Mozilla Public License 2.0 (MPL-2.0).
+    The full text is in LICENSE and LICENSES/MPL-2.0.txt.
+  - Documentation (prose in *.adoc and *.md files): Creative Commons
+    Attribution-ShareAlike 4.0 International (CC-BY-SA-4.0).
+    The full text is in LICENSES/CC-BY-SA-4.0.txt.
 
-For compatibility with automated license detection tools and platforms
-that require OSI-approved licenses, the root LICENSE file contains the
-standard Mozilla Public License 2.0 text. This ensures that package
-registries, CI systems, and other tooling correctly identify the license.
+Each file declares its license in an SPDX-License-Identifier header.
 
-The legally binding terms are:
-  - Source files: governed by PMPL-1.0-or-later (per SPDX headers)
-  - Combined works: compatible with PMPL-1.0-or-later (per PMPL Section 6)
-
-For more information about the Palimpsest License:
-  https://github.com/hyperpolymath/palimpsest-license
+The plasma-parser library recognises Palimpsest-family license
+identifiers (PMPL, PAGPL, and related) as parseable SPDX extensions.
+That recognition is a parser feature; it does not license this project
+under those terms. The Palimpsest license itself is a separate project.

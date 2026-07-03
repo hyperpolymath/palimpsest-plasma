@@ -1,0 +1,23 @@
+# SPDX-License-Identifier: MPL-2.0
+[package]
+name = "plasma-engine"
+version = "0.2.0"
+edition = "2021"
+authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
+description = "Deterministic, typed policy evaluation — policy AST, fact collection, and a pure evaluator producing findings"
+license = "MPL-2.0"
+repository = "https://github.com/hyperpolymath/palimpsest-plasma"
+keywords = ["policy", "compliance", "audit", "deontic", "agentic"]
+categories = ["development-tools"]
+
+[dependencies]
+plasma-parser = { path = "../plasma-parser" }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+toml = "0.8"
+walkdir = "2"
+glob = "0.3"
+thiserror = "2"
+
+[dev-dependencies]
+tempfile = "3"

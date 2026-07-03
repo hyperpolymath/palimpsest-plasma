@@ -78,19 +78,28 @@ pub fn validate_license_file(
             content_upper.contains("BSD") && content_upper.contains("2-CLAUSE")
                 || content_upper.contains("REDISTRIBUTION AND USE")
         }
-        BaseLicense::MIT => content_upper.contains("MIT LICENSE") || content_upper.contains("PERMISSION IS HEREBY GRANTED"),
-        BaseLicense::ISC => content_upper.contains("ISC LICENSE") || content_upper.contains("PERMISSION TO USE, COPY, MODIFY"),
+        BaseLicense::MIT => {
+            content_upper.contains("MIT LICENSE")
+                || content_upper.contains("PERMISSION IS HEREBY GRANTED")
+        }
+        BaseLicense::ISC => {
+            content_upper.contains("ISC LICENSE")
+                || content_upper.contains("PERMISSION TO USE, COPY, MODIFY")
+        }
         BaseLicense::EUPL12 => content_upper.contains("EUROPEAN UNION PUBLIC LICENCE"),
         BaseLicense::LGPL21 | BaseLicense::LGPL3 => {
             content_upper.contains("GNU LESSER GENERAL PUBLIC LICENSE")
         }
         BaseLicense::Artistic2 => content_upper.contains("ARTISTIC LICENSE"),
         BaseLicense::CERNOHLS2 => content_upper.contains("CERN OPEN HARDWARE"),
-        BaseLicense::Unlicense => content_upper.contains("UNLICENSE") || content_upper.contains("PUBLIC DOMAIN"),
-        BaseLicense::ZeroBSD => content_upper.contains("0BSD") || content_upper.contains("ZERO-CLAUSE BSD"),
+        BaseLicense::Unlicense => {
+            content_upper.contains("UNLICENSE") || content_upper.contains("PUBLIC DOMAIN")
+        }
+        BaseLicense::ZeroBSD => {
+            content_upper.contains("0BSD") || content_upper.contains("ZERO-CLAUSE BSD")
+        }
         BaseLicense::Proprietary => {
-            content_upper.contains("ALL RIGHTS RESERVED")
-                || content_upper.contains("PROPRIETARY")
+            content_upper.contains("ALL RIGHTS RESERVED") || content_upper.contains("PROPRIETARY")
         }
         BaseLicense::CreativeCommons(_) => content_upper.contains("CREATIVE COMMONS"),
         BaseLicense::Other(_) => true, // Cannot validate unknown licenses
@@ -111,10 +120,7 @@ pub fn validate_license_file(
 /// Palimpsest licenses may reference Exhibit A (standard) and Exhibit B
 /// (quantum-safe provenance). If the layer declares quantum_safe=true,
 /// Exhibit B must be present.
-pub fn validate_exhibits(
-    license_path: &Path,
-    license: &PalimpsestLicense,
-) -> Vec<FamilyError> {
+pub fn validate_exhibits(license_path: &Path, license: &PalimpsestLicense) -> Vec<FamilyError> {
     let mut errors = Vec::new();
 
     let content = match std::fs::read_to_string(license_path) {

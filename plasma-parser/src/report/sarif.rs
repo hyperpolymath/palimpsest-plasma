@@ -24,8 +24,7 @@ pub fn to_sarif(audit: &RepoAudit) -> Value {
                     "plasma/wrong-license",
                     format!(
                         "Expected {} but found {:?}",
-                        f.expected_license,
-                        f.actual_header
+                        f.expected_license, f.actual_header
                     ),
                 ),
                 AuditStatus::MissingHeader => (
