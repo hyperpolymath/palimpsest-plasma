@@ -27,7 +27,9 @@ defmodule PalimpsestSite do
   BUILD: Orchestrates the full static site generation cycle.
   """
   def build do
-    pages = pages()
+    # NimblePublisher's `as: :pages` option populates the `@pages` module
+    # attribute with the parsed Page structs (inlined here at compile time).
+    pages = @pages
     template = File.read!(@template_path)
 
     # REFRESH: Atomic reset of the output directory.
