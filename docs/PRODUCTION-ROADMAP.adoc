@@ -1,0 +1,270 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Palimpsest Plasma — Production Roadmap & Ecosystem Architecture
+:toc: left
+:toclevels: 3
+:sectnums:
+
+== Purpose
+
+This document plans the path from the current pre-1.0 engine to a
+production-grade release, and specifies how plasma fits the wider
+hyperpolymath estate: the agent-honesty trio (somethings-fishy,
+did-you-actually-do-that), the boj-server cartridge host, the Hypatia
+neurosymbolic scanner, and the reposystem contractile stack.
+
+It is a planning artifact, not a description of shipped behaviour. Items
+marked *(built)* exist today; everything else is proposed.
+
+== Where we are
+
+[cols="1,3"]
+|===
+| Layer | State
+
+| `plasma-parser` | *(built)* SPDX lexer/parser/catalog, license families, `.plasma.toml` zones, `scan_repo`, compat matrix, JSON/SARIF.
+| `plasma-engine` | *(built)* typed policy AST, versioned TOML/JSON schema with load-time rejection, deterministic fact collection, pure/total evaluator, human/JSON/SARIF reports, bundled repo-hygiene policy.
+| Action planner | *(built, v0.3)* pure `plan` + IO `apply`; `AddSpdxHeader` action; manual partition; `plasma fix` (dry-run/apply, backups).
+| CLI | *(built)* `check`, `fix`, `facts`, `policy validate`, `audit`, `init`, `migrate`, `badge`.
+| Guarantees | *(built)* determinism, totality, versioned schema, stable `plasma/<rule-id>` namespace (see `engine-v0-design.adoc`).
+|===
+
+The core is real and self-tested; production readiness is now about
+**completeness, hardening, distribution, and integration**.
+
+== Part 1 — Making plasma production-grade
+
+=== 1.1 Engine completeness
+
+The schema already reserves constructs the evaluator rejects at load. Each
+becomes real alongside its fact source:
+
+* **Content facts + `file-matches-pattern`** — collect (bounded) file
+  contents so rules can assert on body text (e.g. "no `TODO` in release
+  tags"). Keeps `plan` pure; extends `facts`.
+* **Release facts** — `release` subjects/resources gain meaning by reading
+  tags/`CHANGELOG`; enables release-gating policies.
+* **`consistent-with` + decision registries** — a governance decision store
+  (JSON/A2ML) that rules can require conformance to.
+* **Overlay `modify-rules` / `override-rules`** — full overlay algebra with
+  provenance preserved in findings.
+* **More actions** — `CreateFile` (templated LICENSE/README), `UpdateField`
+  (manifest/metadata edits), `ReplaceHeader` (license migration as a policy
+  action), each with the same plan/apply/backup contract.
+
+=== 1.2 Robustness
+
+* `.plasma.toml` **policy pinning** — a repo declares its policy file so
+  `plasma check` needs no flags; CI and hooks inherit it.
+* **Walk correctness** — `.gitignore`-aware traversal, symlink-loop safety,
+  large-repo performance (the fact walk is the hot path; benchmark it).
+* **Error taxonomy** — typed exit codes (0 clean, 1 violations, 2 usage/IO,
+  3 policy-load error) documented as a contract.
+* **Config precedence** — flags > `.plasma.toml` > bundled defaults, spelled
+  out and tested.
+
+=== 1.3 Quality gates (CI)
+
+* **Fuzzing** — `cargo-fuzz` over `parse_spdx_expr` and `load_policy_str`
+  (replace the placeholder `tests/fuzz/`). Both are natural fuzz targets and
+  the current fake-fuzz placeholder is flagged in `TEST-NEEDS.md`.
+* **Property tests** — policy load→serialize→reload identity; evaluation
+  totality (no panics) over arbitrary fact sets.
+* **Determinism check** — CI asserts byte-identical `check --format json`
+  across two runs (already run manually; make it a gate).
+* **MSRV pin + benchmarks** — declare and test a minimum Rust version;
+  criterion benches for scan/evaluate vs repo size.
+* **Coverage target** — track and gate line coverage.
+
+=== 1.4 Distribution
+
+* **crates.io** — publish `plasma-parser` and `plasma-engine` as libraries;
+  the CLI as an installable binary.
+* **Binary releases** — signed artifacts (tie into the estate's stapeln /
+  cerro-torre ML-DSA signer referenced in `stapeln.toml`).
+* **Packaging** — make `guix.scm` a real reproducible build (vendor cargo
+  inputs) and add a Nix flake.
+* **SBOM + supply chain** — `cargo-deny`/`cargo-audit` in CI, CycloneDX SBOM
+  emitted per release.
+
+=== 1.5 Docs
+
+* **Policy authoring guide** + cookbook (recipes: REUSE compliance, monorepo
+  zones, release gates).
+* **Published schemas** — JSON Schema for the policy format, the `FactSet`,
+  and the `Evaluation`, versioned and served (the interchange contracts).
+
+=== 1.6 The formal core (the long pole to 1.0)
+
+`docs/engine-v0-design.adoc` was written so a Catala/OCaml core can *generate
+or verify* the same semantics. 1.0 means: a formal specification of the
+condition algebra and deontic matrix, and a proof (Coq/Lean/Catala) that the
+Rust evaluator agrees with it on the closed vocabulary. This is what lets
+plasma claim "does what it is told, absolutely precisely" as a theorem, not a
+test suite.
+
+== Part 2 — Attendant architecture (the estate)
+
+=== 2.1 The interchange contracts (foundation for everything)
+
+Every integration below rides on three stable, versioned JSON artifacts pl
+asma already produces or will:
+
+[cols="1,3"]
+|===
+| Artifact | Role
+
+| **FactSet** (`plasma facts`) | Deterministic snapshot of repo state — the diffable before/after oracle.
+| **Evaluation / Findings** (`plasma check --format json`) | What obligations hold or are violated, with rule provenance.
+| **SARIF** (`--format sarif`) | Same, in the `plasma/<rule-id>` namespace, for Code Scanning and tools.
+|===
+
+Proposed additions for the trio:
+
+* **Run-record / attestation** — a signed envelope binding
+  `{facts_before, actions_claimed, facts_after, evaluation_after}` — the unit
+  did-you-actually-do-that verifies and somethings-fishy investigates.
+
+=== 2.2 The agent-honesty trio
+
+----
+              ┌────────────────────────────────────────────┐
+              │   agent performs work on a repo (LLM/bot)   │
+              └───────────────┬────────────────────────────┘
+      facts_before            │            facts_after + claim
+   (plasma facts) ────────────┼──────────────► (plasma facts)
+                              ▼
+        ┌─────────────────────────────────────────────┐
+        │            palimpsest-plasma                │
+        │  policy definition + deterministic eval     │
+        │  → Evaluation (did obligations hold?)       │
+        └───────────┬─────────────────────┬───────────┘
+                    │                     │
+      "did it do what it said?"   "what broke, and how?"
+                    ▼                     ▼
+     did-you-actually-do-that      somethings-fishy
+     (claim verification)          (forensic bot-damage)
+----
+
+* **did-you-actually-do-that** — an agent claims "I added SPDX headers to all
+  Rust files." Verification = diff `facts_before`/`facts_after` and confirm
+  the matching `plasma check` obligations flipped from violation to *pass*.
+  Plasma is the deterministic oracle; pass-findings are the positive
+  evidence (this is why the evaluator retains satisfied rules).
+* **somethings-fishy** — when a repo regresses, plasma's findings say
+  *which* obligations broke and *where*; forensic investigation correlates
+  that with the run-records to attribute damage. Plasma supplies the "signal";
+  fishy supplies the "story".
+
+Delivery: **v0.4** publishes the facts-diff format and finding-provenance
+fields; the run-record/attestation envelope lands with the MCP surface (2.3).
+
+=== 2.3 boj-server cartridge + MCP surface
+
+boj-server is a Casket cartridge host and an MCP server
+(`@hyperpolymath/boj-server`, `:7700`; `POST /cartridges/<name>/invoke`).
+Two complementary surfaces:
+
+* **A `plasma` cartridge** — `POST /cartridges/plasma/invoke {repo, branch,
+  policy?}` runs check/facts/fix-plan in a sandbox and returns the Evaluation
+  JSON. Mirrors the existing `ssg-mcp` cartridge trigger in
+  `.github/workflows/boj-build.yml`; drop-in for the estate's push pipeline.
+* **A plasma MCP server** — expose `plasma_check`, `plasma_facts`,
+  `plasma_fix_plan` (dry-run only over MCP; apply stays an explicit local
+  action) as MCP tools so any agent — including boj-server's own MCP client
+  and Claude Code — can call plasma as a verification oracle mid-task. This
+  is the natural home for did-you-actually-do-that's checks.
+
+Delivery: **v0.5**. The MCP server is a thin wrapper over the existing
+library API (`plasma_engine::{collect, evaluate, plan}`), so it is small and
+inherits the determinism guarantees.
+
+=== 2.4 Hypatia (neurosymbolic scanner + autofix)
+
+Hypatia scans with a symbolic layer and reports in `logtalk` form
+(`NEUROSYM.a2ml`; `.hypatia/` telemetry). Bidirectional fit:
+
+* **Plasma → Hypatia** — plasma findings become *facts/obligations* in
+  Hypatia's symbolic layer. Add a `--format logtalk` renderer so findings
+  drop straight into Hypatia's reasoner (a small report backend alongside
+  human/json/sarif).
+* **Hypatia → Plasma** — Hypatia-autofix uses `plasma fix --apply` as a
+  *remediation backend* for the mechanical class it detects, and `plasma
+  check` as the pre/post **gate** — closing the loop with
+  did-you-actually-do-that (Hypatia claims a fix; plasma proves it).
+
+Delivery: **v0.5** (`logtalk` renderer) and **v0.6** (autofix backend
+contract).
+
+=== 2.5 reposystem / contractiles
+
+reposystem hosts the canonical contractile CLI (must/trust/dust/intend/k9;
+`docs/contractiles.adoc`). Plasma is the natural **evaluation engine behind
+contractiles**:
+
+* **Mustfile/Trustfile invariants → plasma policies** — an estate invariant
+  ("every repo must carry a LICENSE and SPDX headers") compiles to a plasma
+  policy; `must-check` delegates to `plasma check`. One deterministic
+  evaluator instead of ad-hoc shell greps (the current `contractile.just`
+  recipes).
+* **K9 (Nickel) self-validating contracts → policies** — `nickel export`
+  emits JSON; a K9 contract can *generate* a plasma policy (the format was
+  chosen partly for this — see `engine-v0-design.adoc`).
+* **Reversible contractiles** — the roadmap "contractile" concept (reversible
+  commitments) maps onto overlays + a future relax/release action; plasma
+  provides the state-narrowing evaluation the concept needs.
+
+Delivery: a `reposystem`-side adapter (out of this repo) once v0.4 policy
+pinning and v0.6 overlay algebra land.
+
+=== 2.6 Other estate hooks
+
+* **verisimdb** — emit Evaluation/scan metrics to the analytics feed
+  (`hexad` format, `integrations/verisimdb.a2ml`) for fleet-wide compliance
+  dashboards.
+* **feedback-o-tron** — on repeated external-dependency policy failures, file
+  upstream bug reports automatically.
+* **vexometer** — measure friction on `plasma` CLI errors to tune UX.
+* **proven** — although plasma is `#![forbid(unsafe_code)]`, adopt proven's
+  Safe* modules if any FFI (e.g. a C ABI for the formal core) is added.
+
+== Part 3 — Phased delivery
+
+[cols="1,4"]
+|===
+| Milestone | Contents
+
+| **v0.3** (in progress) | Action planner *(built)*; then more action types (CreateFile/UpdateField), overlay modify/override, content facts + `file-matches-pattern`.
+| **v0.4 — Integration surfaces** | Git hooks; reference GitHub Action + GitLab component; `.plasma.toml` policy pinning; **facts-diff + finding-provenance contracts** for the trio; release facts.
+| **v0.5 — Agentic surfaces** | Plasma **MCP server** + **boj-server cartridge**; **`logtalk` renderer** for Hypatia; run-record/attestation envelope.
+| **v0.6 — Governance** | `consistent-with` + decision registries; full overlay algebra; Hypatia-autofix remediation-backend contract; reposystem contractile adapter.
+| **v0.9 — Hardening** | Fuzzing, property tests, determinism gate, benches, MSRV; crates.io + signed binary releases; real guix/nix packaging; SBOM + cargo-deny; published JSON Schemas.
+| **v1.0 — Formal parity** | Catala/OCaml formal core verified against `engine-v0-design.adoc`; stability guarantee on schema + interchange contracts.
+|===
+
+== Part 4 — Cross-cutting production standards
+
+* **Versioning** — SemVer on crates; independent `schema_version` on the
+  policy format; a compatibility table mapping engine versions to schema
+  versions.
+* **Determinism as an invariant** — enforced in CI, not just documented; the
+  whole trio depends on it.
+* **Stable contracts** — `plasma/<rule-id>` SARIF ids, the `FactSet`, and the
+  `Evaluation` JSON are frozen interfaces once published with schemas;
+  changes go through schema versioning.
+* **Supply chain** — signed releases (stapeln/cerro-torre), SBOM, pinned and
+  audited dependencies.
+* **Observability** — structured audit logs; verisimdb feed for fleet
+  compliance.
+
+== Summary
+
+The product is real; the road to 1.0 is (a) finishing the reserved engine
+constructs, (b) hardening + distribution, and (c) the formal core. The
+estate value is unlocked earlier: the **v0.4 interchange contracts** turn
+plasma into the deterministic oracle the trio needs, and the **v0.5 MCP
+server + boj cartridge + logtalk renderer** wire it into boj-server, Hypatia,
+and any agent — with reposystem adopting plasma as the engine behind
+contractiles once the overlay algebra lands. Plasma's one job — evaluate
+policy deterministically — is exactly the primitive the rest of the estate
+needs to keep automated agents honest.
