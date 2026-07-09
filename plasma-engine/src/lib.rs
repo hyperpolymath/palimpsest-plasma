@@ -16,6 +16,8 @@
 
 #![forbid(unsafe_code)]
 
+pub mod action;
+pub mod apply;
 pub mod ast;
 pub mod eval;
 pub mod facts;
@@ -23,6 +25,8 @@ pub mod finding;
 pub mod report;
 pub mod schema;
 
+pub use action::{plan, Action, FixContext, ManualItem, Plan, PlannedAction};
+pub use apply::{apply, ApplyOptions, ApplyOutcome};
 pub use ast::{
     ActionKind, Condition, Modality, Overlay, Policy, PolicyVersion, Resource, Rule, Subject,
 };

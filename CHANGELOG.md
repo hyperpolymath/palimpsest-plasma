@@ -17,6 +17,19 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- feat(engine): action planner — pure `plan(policy, evaluation, ctx)` maps
+  violations to corrective actions or a manual list with reasons; IO
+  boundary `apply(plan, root, opts)` executes them with `.bak` backups and
+  idempotent skips (`plasma-engine/src/action.rs`, `apply.rs`)
+- feat(cli): `plasma fix` — dry-run by default, `--apply` to make changes,
+  `--license`/`--author`/`--no-backup`/`--format human|json`. First
+  auto-action: AddSpdxHeader; missing files / unparsable headers → manual
+- docs: "Action planner" section in `docs/engine-v0-design.adoc`;
+  `plasma fix` documented in `docs/cli-design.adoc`
+- test: `tests/fix_selftest.rs` (dry-run, apply+backup, idempotency, json)
+
 ## [0.2.0] - 2026-07-02
 
 Identity pivot: palimpsest-plasma is a deterministic, typed policy engine

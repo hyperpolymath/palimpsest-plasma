@@ -36,11 +36,12 @@ future project; the earlier union-policy-parser sub-project was removed
 
 == Active Milestones
 
-=== v0.3.0 — Action Planner
+=== v0.3.0 — Action Planner [IN PROGRESS]
 
-* [ ] Action types (AddSpdxHeader, CreateFile, UpdateField, …)
-* [ ] `plasma fix` — plan (dry-run) and apply modes, with backups
-* [ ] Findings → planned actions mapping
+* [x] `plasma fix` — plan (dry-run) and apply modes, with `.bak` backups
+* [x] Findings → planned actions mapping (pure `plan`; IO `apply`)
+* [x] First action type: `AddSpdxHeader` (+ manual partition with reasons)
+* [ ] More action types (CreateFile, UpdateField, …)
 * [ ] Overlay `modify-rules` / `override-rules` semantics
 * [ ] Content facts + `file-matches-pattern` condition semantics
 

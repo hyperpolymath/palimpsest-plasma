@@ -204,6 +204,37 @@ this evaluator against a formal semantics:
    interchange contract with sibling tooling (`somethings-fishy`,
    `did-you-actually-do-that`).
 
+== Action planner (v0.3)
+
+The action planner turns an `Evaluation` into a remediation `Plan`, keeping
+the same purity split as evaluation:
+
+* **`plan(policy, evaluation, ctx) -> Plan`** is **pure** (`action.rs`). For
+  each violation it looks up the rule by id and either synthesises a
+  mechanical `Action` or records a `ManualItem` with a reason — nothing is
+  silently dropped. `FixContext` carries the injected `license`, `author`,
+  and `year` (never clock-derived, so planning stays deterministic).
+* **`apply(plan, root, opts) -> ApplyOutcome`** is the **IO boundary**
+  (`apply.rs`, the counterpart to `facts.rs`). It executes actions, writing
+  `<file>.bak` backups first unless disabled, and is idempotent — an action
+  whose effect already holds is skipped, not repeated.
+
+=== Action vocabulary (v0.3)
+
+|===
+| Action | Fires for | Effect
+
+| `AddSpdxHeader` | violated `obligation + present` on a `header` resource | prepend `SPDX-License-Identifier` + copyright comment using the file's comment prefix
+|===
+
+Everything else is `manual`: missing required files (need human-authored
+content), unparsable headers (need hand correction), prohibitions (removal
+is not auto-applied). Future increments add `CreateFile`, `UpdateField`,
+etc.; the enum and `Plan` shape are the stable contract.
+
+Determinism/totality carry over: `plan` is pure and total; `apply` never
+panics and reports per-action `applied` / `skipped` / `errors`.
+
 == Roadmap interaction
 
 Reserved constructs (`release` subjects/resources, `consistent-with`,
