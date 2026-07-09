@@ -92,6 +92,10 @@ facts:
 audit:
     cargo run -- audit .
 
+# Show the remediation plan for this repository (dry-run; add --apply to fix)
+fix *args:
+    cargo run -- fix . {{args}}
+
 # Validate the bundled policy file
 policy-check:
     cargo run -- policy validate plasma-engine/policies/repo-hygiene.plasma.toml

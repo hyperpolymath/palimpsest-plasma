@@ -19,6 +19,7 @@ mod audit;
 mod badge;
 mod check;
 mod facts_cmd;
+mod fix;
 mod init;
 mod migrate;
 mod policy_cmd;
@@ -53,6 +54,31 @@ enum Commands {
         /// Include satisfied (pass) findings in the output
         #[arg(long)]
         verbose: bool,
+    },
+
+    /// Plan or apply corrective actions for policy violations.
+    Fix {
+        /// Path to the repository root
+        #[arg(default_value = ".")]
+        path: String,
+        /// Policy file (.toml or .json); defaults to the bundled repo-hygiene policy
+        #[arg(long)]
+        policy: Option<String>,
+        /// SPDX license identifier written into any headers added
+        #[arg(long, default_value = "MPL-2.0")]
+        license: String,
+        /// Author line for any headers added
+        #[arg(long)]
+        author: Option<String>,
+        /// Actually make the changes (default is a dry-run plan)
+        #[arg(long)]
+        apply: bool,
+        /// Do not write .bak backups before modifying files
+        #[arg(long)]
+        no_backup: bool,
+        /// Output format: human or json
+        #[arg(long, default_value = "human")]
+        format: String,
     },
 
     /// Dump the deterministic fact snapshot for a repository (JSON).
@@ -146,6 +172,28 @@ fn main() -> Result<()> {
                 severity: &severity,
                 quiet,
                 verbose,
+            })?;
+            if code != 0 {
+                std::process::exit(code);
+            }
+        }
+        Commands::Fix {
+            path,
+            policy,
+            license,
+            author,
+            apply,
+            no_backup,
+            format,
+        } => {
+            let code = fix::run(&fix::FixOptions {
+                path: &path,
+                policy: policy.as_deref(),
+                license: &license,
+                author: author.as_deref(),
+                apply_changes: apply,
+                backup: !no_backup,
+                format: &format,
             })?;
             if code != 0 {
                 std::process::exit(code);

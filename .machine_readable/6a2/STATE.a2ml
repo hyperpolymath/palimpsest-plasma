@@ -9,8 +9,8 @@ status = "active"
 
 [project-context]
 name = "palimpsest-plasma"
-completion-percentage = 50
-phase = "Engine v0 shipped (Rust); action planner and integration surfaces next"
+completion-percentage = 55
+phase = "v0.3 in progress: action planner (plasma fix) landed; more action types + integration surfaces next"
 
 [identity]
 summary = "Deterministic, typed policy engine for the agentic era"

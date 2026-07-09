@@ -12,15 +12,17 @@ toc::[]
 One binary (`plasma`), narratively clear subcommands, machine-readable
 output where useful.
 
-=== Implemented (v0.2)
+=== Implemented
 
 [source]
 ----
 plasma check [PATH] [--policy FILE] [--format human|json|sarif]
              [--severity error|warning|info] [--quiet] [--verbose]
+plasma fix [PATH] [--policy FILE] [--license SPDX-ID] [--author NAME]
+           [--apply] [--no-backup] [--format human|json]     # v0.3
 plasma facts [PATH]
 plasma policy validate FILE
-plasma audit [--path PATH] [--license SPDX-EXPR] [--fix]
+plasma audit [PATH] [--license SPDX-EXPR] [--fix]
 plasma init [--path PATH] [--license SPDX-ID] [--author NAME]
 plasma badge [--license SPDX-ID] [--style STYLE]
 plasma migrate [--path PATH] [--from SPDX-ID] [--to SPDX-ID]
@@ -41,6 +43,37 @@ Evaluate a repository against a policy.
   - `--severity error|warning|info` — failure threshold (default: error)
   - `--quiet` — exit code only
   - `--verbose` — include satisfied (pass) findings
+
+=== `plasma fix`
+
+Plan or apply corrective actions for policy violations. **Dry-run by
+default** — it prints the plan and touches nothing; `--apply` makes the
+changes, writing a `<file>.bak` backup before modifying each file (unless
+`--no-backup`).
+
+The planner is pure (`plasma_engine::plan`); applying is the IO boundary
+(`plasma_engine::apply`). Every violation is either turned into a
+mechanical action or listed under *Manual* with a reason — nothing is
+silently unfixable. The v0.3 auto-action set is:
+
+* **AddSpdxHeader** — a source file that must carry an SPDX header but does
+  not gets one prepended, using `--license` (default MPL-2.0), `--author`,
+  and the correct comment prefix for the file type.
+
+Missing required files (LICENSE, README) and unparsable headers are
+reported as manual (they need human-authored content). Applying is
+idempotent: a file that already has a header is skipped.
+
+* **Flags:** `--policy FILE`, `--license SPDX-ID`, `--author NAME`,
+  `--apply`, `--no-backup`, `--format human|json`
+* **Exit:** dry-run returns 1 when actions are pending (so CI can gate on a
+  clean tree), 0 when there is nothing to do; `--apply` returns 0 unless an
+  action errored.
+
+Relationship to `plasma audit --fix`: `audit --fix` is the license-specific
+tool (zone-expected headers from `.plasma.toml`); `plasma fix` is the
+general policy-remediation surface driven by engine findings — headers are
+simply its first supported action class.
 
 === `plasma facts`
 
@@ -70,8 +103,8 @@ proper `-`→`--` escaping.
 
 == Roadmap surfaces (not yet implemented)
 
-* `plasma fix` — findings → planned corrective actions, dry-run and
-  `--apply` modes with backups (v0.3)
+* More `plasma fix` actions — CreateFile / UpdateField (beyond the v0.3
+  AddSpdxHeader action)
 * Git hooks (pre-commit/pre-push wrapping `plasma check --quiet`) and a
   reference GitHub Action / GitLab job (v0.4)
 * `plasma governance` / decision registries — awaits `consistent-with`
