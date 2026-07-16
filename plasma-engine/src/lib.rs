@@ -19,6 +19,7 @@
 pub mod action;
 pub mod apply;
 pub mod ast;
+pub mod diff;
 pub mod eval;
 pub mod facts;
 pub mod finding;
@@ -30,6 +31,7 @@ pub use apply::{apply, ApplyOptions, ApplyOutcome};
 pub use ast::{
     ActionKind, Condition, Modality, Overlay, Policy, PolicyVersion, Resource, Rule, Subject,
 };
+pub use diff::{diff, FactsDiff, HeaderChange, MetadataChange};
 pub use eval::evaluate;
 pub use facts::{collect, FactError, FactSet, GitFacts};
 pub use finding::{Evaluation, Finding, FindingStatus, Severity, Summary};

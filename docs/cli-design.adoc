@@ -21,6 +21,7 @@ plasma check [PATH] [--policy FILE] [--format human|json|sarif]
 plasma fix [PATH] [--policy FILE] [--license SPDX-ID] [--author NAME]
            [--apply] [--no-backup] [--format human|json]     # v0.3
 plasma facts [PATH]
+plasma diff BEFORE.json AFTER.json [--format human|json]     # v0.4
 plasma policy validate FILE
 plasma audit [PATH] [--license SPDX-EXPR] [--fix]
 plasma init [--path PATH] [--license SPDX-ID] [--author NAME]
@@ -79,6 +80,20 @@ simply its first supported action class.
 
 Dump the deterministic fact snapshot the evaluator sees, as JSON. This is
 the diffable before/after artifact for agent-verification tooling.
+
+=== `plasma diff`
+
+Compare two fact snapshots produced by `plasma facts`. This is the
+verification protocol for agent claims: snapshot before the agent runs,
+snapshot after, diff the two — the result is exactly what changed as far
+as policy evaluation is concerned (files added/removed, SPDX header
+transitions, metadata changes, git state).
+
+* **Exit semantics follow `diff(1)`:** 0 = identical, 1 = differ,
+  2 = error — scriptable without parsing output.
+* Output is deterministic: identical snapshot pairs give byte-identical
+  JSON. The format is pinned in
+  link:interchange-contracts.adoc[interchange-contracts.adoc].
 
 === `plasma policy validate`
 
