@@ -71,8 +71,9 @@ pub enum Condition {
     Any { of: Vec<Condition> },
     /// At least one repository file matches the glob.
     RepoHasFile { path: String },
-    /// Content predicate. Schema-reserved: rejected by the v0 loader
-    /// (v0 facts carry no file contents).
+    /// The file at `path` has content matching the regex `pattern`. False
+    /// when the file's content was not collected (binary, oversized, or
+    /// collected without contents). The regex is validated at load.
     FileMatchesPattern { path: String, pattern: String },
     /// The subject file has an SPDX header (false for non-file subjects).
     HasSpdxHeader,
@@ -160,9 +161,11 @@ pub struct Rule {
 pub enum OverlayEffect {
     /// Add rules to the effective rule set.
     AddRules { rules: Vec<Rule> },
-    /// Modify existing rules by id. Schema-reserved: rejected by the v0 loader.
+    /// Modify existing rules by id. Schema-reserved: rejected by the loader
+    /// (its diff semantics are underspecified).
     ModifyRules { ids: Vec<String> },
-    /// Override existing rules by id. Schema-reserved: rejected by the v0 loader.
+    /// Remove base rules with these ids from the effective set. An overlay
+    /// may pair this with `add-rules` reusing an id to replace a rule.
     OverrideRules { ids: Vec<String> },
 }
 
@@ -187,4 +190,32 @@ pub struct Policy {
     pub rules: Vec<Rule>,
     #[serde(default, skip_serializing_if = "Vec::is_empty")]
     pub overlays: Vec<Overlay>,
+}
+
+impl Policy {
+    /// Whether any rule uses a `file-matches-pattern` condition, so callers
+    /// know to collect file contents before evaluating.
+    pub fn needs_content(&self) -> bool {
+        let added = self
+            .overlays
+            .iter()
+            .flat_map(|o| &o.effects)
+            .flat_map(|e| match e {
+                OverlayEffect::AddRules { rules } => rules.as_slice(),
+                _ => &[],
+            });
+        self.rules
+            .iter()
+            .chain(added)
+            .any(|r| condition_needs_content(&r.condition))
+    }
+}
+
+fn condition_needs_content(c: &Condition) -> bool {
+    match c {
+        Condition::FileMatchesPattern { .. } => true,
+        Condition::Not { of } => condition_needs_content(of),
+        Condition::All { of } | Condition::Any { of } => of.iter().any(condition_needs_content),
+        _ => false,
+    }
 }

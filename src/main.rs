@@ -87,6 +87,9 @@ enum Commands {
         /// Path to the repository root
         #[arg(default_value = ".")]
         path: String,
+        /// Also include text-file contents (for content-aware policies)
+        #[arg(long)]
+        with_contents: bool,
     },
 
     /// Compare two fact snapshots (exit 0 identical, 1 differ).
@@ -219,8 +222,11 @@ fn run(cli: Cli) -> Result<()> {
                 std::process::exit(code);
             }
         }
-        Commands::Facts { path } => {
-            facts_cmd::run(&path)?;
+        Commands::Facts {
+            path,
+            with_contents,
+        } => {
+            facts_cmd::run(&path, with_contents)?;
         }
         Commands::Diff {
             before,

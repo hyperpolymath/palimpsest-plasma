@@ -7,7 +7,7 @@ authors:
     family-names: "Jewell"
     email: "j.d.a.jewell@open.ac.uk"
     affiliation: "hyperpolymath"
-version: 0.5.0
+version: 0.6.0
 date-released: 2026-07-02
 license: "MPL-2.0"
 repository-code: "https://github.com/hyperpolymath/palimpsest-plasma"

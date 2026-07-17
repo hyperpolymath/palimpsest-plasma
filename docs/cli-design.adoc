@@ -20,7 +20,7 @@ plasma check [PATH] [--policy FILE] [--format human|json|sarif]
              [--severity error|warning|info] [--quiet] [--verbose]
 plasma fix [PATH] [--policy FILE] [--license SPDX-ID] [--author NAME]
            [--apply] [--no-backup] [--format human|json]     # v0.3
-plasma facts [PATH]
+plasma facts [PATH] [--with-contents]
 plasma diff BEFORE.json AFTER.json [--format human|json]     # v0.4
 plasma policy validate FILE
 plasma audit [PATH] [--license SPDX-EXPR] [--fix]
@@ -55,15 +55,18 @@ changes, writing a `<file>.bak` backup before modifying each file (unless
 The planner is pure (`plasma_engine::plan`); applying is the IO boundary
 (`plasma_engine::apply`). Every violation is either turned into a
 mechanical action or listed under *Manual* with a reason — nothing is
-silently unfixable. The v0.3 auto-action set is:
+silently unfixable. The auto-action set is:
 
 * **AddSpdxHeader** — a source file that must carry an SPDX header but does
   not gets one prepended, using `--license` (default MPL-2.0), `--author`,
   and the correct comment prefix for the file type.
+* **CreateFile** (v0.5) — a required file at a *concrete* path (not a glob)
+  that is missing is created with obvious placeholder content. Never
+  overwrites an existing file.
 
-Missing required files (LICENSE, README) and unparsable headers are
-reported as manual (they need human-authored content). Applying is
-idempotent: a file that already has a header is skipped.
+A required file named by a *glob* (e.g. `LICENSE*` — no single filename to
+create) and unparsable headers are reported as manual. Applying is
+idempotent: a file that already has a header, or already exists, is skipped.
 
 * **Flags:** `--policy FILE`, `--license SPDX-ID`, `--author NAME`,
   `--apply`, `--no-backup`, `--format human|json`
@@ -80,6 +83,11 @@ simply its first supported action class.
 
 Dump the deterministic fact snapshot the evaluator sees, as JSON. This is
 the diffable before/after artifact for agent-verification tooling.
+
+* `--with-contents` — also include text-file contents (`file_contents`),
+  needed for content-aware policies. Off by default so the snapshot stays
+  lean; `plasma check`/`fix` enable it automatically when the policy uses a
+  `file-matches-pattern` condition.
 
 === `plasma diff`
 
@@ -118,8 +126,8 @@ proper `-`→`--` escaping.
 
 == Roadmap surfaces (not yet implemented)
 
-* More `plasma fix` actions — CreateFile / UpdateField (beyond the v0.3
-  AddSpdxHeader action)
+* More `plasma fix` actions — `UpdateField` (beyond the v0.3 `AddSpdxHeader`
+  and v0.5 `CreateFile` actions)
 * Git hooks (pre-commit/pre-push wrapping `plasma check --quiet`) and a
   reference GitHub Action / GitLab job (v0.4)
 * `plasma governance` / decision registries — awaits `consistent-with`

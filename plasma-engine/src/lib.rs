@@ -33,7 +33,7 @@ pub use ast::{
 };
 pub use diff::{diff, FactsDiff, HeaderChange, MetadataChange};
 pub use eval::evaluate;
-pub use facts::{collect, FactError, FactSet, GitFacts};
+pub use facts::{collect, collect_opts, CollectOptions, FactError, FactSet, GitFacts};
 pub use finding::{Evaluation, Finding, FindingStatus, Severity, Summary};
 pub use schema::{
     builtin_repo_hygiene, load_policy, load_policy_str, PolicyFormat, SchemaError, SCHEMA_VERSION,

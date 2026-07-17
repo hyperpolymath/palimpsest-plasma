@@ -47,6 +47,11 @@ deterministic view of repository state the evaluator sees.
   `null` = auditable but header-less. Non-auditable files do not appear.
 * `metadata` — governance keys (v0: `version` from Cargo.toml).
 * `git` — read from `.git/HEAD` directly; no subprocess.
+* `file_contents` — an **opt-in, additive** map (`plasma facts
+  --with-contents`, or auto when a policy uses `file-matches-pattern`).
+  Omitted from output when empty, so the default snapshot above is
+  byte-identical to before this field existed. Only valid-UTF-8 files up to
+  1 MiB are included.
 
 **Verification protocol:** snapshot before an agent runs
 (`plasma facts . > before.json`), snapshot after, then apply contract 2.

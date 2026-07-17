@@ -33,6 +33,19 @@ pub struct GitFacts {
     pub head_ref: Option<String>,
 }
 
+/// Largest file whose contents are collected (bytes). Bigger text files
+/// are treated as if absent from `file_contents`.
+pub const MAX_CONTENT_BYTES: u64 = 1024 * 1024;
+
+/// Options controlling what a collection includes.
+#[derive(Debug, Clone, Copy, Default)]
+pub struct CollectOptions {
+    /// Also read text-file contents into `file_contents` (for
+    /// content-aware conditions like `file-matches-pattern`). Off by
+    /// default so the standard snapshot stays lean.
+    pub contents: bool,
+}
+
 /// A deterministic snapshot of repository state.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct FactSet {
@@ -45,6 +58,13 @@ pub struct FactSet {
     /// Governance metadata: v0 collects `version` from Cargo.toml when present.
     pub metadata: BTreeMap<String, String>,
     pub git: GitFacts,
+    /// Text-file contents, present only when collected with
+    /// `CollectOptions { contents: true }`. Omitted from serialized output
+    /// when empty, so the default snapshot is unchanged (an additive field
+    /// per docs/interchange-contracts.adoc). Only valid-UTF-8 files at most
+    /// [`MAX_CONTENT_BYTES`] are included.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub file_contents: BTreeMap<String, String>,
 }
 
 /// Directory/file names skipped during the walk. Identical to the audit
@@ -58,14 +78,20 @@ fn skip_entry(name: &str) -> bool {
         || name == "deps"
 }
 
-/// Collect a [`FactSet`] from a repository tree.
+/// Collect a lean [`FactSet`] from a repository tree (no file contents).
 pub fn collect(root: &Path) -> Result<FactSet, FactError> {
+    collect_opts(root, &CollectOptions::default())
+}
+
+/// Collect a [`FactSet`], optionally including text-file contents.
+pub fn collect_opts(root: &Path, opts: &CollectOptions) -> Result<FactSet, FactError> {
     if !root.exists() {
         return Err(FactError::MissingRoot(root.display().to_string()));
     }
 
     let mut files = BTreeSet::new();
     let mut spdx_headers = BTreeMap::new();
+    let mut file_contents = BTreeMap::new();
 
     for entry in walkdir::WalkDir::new(root)
         .into_iter()
@@ -89,12 +115,24 @@ pub fn collect(root: &Path) -> Result<FactSet, FactError> {
             continue;
         }
 
+        // Read once when we need either the header or the content.
         let ext = rel.extension().and_then(|e| e.to_str()).unwrap_or("");
-        if is_auditable(ext) {
-            let header = fs::read_to_string(entry.path())
-                .ok()
-                .and_then(|content| extract_spdx_raw_from_content(&content));
-            spdx_headers.insert(rel_str.clone(), header);
+        let auditable = is_auditable(ext);
+        let want_content = opts.contents
+            && entry.metadata().map(|m| m.len()).unwrap_or(u64::MAX) <= MAX_CONTENT_BYTES;
+
+        if auditable || want_content {
+            if let Ok(content) = fs::read_to_string(entry.path()) {
+                if auditable {
+                    spdx_headers.insert(rel_str.clone(), extract_spdx_raw_from_content(&content));
+                }
+                if want_content {
+                    file_contents.insert(rel_str.clone(), content);
+                }
+            } else if auditable {
+                // Unreadable/binary auditable file: header absent.
+                spdx_headers.insert(rel_str.clone(), None);
+            }
         }
 
         files.insert(rel_str);
@@ -113,6 +151,7 @@ pub fn collect(root: &Path) -> Result<FactSet, FactError> {
         spdx_headers,
         metadata,
         git: read_git_facts(root),
+        file_contents,
     })
 }
 
@@ -192,5 +231,47 @@ mod tests {
     #[test]
     fn test_missing_root() {
         assert!(collect(Path::new("/nonexistent/nowhere")).is_err());
+    }
+
+    #[test]
+    fn test_contents_opt_in_and_serialization() {
+        let dir = tempfile::tempdir().unwrap();
+        fs::write(dir.path().join("a.rs"), "fn main() {}\n").unwrap();
+
+        // Default collection: no contents, and the field is omitted from JSON.
+        let lean = collect(dir.path()).unwrap();
+        assert!(lean.file_contents.is_empty());
+        let json = serde_json::to_string(&lean).unwrap();
+        assert!(!json.contains("file_contents"));
+
+        // Opt-in: contents present.
+        let full = collect_opts(dir.path(), &CollectOptions { contents: true }).unwrap();
+        assert_eq!(
+            full.file_contents.get("a.rs"),
+            Some(&"fn main() {}\n".to_string())
+        );
+        // Lean and full agree on everything except contents (round-trips as
+        // the same shape the evaluator sees).
+        assert_eq!(lean.files, full.files);
+        assert_eq!(lean.spdx_headers, full.spdx_headers);
+    }
+
+    #[test]
+    fn test_oversized_content_skipped() {
+        let dir = tempfile::tempdir().unwrap();
+        let big = "x".repeat((MAX_CONTENT_BYTES as usize) + 1);
+        fs::write(dir.path().join("big.txt"), &big).unwrap();
+        fs::write(dir.path().join("small.txt"), "ok\n").unwrap();
+
+        let facts = collect_opts(dir.path(), &CollectOptions { contents: true }).unwrap();
+        // Both files are listed…
+        assert!(facts.files.contains("big.txt"));
+        assert!(facts.files.contains("small.txt"));
+        // …but only the small one's content is captured.
+        assert!(!facts.file_contents.contains_key("big.txt"));
+        assert_eq!(
+            facts.file_contents.get("small.txt"),
+            Some(&"ok\n".to_string())
+        );
     }
 }

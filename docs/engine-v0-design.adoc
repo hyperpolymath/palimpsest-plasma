@@ -89,9 +89,10 @@ at **load**, never mid-evaluation (`plasma-engine/src/schema.rs`):
   replacement of an overridden rule is legal
 * `override-rules` targeting an id that names no base rule →
   `OverrideUnknownRule`
+* a `file-matches-pattern` regex that does not compile → `InvalidRegex`
+  (so evaluation never compiles-and-fails mid-run)
 * reserved constructs: subject `release`, resource `release`, action
-  `consistent-with`, condition `file-matches-pattern` (v0 facts carry no
-  file contents), overlay effect `modify-rules` (diff semantics
+  `consistent-with`, overlay effect `modify-rules` (diff semantics
   underspecified)
 
 Consequence: **any policy that loads, evaluates** — `evaluate` is total.
@@ -131,6 +132,14 @@ reproduce identical facts:
   `[package]` table when present.
 * **Git**: `is_repo` and `head_ref` read directly from `.git/HEAD` — no
   subprocess, no clock.
+* **File contents** (opt-in): `collect_opts(root, { contents: true })` also
+  reads each valid-UTF-8 file up to `MAX_CONTENT_BYTES` (1 MiB) into
+  `file_contents`. Binary and oversized files are simply absent. This layer
+  is **off by default** — `collect` and a plain `plasma facts` omit it, and
+  `file_contents` is skipped from serialized output when empty, so the
+  default snapshot is byte-identical to before (an additive wire change).
+  `plasma check`/`fix` turn it on automatically iff the policy uses
+  `file-matches-pattern`; `plasma facts --with-contents` forces it.
 * All collections are `BTreeMap`/`BTreeSet`: iteration order, and therefore
   finding order, is deterministic. The fact set contains **no timestamps**.
 
@@ -161,6 +170,7 @@ reproduce identical facts:
 | `spdx-license-is e` | header of instance parses ∧ parse(header) = parse(e); if either side fails to parse, exact-text comparison
 | `governance-flag-set k v` | metadata[k] = v (absent key ⇒ false)
 | `version-at-least v` | numeric dotted comparison of metadata["version"] against v; absent or non-numeric ⇒ false
+| `file-matches-pattern p re` | regex `re` matches file_contents[p]; ⇒ false when content for `p` was not collected (binary, oversized, or contents off). `re` compiles at load, so a bad regex is a load error, not a mid-run panic.
 | `not / all / any` | strict boolean composition
 |===
 
@@ -247,12 +257,13 @@ the same purity split as evaluation:
 | Action | Fires for | Effect
 
 | `AddSpdxHeader` | violated `obligation + present` on a `header` resource | prepend `SPDX-License-Identifier` + copyright comment using the file's comment prefix
+| `CreateFile` | violated `obligation + present` on a `file`/`manifest` resource with a *concrete* path | create the missing file with obvious placeholder content (never overwrites an existing file)
 |===
 
-Everything else is `manual`: missing required files (need human-authored
-content), unparsable headers (need hand correction), prohibitions (removal
-is not auto-applied). Future increments add `CreateFile`, `UpdateField`,
-etc.; the enum and `Plan` shape are the stable contract.
+Everything else is `manual`: a required file named by a *glob* (no single
+filename to create), unparsable headers (need hand correction), prohibitions
+(removal is not auto-applied). Future increments add `UpdateField`, etc.;
+the enum and `Plan` shape are the stable contract.
 
 Determinism/totality carry over: `plan` is pure and total; `apply` never
 panics and reports per-action `applied` / `skipped` / `errors`.
@@ -260,8 +271,8 @@ panics and reports per-action `applied` / `skipped` / `errors`.
 == Roadmap interaction
 
 Reserved constructs (`release` subjects/resources, `consistent-with`,
-`file-matches-pattern`, `modify-rules`/`override-rules`) parse today and
-gain semantics in later minor versions alongside their fact sources
-(release facts, content facts, decision registries). The schema version
+`modify-rules`) parse today and gain semantics in later minor versions
+alongside their fact sources (release facts, decision registries). The
+schema version
 gates all of it: a policy using future semantics will not load on an engine
 that cannot honour it.
