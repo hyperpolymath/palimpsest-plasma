@@ -1,0 +1,143 @@
+// SPDX-License-Identifier: CC-BY-SA-4.0
+// Copyright (c) Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>
+= Plasma Interchange Contracts (v0.4)
+:toc:
+:toc-placement!:
+:sectnums:
+
+toc::[]
+
+== Purpose
+
+This document pins the wire formats sibling tools consume. Once published,
+these contracts change only additively within a major version: new fields
+may appear, existing fields keep their name, type, and meaning.
+
+The consumers:
+
+* **did-you-actually-do-that** (planned) — verifies agents did what they
+  claimed. Consumes *facts snapshots* (contract 1) and *facts diffs*
+  (contract 2), plus pass-findings as positive evidence (contract 3).
+* **somethings-fishy** (planned) — forensic investigation of bot-inflicted
+  damage. Consumes *findings* (contract 3) and *SARIF* (contract 4).
+
+All four contracts share plasma's determinism guarantee: identical inputs
+produce byte-identical output (BTree ordering, no timestamps, no ambient
+state). Consumers may therefore hash, cache, and compare outputs directly.
+
+== Contract 1 — Facts snapshot (`plasma facts`)
+
+The serialized `FactSet` (`plasma-engine/src/facts.rs`): the complete,
+deterministic view of repository state the evaluator sees.
+
+[source,json]
+----
+{
+  "root": "/path/given/by/caller",
+  "files": ["Cargo.toml", "src/main.rs", "..."],
+  "spdx_headers": { "src/main.rs": "MPL-2.0", "src/stub.rs": null },
+  "metadata": { "version": "0.4.0" },
+  "git": { "is_repo": true, "head_ref": "refs/heads/main" }
+}
+----
+
+* `files` — every regular file, relative, `/`-separated, sorted. The walk
+  skip list is pinned in link:engine-v0-design.adoc[engine-v0-design.adoc].
+* `spdx_headers` — raw `SPDX-License-Identifier:` value per auditable file;
+  `null` = auditable but header-less. Non-auditable files do not appear.
+* `metadata` — governance keys (v0: `version` from Cargo.toml).
+* `git` — read from `.git/HEAD` directly; no subprocess.
+
+**Verification protocol:** snapshot before an agent runs
+(`plasma facts . > before.json`), snapshot after, then apply contract 2.
+`root` is informational; snapshots are comparable across checkouts.
+
+== Contract 2 — Facts diff (`plasma diff before.json after.json`)
+
+The serialized `FactsDiff` (`plasma-engine/src/diff.rs`): exactly what
+changed between two snapshots, deterministically ordered.
+
+[source,json]
+----
+{
+  "root_before": "...", "root_after": "...",
+  "files_added": ["new.rs"],
+  "files_removed": ["gone.rs"],
+  "headers_changed": [
+    { "file": "src/main.rs", "before": null, "after": "MPL-2.0" }
+  ],
+  "metadata_changed": [
+    { "key": "version", "before": "0.3.0", "after": "0.4.0" }
+  ],
+  "git_changed": { "before": { "...": "..." }, "after": { "...": "..." } }
+}
+----
+
+* `headers_changed` covers files present in **both** snapshots; header
+  state of added/removed files is implied by the file lists.
+* `git_changed` is omitted (not `null`) when git state is unchanged.
+* Exit semantics follow `diff(1)`: **0** identical, **1** differ,
+  **2** error — scriptable without parsing output.
+
+An agent's claim "I only added SPDX headers" verifies as: `files_added`,
+`files_removed`, `metadata_changed`, `git_changed` all empty, and every
+entry in `headers_changed` has `before: null`.
+
+== Contract 3 — Findings (`plasma check --format json`)
+
+The serialized `Evaluation` (`plasma-engine/src/finding.rs`): ordered
+findings plus a summary.
+
+[source,json]
+----
+{
+  "root": "...",
+  "policy_id": "repo-hygiene",
+  "policy_version": { "major": 0, "minor": 1 },
+  "schema_version": { "major": 0, "minor": 1 },
+  "findings": [
+    {
+      "rule_id": "spdx-header-required",
+      "modality": "obligation",
+      "severity": "warning",
+      "subject": "src/main.rs",
+      "message": "SPDX header present for src/main.rs",
+      "rationale": "...",
+      "source": "...",
+      "status": "pass"
+    }
+  ],
+  "summary": { "errors": 0, "warnings": 0, "info": 0, "passes": 96 }
+}
+----
+
+* `rule_id` values are **stable identifiers**: forensic tooling keys on
+  them across runs and versions.
+* `status: "pass"` findings are positive evidence — a satisfied obligation
+  is an attestation, not merely the absence of a complaint.
+* `subject` is `"repo"`, a relative path, or `"metadata:<key>"`.
+
+== Contract 4 — SARIF 2.1.0 (`plasma check --format sarif`)
+
+Standard SARIF for GitHub Code Scanning and any SARIF-native tool
+(`plasma-engine/src/report/sarif.rs`):
+
+* `ruleId` = `plasma/<rule_id>` — the namespace is reserved and stable.
+* `level` ∈ `error` | `warning` | `note` (never `info`).
+* Pass findings appear only with `--verbose`, as `kind: "pass"`.
+* Repo- and metadata-scoped results carry no artifact location.
+
+== Remediation plan (informative, stabilising)
+
+`plasma fix --format json` emits `{ "plan": Plan, "outcome": ApplyOutcome? }`
+(`plasma-engine/src/action.rs`, `apply.rs`). This shape is expected to
+stabilise in v0.5 once more action types exist; treat it as informative
+until then.
+
+== Versioning
+
+Each contract inherits the crate version. Additive evolution only within a
+major version; a field removal or meaning change requires a major bump and
+an entry in link:release-notes.adoc[release-notes.adoc]. The policy
+*schema* version (`schema_version`) is independent — see
+link:engine-v0-design.adoc[engine-v0-design.adoc].

@@ -30,7 +30,7 @@
   "programmingLanguage": [
     "Rust"
   ],
-  "version": "0.2.0",
+  "version": "0.4.0",
   "url": "https://github.com/hyperpolymath/palimpsest-plasma",
   "readme": "https://github.com/hyperpolymath/palimpsest-plasma/blob/main/README.adoc",
   "issueTracker": "https://github.com/hyperpolymath/palimpsest-plasma/issues",

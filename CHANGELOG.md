@@ -17,6 +17,22 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-07-16
+
+### Added
+
+- feat(engine): `diff(before, after) -> FactsDiff` — pure, deterministic
+  comparison of two fact snapshots: files added/removed, SPDX header
+  transitions, metadata changes, git state (`plasma-engine/src/diff.rs`)
+- feat(cli): `plasma diff before.json after.json` with diff(1) exit
+  semantics (0 identical, 1 differ, 2 error) — the before/after
+  verification protocol for agent claims
+- docs: `docs/interchange-contracts.adoc` — pins the four wire contracts
+  (facts snapshot, facts diff, findings JSON, SARIF namespace) that
+  sibling tools build against; additive-only evolution within a major
+
+## [0.3.0] - 2026-07-16
+
 ### Added
 
 - feat(engine): action planner — pure `plan(policy, evaluation, ctx)` maps

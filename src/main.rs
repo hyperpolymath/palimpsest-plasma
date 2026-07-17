@@ -18,6 +18,7 @@ use clap::{Parser, Subcommand};
 mod audit;
 mod badge;
 mod check;
+mod diff_cmd;
 mod facts_cmd;
 mod fix;
 mod init;
@@ -88,6 +89,17 @@ enum Commands {
         path: String,
     },
 
+    /// Compare two fact snapshots (exit 0 identical, 1 differ).
+    Diff {
+        /// Snapshot taken before (JSON from `plasma facts`)
+        before: String,
+        /// Snapshot taken after (JSON from `plasma facts`)
+        after: String,
+        /// Output format: human or json
+        #[arg(long, default_value = "human")]
+        format: String,
+    },
+
     /// Policy file utilities.
     Policy {
         #[command(subcommand)]
@@ -153,9 +165,17 @@ enum PolicyCommands {
     },
 }
 
-fn main() -> Result<()> {
+fn main() {
     let cli = Cli::parse();
+    if let Err(e) = run(cli) {
+        // Usage/IO errors exit 2, keeping exit 1 unambiguous ("violations
+        // found" / "snapshots differ") per docs/cli-design.adoc.
+        eprintln!("error: {e:#}");
+        std::process::exit(2);
+    }
+}
 
+fn run(cli: Cli) -> Result<()> {
     match cli.command {
         Commands::Check {
             path,
@@ -201,6 +221,16 @@ fn main() -> Result<()> {
         }
         Commands::Facts { path } => {
             facts_cmd::run(&path)?;
+        }
+        Commands::Diff {
+            before,
+            after,
+            format,
+        } => {
+            let code = diff_cmd::run(&before, &after, &format)?;
+            if code != 0 {
+                std::process::exit(code);
+            }
         }
         Commands::Policy { command } => match command {
             PolicyCommands::Validate { file } => {

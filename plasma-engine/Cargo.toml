@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MPL-2.0
 [package]
 name = "plasma-engine"
-version = "0.2.0"
+version = "0.4.0"
 edition = "2021"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 description = "Deterministic, typed policy evaluation — policy AST, fact collection, and a pure evaluator producing findings"

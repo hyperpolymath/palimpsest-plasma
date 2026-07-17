@@ -45,13 +45,15 @@ future project; the earlier union-policy-parser sub-project was removed
 * [ ] Overlay `modify-rules` / `override-rules` semantics
 * [ ] Content facts + `file-matches-pattern` condition semantics
 
-=== v0.4.0 — Integration Surfaces
+=== v0.4.0 — Interchange Contracts & Integration Surfaces [IN PROGRESS]
 
+* [x] Sibling-tool contracts pinned: facts snapshot, facts diff, findings,
+      SARIF namespace (docs/interchange-contracts.adoc)
+* [x] `plasma diff before.json after.json` — deterministic facts diff with
+      diff(1) exit semantics (0 identical / 1 differ / 2 error)
 * [ ] Git hooks (pre-commit, pre-push) via `plasma check --quiet`
 * [ ] Reference GitHub Action / GitLab CI job
 * [ ] `.plasma.toml` policy references (project-pinned policies)
-* [ ] Sibling-tool contracts: stable facts-diff format for
-      did-you-actually-do-that, finding-provenance for somethings-fishy
 * [ ] Release facts (`release` subjects/resources gain semantics)
 
 == Future Directions
