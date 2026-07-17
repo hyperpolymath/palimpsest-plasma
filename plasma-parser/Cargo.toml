@@ -1,7 +1,7 @@
 # SPDX-License-Identifier: MPL-2.0
 [package]
 name = "plasma-parser"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]
 description = "License/SPDX parsing library — SPDX expressions (including Palimpsest-family identifiers), zone auditing, compatibility checking"

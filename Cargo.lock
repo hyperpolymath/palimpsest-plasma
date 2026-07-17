@@ -258,7 +258,7 @@ checksum = "384b8ab6d37215f3c5301a95a4accb5d64aa607f1fcb26a11b5303878451b4fe"
 
 [[package]]
 name = "palimpsest-plasma"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "anyhow",
  "clap",
@@ -273,7 +273,7 @@ dependencies = [
 
 [[package]]
 name = "plasma-engine"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "glob",
  "plasma-parser",
@@ -287,7 +287,7 @@ dependencies = [
 
 [[package]]
 name = "plasma-parser"
-version = "0.4.0"
+version = "0.5.0"
 dependencies = [
  "glob",
  "serde",

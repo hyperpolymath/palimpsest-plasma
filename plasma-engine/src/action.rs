@@ -8,7 +8,7 @@
 // mechanical Action or recorded as a ManualItem with a reason — nothing is
 // silently dropped. Applying the plan (IO) lives in `apply`.
 
-use crate::ast::{ActionKind, Modality, OverlayEffect, Policy, Resource, Rule};
+use crate::ast::{ActionKind, Modality, Policy, Resource, Rule};
 use crate::finding::{Evaluation, FindingStatus};
 use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
@@ -149,22 +149,14 @@ fn manual_reason(rule: &Rule) -> String {
     }
 }
 
-/// Index every effective rule (base + overlay-added) by id.
+/// Index the effective rule set (base minus overridden, plus overlay-added)
+/// by id — the same set the evaluator saw, so a finding never resolves to a
+/// rule that was overridden out of evaluation.
 fn rule_index(policy: &Policy) -> BTreeMap<&str, &Rule> {
-    let mut map = BTreeMap::new();
-    for rule in &policy.rules {
-        map.insert(rule.id.as_str(), rule);
-    }
-    for overlay in &policy.overlays {
-        for effect in &overlay.effects {
-            if let OverlayEffect::AddRules { rules } = effect {
-                for rule in rules {
-                    map.insert(rule.id.as_str(), rule);
-                }
-            }
-        }
-    }
-    map
+    crate::eval::effective_rules(policy)
+        .into_iter()
+        .map(|(rule, _origin)| (rule.id.as_str(), rule))
+        .collect()
 }
 
 #[cfg(test)]

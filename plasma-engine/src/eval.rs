@@ -67,10 +67,29 @@ pub fn evaluate(policy: &Policy, facts: &FactSet) -> Evaluation {
     }
 }
 
-/// Base rules followed by overlay-added rules, each with its origin
-/// (None = base policy, Some(id) = overlay).
-fn effective_rules(policy: &Policy) -> Vec<(&Rule, Option<&str>)> {
-    let mut rules: Vec<(&Rule, Option<&str>)> = policy.rules.iter().map(|r| (r, None)).collect();
+/// Base rules (minus any overridden by an overlay) followed by
+/// overlay-added rules, each with its origin (None = base policy,
+/// Some(id) = overlay). Shared with the action planner so both see the
+/// same effective set.
+pub(crate) fn effective_rules(policy: &Policy) -> Vec<(&Rule, Option<&str>)> {
+    // Ids removed from the base set by an `override-rules` effect.
+    let overridden: std::collections::BTreeSet<&str> = policy
+        .overlays
+        .iter()
+        .flat_map(|o| &o.effects)
+        .filter_map(|e| match e {
+            OverlayEffect::OverrideRules { ids } => Some(ids.iter().map(String::as_str)),
+            _ => None,
+        })
+        .flatten()
+        .collect();
+
+    let mut rules: Vec<(&Rule, Option<&str>)> = policy
+        .rules
+        .iter()
+        .filter(|r| !overridden.contains(r.id.as_str()))
+        .map(|r| (r, None))
+        .collect();
     for overlay in &policy.overlays {
         for effect in &overlay.effects {
             if let OverlayEffect::AddRules { rules: added } = effect {
@@ -536,6 +555,81 @@ action = { type = "present" }
         let eval = evaluate(&p, &facts_with(&[], &[]));
         assert_eq!(eval.summary.errors, 0);
         assert_eq!(eval.summary.passes, 1);
+    }
+
+    #[test]
+    fn test_override_disables_base_rule() {
+        // Base requires a LICENSE; overlay overrides that rule away.
+        let p = policy(
+            r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "license-present"
+modality = "obligation"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+action = { type = "present" }
+
+[[overlays]]
+id = "vendored-exemption"
+applies_to = []
+
+[[overlays.effects]]
+type = "override-rules"
+ids = ["license-present"]
+"#,
+        );
+        // No LICENSE, but the rule is overridden away → no findings at all.
+        let eval = evaluate(&p, &facts_with(&["README.md"], &[]));
+        assert_eq!(eval.findings.len(), 0);
+    }
+
+    #[test]
+    fn test_override_with_replacement() {
+        // Base marks missing LICENSE an error; overlay overrides it and adds
+        // a same-id replacement at warning severity.
+        let p = policy(
+            r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "license-present"
+modality = "obligation"
+severity = "error"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+action = { type = "present" }
+
+[[overlays]]
+id = "relax"
+applies_to = []
+
+[[overlays.effects]]
+type = "override-rules"
+ids = ["license-present"]
+
+[[overlays.effects]]
+type = "add-rules"
+
+[[overlays.effects.rules]]
+id = "license-present"
+modality = "obligation"
+severity = "warning"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE*" }
+action = { type = "present" }
+"#,
+        );
+        let eval = evaluate(&p, &facts_with(&["README.md"], &[]));
+        // Exactly one finding, at the replacement's warning severity.
+        assert_eq!(eval.summary.errors, 0);
+        assert_eq!(eval.summary.warnings, 1);
+        assert_eq!(eval.findings[0].source.as_deref(), Some("overlay:relax"));
     }
 
     #[test]

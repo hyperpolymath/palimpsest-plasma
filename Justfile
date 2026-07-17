@@ -12,7 +12,7 @@ set positional-arguments := true
 import? "contractile.just"
 
 project := "palimpsest-plasma"
-version := "0.4.0"
+version := "0.5.0"
 tier := "infrastructure"
 state := ".machine_readable/6a2/STATE.a2ml"
 

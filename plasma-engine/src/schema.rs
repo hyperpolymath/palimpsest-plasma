@@ -49,6 +49,8 @@ pub enum SchemaError {
     },
     #[error("duplicate rule id: {0}")]
     DuplicateRuleId(String),
+    #[error("overlay {overlay_id}: override-rules targets unknown base rule id {rule_id}")]
+    OverrideUnknownRule { overlay_id: String, rule_id: String },
     #[error("unknown policy file extension {0:?}: use .toml or .json")]
     UnknownExtension(String),
 }
@@ -93,34 +95,74 @@ fn validate(policy: &Policy) -> Result<(), SchemaError> {
         });
     }
 
-    let mut seen_ids = std::collections::BTreeSet::new();
+    // `modify-rules` is still schema-reserved (its diff semantics are
+    // underspecified); `override-rules` is supported as of schema 0.1.
+    for overlay in &policy.overlays {
+        for effect in &overlay.effects {
+            if let OverlayEffect::ModifyRules { .. } = effect {
+                return Err(SchemaError::ReservedOverlayEffect {
+                    overlay_id: overlay.id.clone(),
+                    construct: "modify-rules".to_string(),
+                });
+            }
+        }
+    }
 
-    let overlay_rules = policy.overlays.iter().flat_map(|o| {
+    // Base rule ids must be unique among themselves.
+    let mut base_ids = std::collections::BTreeSet::new();
+    for rule in &policy.rules {
+        if !base_ids.insert(rule.id.clone()) {
+            return Err(SchemaError::DuplicateRuleId(rule.id.clone()));
+        }
+    }
+
+    // Every overridden id must name a real base rule. Collect the set so
+    // an added rule may legally reuse an overridden id (a replacement).
+    let mut overridden = std::collections::BTreeSet::new();
+    for overlay in &policy.overlays {
+        for effect in &overlay.effects {
+            if let OverlayEffect::OverrideRules { ids } = effect {
+                for id in ids {
+                    if !base_ids.contains(id) {
+                        return Err(SchemaError::OverrideUnknownRule {
+                            overlay_id: overlay.id.clone(),
+                            rule_id: id.clone(),
+                        });
+                    }
+                    overridden.insert(id.clone());
+                }
+            }
+        }
+    }
+
+    // Effective base ids (minus overridden) plus every overlay-added id
+    // must be collision-free. A replacement — an added rule whose id was
+    // overridden — is allowed precisely because the base rule is gone.
+    let mut seen_ids: std::collections::BTreeSet<String> =
+        base_ids.difference(&overridden).cloned().collect();
+    for overlay in &policy.overlays {
+        for effect in &overlay.effects {
+            if let OverlayEffect::AddRules { rules } = effect {
+                for rule in rules {
+                    if !seen_ids.insert(rule.id.clone()) {
+                        return Err(SchemaError::DuplicateRuleId(rule.id.clone()));
+                    }
+                }
+            }
+        }
+    }
+
+    // Validate every rule (base + overlay-added), including overridden base
+    // rules — they must still be well-formed even though evaluation skips
+    // them, so a later override removal doesn't resurrect a bad rule.
+    let added = policy.overlays.iter().flat_map(|o| {
         o.effects.iter().filter_map(|e| match e {
             OverlayEffect::AddRules { rules } => Some(rules.iter()),
             _ => None,
         })
     });
-
-    for rule in policy.rules.iter().chain(overlay_rules.flatten()) {
-        if !seen_ids.insert(rule.id.clone()) {
-            return Err(SchemaError::DuplicateRuleId(rule.id.clone()));
-        }
+    for rule in policy.rules.iter().chain(added.flatten()) {
         validate_rule(rule)?;
-    }
-
-    for overlay in &policy.overlays {
-        for effect in &overlay.effects {
-            let construct = match effect {
-                OverlayEffect::AddRules { .. } => continue,
-                OverlayEffect::ModifyRules { .. } => "modify-rules",
-                OverlayEffect::OverrideRules { .. } => "override-rules",
-            };
-            return Err(SchemaError::ReservedOverlayEffect {
-                overlay_id: overlay.id.clone(),
-                construct: construct.to_string(),
-            });
-        }
     }
 
     Ok(())
@@ -229,6 +271,88 @@ action = { type = "present" }
 "#;
         let err = load_policy_str(doc, PolicyFormat::Toml).unwrap_err();
         assert!(matches!(err, SchemaError::DuplicateRuleId(_)));
+    }
+
+    #[test]
+    fn test_override_unknown_rule_rejected() {
+        let doc = r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "real"
+modality = "obligation"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE" }
+action = { type = "present" }
+
+[[overlays]]
+id = "o"
+applies_to = []
+
+[[overlays.effects]]
+type = "override-rules"
+ids = ["does-not-exist"]
+"#;
+        let err = load_policy_str(doc, PolicyFormat::Toml).unwrap_err();
+        assert!(matches!(err, SchemaError::OverrideUnknownRule { .. }));
+    }
+
+    #[test]
+    fn test_override_allows_same_id_replacement() {
+        let doc = r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "r"
+modality = "obligation"
+subject = { type = "repo" }
+resource = { type = "file", path = "LICENSE" }
+action = { type = "present" }
+
+[[overlays]]
+id = "o"
+applies_to = []
+
+[[overlays.effects]]
+type = "override-rules"
+ids = ["r"]
+
+[[overlays.effects]]
+type = "add-rules"
+
+[[overlays.effects.rules]]
+id = "r"
+modality = "obligation"
+subject = { type = "repo" }
+resource = { type = "file", path = "README" }
+action = { type = "present" }
+"#;
+        // Replacing an overridden id is not a duplicate.
+        assert!(load_policy_str(doc, PolicyFormat::Toml).is_ok());
+    }
+
+    #[test]
+    fn test_modify_rules_still_reserved() {
+        let doc = r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+rules = []
+
+[[overlays]]
+id = "o"
+applies_to = []
+
+[[overlays.effects]]
+type = "modify-rules"
+ids = ["whatever"]
+"#;
+        let err = load_policy_str(doc, PolicyFormat::Toml).unwrap_err();
+        assert!(matches!(err, SchemaError::ReservedOverlayEffect { .. }));
     }
 
     #[test]

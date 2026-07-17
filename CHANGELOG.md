@@ -17,6 +17,19 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-07-16
+
+### Added
+
+- feat(engine): overlay `override-rules` semantics — an overlay removes base
+  rules by id from the effective set, and may pair an override with an
+  `add-rules` reusing the same id to *replace* a rule (e.g. relax a severity
+  or exempt a zone). `override-rules` targeting an unknown base id is a load
+  error; `modify-rules` remains reserved. The evaluator and the action
+  planner share one `effective_rules` set, so a finding never resolves to an
+  overridden rule (`plasma-engine/src/{eval,schema,action}.rs`)
+- docs: overlay-algebra section in `docs/engine-v0-design.adoc`
+
 ## [0.4.0] - 2026-07-16
 
 ### Added
