@@ -5,7 +5,7 @@ members = [".", "plasma-parser", "plasma-engine"]
 
 [package]
 name = "palimpsest-plasma"
-version = "0.4.0"
+version = "0.5.0"
 edition = "2021"
 rust-version = "1.74"
 authors = ["Jonathan D.A. Jewell <j.d.a.jewell@open.ac.uk>"]

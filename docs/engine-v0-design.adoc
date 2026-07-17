@@ -84,12 +84,32 @@ Every construct the v0 evaluator cannot give exact semantics to is rejected
 at **load**, never mid-evaluation (`plasma-engine/src/schema.rs`):
 
 * `schema_version` ≠ 0.1 → `UnsupportedSchemaVersion`
-* duplicate rule ids (across base rules and overlay-added rules)
+* duplicate rule ids — collision-free across the *effective* base ids
+  (base minus overridden) plus every overlay-added id, so a same-id
+  replacement of an overridden rule is legal
+* `override-rules` targeting an id that names no base rule →
+  `OverrideUnknownRule`
 * reserved constructs: subject `release`, resource `release`, action
   `consistent-with`, condition `file-matches-pattern` (v0 facts carry no
-  file contents), overlay effects `modify-rules` / `override-rules`
+  file contents), overlay effect `modify-rules` (diff semantics
+  underspecified)
 
 Consequence: **any policy that loads, evaluates** — `evaluate` is total.
+
+=== Overlay algebra
+
+Overlays extend a base policy per context. Two effects are evaluable:
+
+* **`add-rules`** — append rules to the effective set; their findings carry
+  `source = "overlay:<id>"` when the rule declares no source of its own.
+* **`override-rules { ids }`** — remove base rules with those ids from the
+  effective set. Each id must name a real base rule (checked at load). An
+  overlay may pair an override with an `add-rules` reusing the same id to
+  *replace* a base rule (e.g. relax a severity, or exempt a zone by
+  overriding without a replacement).
+
+`modify-rules` remains reserved. Overridden base rules are still fully
+validated at load — evaluation skips them, but they must stay well-formed.
 
 == Fact collection
 
@@ -118,9 +138,11 @@ reproduce identical facts:
 
 `evaluate(policy, facts)` (`plasma-engine/src/eval.rs`):
 
-1. Effective rules = base rules ++ overlay `add-rules` (in document order).
-   Findings from overlay rules carry `source = "overlay:<id>"` when the
-   rule declares no source of its own.
+1. Effective rules = (base rules minus any overridden by `override-rules`)
+   ++ overlay `add-rules` (in document order). Findings from overlay rules
+   carry `source = "overlay:<id>"` when the rule declares no source of its
+   own. The action planner shares this exact effective set, so a finding
+   never resolves to an overridden rule.
 2. Each rule's subject expands to concrete instances: `repo` → itself;
    `file` → that path; `file-pattern` → every collected file matching any
    pattern; `metadata` → that key.

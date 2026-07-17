@@ -42,7 +42,8 @@ future project; the earlier union-policy-parser sub-project was removed
 * [x] Findings → planned actions mapping (pure `plan`; IO `apply`)
 * [x] First action type: `AddSpdxHeader` (+ manual partition with reasons)
 * [ ] More action types (CreateFile, UpdateField, …)
-* [ ] Overlay `modify-rules` / `override-rules` semantics
+* [x] Overlay `override-rules` semantics (v0.5) — remove/replace base rules
+      per context; `modify-rules` remains reserved
 * [ ] Content facts + `file-matches-pattern` condition semantics
 
 === v0.4.0 — Interchange Contracts & Integration Surfaces [IN PROGRESS]
