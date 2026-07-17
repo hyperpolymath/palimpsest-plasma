@@ -41,10 +41,12 @@ future project; the earlier union-policy-parser sub-project was removed
 * [x] `plasma fix` — plan (dry-run) and apply modes, with `.bak` backups
 * [x] Findings → planned actions mapping (pure `plan`; IO `apply`)
 * [x] First action type: `AddSpdxHeader` (+ manual partition with reasons)
-* [ ] More action types (CreateFile, UpdateField, …)
+* [x] Action type `CreateFile` (v0.6) — create a missing required file at a
+      concrete path; `UpdateField` and others still to come
 * [x] Overlay `override-rules` semantics (v0.5) — remove/replace base rules
       per context; `modify-rules` remains reserved
-* [ ] Content facts + `file-matches-pattern` condition semantics
+* [x] Content facts + `file-matches-pattern` condition semantics (v0.6) —
+      opt-in `file_contents`, regex validated at load
 
 === v0.4.0 — Interchange Contracts & Integration Surfaces [IN PROGRESS]
 

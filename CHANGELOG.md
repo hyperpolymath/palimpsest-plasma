@@ -17,6 +17,25 @@ this project aims to follow [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-07-17
+
+### Added
+
+- feat(engine): content facts + `file-matches-pattern` — opt-in
+  `FactSet.file_contents` (`collect_opts`, valid-UTF-8 files ≤ 1 MiB),
+  omitted from the default snapshot so the v0.4 wire contract stays
+  byte-identical. The condition's regex is validated at load
+  (`InvalidRegex`) so evaluation stays total; false when a file's content
+  was not collected. `plasma check`/`fix` collect content automatically iff
+  the policy needs it; `plasma facts --with-contents` forces it
+  (`plasma-engine/src/{facts,eval,schema,ast}.rs`)
+- feat(engine): `CreateFile` fix action — a required file at a *concrete*
+  path (not a glob) that is missing is created with obvious placeholder
+  content, never overwriting an existing file; glob-named required files
+  stay manual (`plasma-engine/src/{action,apply}.rs`)
+- docs: content-facts + overlay/action updates across
+  `engine-v0-design.adoc`, `interchange-contracts.adoc`, `cli-design.adoc`
+
 ## [0.5.0] - 2026-07-16
 
 ### Added

@@ -167,8 +167,18 @@ fn eval_condition(condition: &Condition, instance: &Instance, facts: &FactSet) -
             .get("version")
             .and_then(|actual| compare_versions(actual, version))
             .unwrap_or(false),
-        // Rejected at load; defined as false to keep evaluation total.
-        Condition::FileMatchesPattern { .. } => false,
+        // The regex was validated at load. False when the file's content
+        // was not collected (binary, oversized, or content facts absent) —
+        // a defined, total semantics documented in engine-v0-design.adoc.
+        Condition::FileMatchesPattern { path, pattern } => facts
+            .file_contents
+            .get(path)
+            .map(|content| {
+                regex::Regex::new(pattern)
+                    .map(|re| re.is_match(content))
+                    .unwrap_or(false)
+            })
+            .unwrap_or(false),
     }
 }
 
@@ -376,6 +386,7 @@ mod tests {
                 .collect::<BTreeMap<_, _>>(),
             metadata: BTreeMap::new(),
             git: Default::default(),
+            file_contents: BTreeMap::new(),
         }
     }
 
@@ -659,6 +670,50 @@ action = { type = "present" }
         let eval = evaluate(&p, &facts_with(&[], &[]));
         assert_eq!(eval.summary.errors, 1);
         assert_eq!(eval.findings[0].source.as_deref(), Some("overlay:extra"));
+    }
+
+    #[test]
+    fn test_file_matches_pattern() {
+        use std::collections::BTreeMap;
+        let p = policy(
+            r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "no-todo-in-shipped"
+modality = "prohibition"
+severity = "warning"
+subject = { type = "repo" }
+resource = { type = "file", path = "src/lib.rs" }
+condition = { type = "file-matches-pattern", path = "src/lib.rs", pattern = "TODO" }
+action = { type = "present" }
+"#,
+        );
+
+        // Content present and matching → prohibition fires (violation).
+        let mut facts = facts_with(&["src/lib.rs"], &[]);
+        facts.file_contents.insert(
+            "src/lib.rs".to_string(),
+            "fn x() {} // TODO later\n".to_string(),
+        );
+        let eval = evaluate(&p, &facts);
+        assert_eq!(eval.summary.warnings, 1);
+
+        // Content present, no match → condition false → rule not applicable.
+        let mut clean = facts_with(&["src/lib.rs"], &[]);
+        clean
+            .file_contents
+            .insert("src/lib.rs".to_string(), "fn x() {}\n".to_string());
+        assert_eq!(evaluate(&p, &clean).findings.len(), 0);
+
+        // Content not collected → condition false → not applicable (total).
+        let no_content = FactSet {
+            file_contents: BTreeMap::new(),
+            ..facts_with(&["src/lib.rs"], &[])
+        };
+        assert_eq!(evaluate(&p, &no_content).findings.len(), 0);
     }
 
     #[test]

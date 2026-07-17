@@ -8,8 +8,8 @@
 
 use anyhow::{Context, Result};
 use plasma_engine::{
-    apply, builtin_repo_hygiene, collect, evaluate, load_policy, plan, Action, ApplyOptions,
-    FixContext,
+    apply, builtin_repo_hygiene, collect_opts, evaluate, load_policy, plan, Action, ApplyOptions,
+    CollectOptions, FixContext,
 };
 use std::path::Path;
 
@@ -34,8 +34,13 @@ pub fn run(opts: &FixOptions) -> Result<i32> {
         None => builtin_repo_hygiene(),
     };
 
-    let facts = collect(Path::new(opts.path))
-        .with_context(|| format!("failed to collect facts from {}", opts.path))?;
+    let facts = collect_opts(
+        Path::new(opts.path),
+        &CollectOptions {
+            contents: policy.needs_content(),
+        },
+    )
+    .with_context(|| format!("failed to collect facts from {}", opts.path))?;
     let evaluation = evaluate(&policy, &facts);
 
     let ctx = FixContext {
@@ -135,6 +140,9 @@ fn describe_action(action: &Action) -> String {
     match action {
         Action::AddSpdxHeader { file, license, .. } => {
             format!("add SPDX header ({license}) to {file}")
+        }
+        Action::CreateFile { path, .. } => {
+            format!("create {path} (placeholder content)")
         }
     }
 }

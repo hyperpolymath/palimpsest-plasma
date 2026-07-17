@@ -63,10 +63,33 @@ pub fn apply(plan: &Plan, root: &Path, opts: &ApplyOptions) -> ApplyOutcome {
                     .push((file.clone(), "already has an SPDX header".to_string())),
                 Err(e) => outcome.errors.push((file.clone(), e)),
             },
+            Action::CreateFile { path, contents } => match create_file(root, path, contents) {
+                Ok(true) => outcome.applied.push(path.clone()),
+                Ok(false) => outcome
+                    .skipped
+                    .push((path.clone(), "file already exists".to_string())),
+                Err(e) => outcome.errors.push((path.clone(), e)),
+            },
         }
     }
 
     outcome
+}
+
+/// Create `path` with the given contents. Returns Ok(true) when created,
+/// Ok(false) when the file already exists (idempotent skip). Never
+/// overwrites an existing file, so no backup is needed.
+fn create_file(root: &Path, path: &str, contents: &str) -> Result<bool, String> {
+    let full = root.join(path);
+    if full.exists() {
+        return Ok(false);
+    }
+    if let Some(parent) = full.parent() {
+        fs::create_dir_all(parent)
+            .map_err(|e| format!("cannot create directories for {path}: {e}"))?;
+    }
+    fs::write(&full, contents).map_err(|e| format!("cannot create {path}: {e}"))?;
+    Ok(true)
 }
 
 /// Prepend an SPDX header to `file`. Returns Ok(true) when the file was
@@ -186,6 +209,36 @@ mod tests {
         assert!(!dir.path().join("x.sh.bak").exists());
         let written = fs::read_to_string(dir.path().join("x.sh")).unwrap();
         assert!(written.starts_with("# SPDX-License-Identifier: MPL-2.0\n"));
+    }
+
+    #[test]
+    fn test_create_file_action() {
+        let dir = tempfile::tempdir().unwrap();
+        let plan = Plan {
+            actions: vec![PlannedAction {
+                rule_id: "sec".to_string(),
+                subject: "repo".to_string(),
+                action: Action::CreateFile {
+                    path: "docs/SECURITY.md".to_string(),
+                    contents: "# TODO\n".to_string(),
+                },
+            }],
+            manual: Vec::new(),
+        };
+
+        // Creates the file (and its parent dir).
+        let outcome = apply(&plan, dir.path(), &ApplyOptions::default());
+        assert_eq!(outcome.applied, vec!["docs/SECURITY.md".to_string()]);
+        assert_eq!(
+            fs::read_to_string(dir.path().join("docs/SECURITY.md")).unwrap(),
+            "# TODO\n"
+        );
+
+        // Idempotent: a second apply skips the now-existing file and never
+        // overwrites it.
+        let outcome = apply(&plan, dir.path(), &ApplyOptions::default());
+        assert!(outcome.applied.is_empty());
+        assert_eq!(outcome.skipped.len(), 1);
     }
 
     #[test]

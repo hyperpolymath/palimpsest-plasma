@@ -4,7 +4,9 @@
 // plasma check — evaluate a repository against a policy.
 
 use anyhow::{Context, Result};
-use plasma_engine::{builtin_repo_hygiene, collect, evaluate, load_policy, report, Severity};
+use plasma_engine::{
+    builtin_repo_hygiene, collect_opts, evaluate, load_policy, report, CollectOptions, Severity,
+};
 use std::path::Path;
 
 /// Exit code for a check with violations at or above the threshold.
@@ -27,8 +29,15 @@ pub fn run(opts: &CheckOptions) -> Result<i32> {
         None => builtin_repo_hygiene(),
     };
 
-    let facts = collect(Path::new(opts.path))
-        .with_context(|| format!("failed to collect facts from {}", opts.path))?;
+    // Collect file contents only when the policy actually needs them
+    // (a `file-matches-pattern` condition), keeping the common case lean.
+    let facts = collect_opts(
+        Path::new(opts.path),
+        &CollectOptions {
+            contents: policy.needs_content(),
+        },
+    )
+    .with_context(|| format!("failed to collect facts from {}", opts.path))?;
 
     let evaluation = evaluate(&policy, &facts);
 

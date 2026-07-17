@@ -6,12 +6,17 @@
 // tooling can diff before/after an agent run.
 
 use anyhow::{Context, Result};
-use plasma_engine::collect;
+use plasma_engine::{collect_opts, CollectOptions};
 use std::path::Path;
 
-pub fn run(path: &str) -> Result<()> {
-    let facts =
-        collect(Path::new(path)).with_context(|| format!("failed to collect facts from {path}"))?;
+pub fn run(path: &str, with_contents: bool) -> Result<()> {
+    let facts = collect_opts(
+        Path::new(path),
+        &CollectOptions {
+            contents: with_contents,
+        },
+    )
+    .with_context(|| format!("failed to collect facts from {path}"))?;
     println!("{}", serde_json::to_string_pretty(&facts)?);
     Ok(())
 }

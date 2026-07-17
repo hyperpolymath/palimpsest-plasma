@@ -51,6 +51,12 @@ pub enum SchemaError {
     DuplicateRuleId(String),
     #[error("overlay {overlay_id}: override-rules targets unknown base rule id {rule_id}")]
     OverrideUnknownRule { overlay_id: String, rule_id: String },
+    #[error("rule {rule_id}: file-matches-pattern regex {pattern:?} does not compile: {source}")]
+    InvalidRegex {
+        rule_id: String,
+        pattern: String,
+        source: regex::Error,
+    },
     #[error("unknown policy file extension {0:?}: use .toml or .json")]
     UnknownExtension(String),
 }
@@ -190,11 +196,15 @@ fn validate_rule(rule: &Rule) -> Result<(), SchemaError> {
 
 fn validate_condition(condition: &Condition, rule_id: &str) -> Result<(), SchemaError> {
     match condition {
-        Condition::FileMatchesPattern { .. } => Err(SchemaError::ReservedConstruct {
-            rule_id: rule_id.to_string(),
-            construct: "condition file-matches-pattern (v0 facts carry no file contents)"
-                .to_string(),
-        }),
+        // The regex must compile at load, so evaluation stays total.
+        Condition::FileMatchesPattern { pattern, .. } => match regex::Regex::new(pattern) {
+            Ok(_) => Ok(()),
+            Err(source) => Err(SchemaError::InvalidRegex {
+                rule_id: rule_id.to_string(),
+                pattern: pattern.clone(),
+                source,
+            }),
+        },
         Condition::Not { of } => validate_condition(of, rule_id),
         Condition::All { of } | Condition::Any { of } => {
             for c in of {
@@ -332,6 +342,43 @@ resource = { type = "file", path = "README" }
 action = { type = "present" }
 "#;
         // Replacing an overridden id is not a duplicate.
+        assert!(load_policy_str(doc, PolicyFormat::Toml).is_ok());
+    }
+
+    #[test]
+    fn test_invalid_regex_rejected_at_load() {
+        let doc = r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "bad-regex"
+modality = "prohibition"
+subject = { type = "repo" }
+resource = { type = "file", path = "a.rs" }
+condition = { type = "file-matches-pattern", path = "a.rs", pattern = "( unbalanced" }
+action = { type = "present" }
+"#;
+        let err = load_policy_str(doc, PolicyFormat::Toml).unwrap_err();
+        assert!(matches!(err, SchemaError::InvalidRegex { .. }));
+    }
+
+    #[test]
+    fn test_valid_file_matches_pattern_loads() {
+        let doc = r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "ok-regex"
+modality = "prohibition"
+subject = { type = "repo" }
+resource = { type = "file", path = "a.rs" }
+condition = { type = "file-matches-pattern", path = "a.rs", pattern = "TODO|FIXME" }
+action = { type = "present" }
+"#;
         assert!(load_policy_str(doc, PolicyFormat::Toml).is_ok());
     }
 

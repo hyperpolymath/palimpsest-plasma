@@ -46,6 +46,34 @@ pub enum Action {
         author: String,
         year: String,
     },
+    /// Create a required file that is missing, with placeholder content the
+    /// user is expected to replace.
+    CreateFile { path: String, contents: String },
+}
+
+/// True when `path` contains glob metacharacters, so no single filename can
+/// be derived from it.
+fn is_glob(path: &str) -> bool {
+    path.contains(['*', '?', '[', ']', '{', '}'])
+}
+
+/// Placeholder content for a newly created required file. Deliberately
+/// obvious as a stub so it is not mistaken for finished content.
+fn stub_for(path: &str, rule_id: &str) -> String {
+    let ext = std::path::Path::new(path)
+        .extension()
+        .and_then(|e| e.to_str())
+        .unwrap_or("");
+    match ext {
+        "md" | "adoc" | "markdown" => format!(
+            "# TODO\n\nPlaceholder created by `plasma fix` to satisfy policy rule \
+             `{rule_id}`. Replace this with real content.\n"
+        ),
+        _ => format!(
+            "Placeholder created by plasma fix to satisfy policy rule {rule_id}. \
+             Replace this with real content.\n"
+        ),
+    }
 }
 
 /// An action bound to the finding it resolves.
@@ -128,6 +156,17 @@ fn fix_for(rule: &Rule, subject: &str, ctx: &FixContext) -> Option<Action> {
                 year: ctx.year.clone(),
             })
         }
+        // A required file (at a concrete path) that is missing: create a
+        // placeholder. A glob path names no single file, so it stays manual.
+        (Modality::Obligation, ActionKind::Present, Resource::File { path })
+        | (Modality::Obligation, ActionKind::Present, Resource::Manifest { path })
+            if !is_glob(path) =>
+        {
+            Some(Action::CreateFile {
+                path: path.clone(),
+                contents: stub_for(path, &rule.id),
+            })
+        }
         _ => None,
     }
 }
@@ -135,9 +174,11 @@ fn fix_for(rule: &Rule, subject: &str, ctx: &FixContext) -> Option<Action> {
 /// Explain why a violated rule has no mechanical fix in this version.
 fn manual_reason(rule: &Rule) -> String {
     match (&rule.modality, &rule.action, &rule.resource) {
+        // Only globs reach here now — concrete paths become CreateFile.
         (Modality::Obligation, ActionKind::Present, Resource::File { .. })
         | (Modality::Obligation, ActionKind::Present, Resource::Manifest { .. }) => {
-            "creating a required file needs human-authored content".to_string()
+            "cannot create a required file from a glob pattern (specify a concrete path)"
+                .to_string()
         }
         (Modality::Obligation, ActionKind::Valid, Resource::Header) => {
             "an unparsable SPDX header must be corrected by hand".to_string()
@@ -177,6 +218,7 @@ mod tests {
                 .collect::<BTreeMap<_, _>>(),
             metadata: BTreeMap::new(),
             git: Default::default(),
+            file_contents: BTreeMap::new(),
         }
     }
 
@@ -226,6 +268,39 @@ action = { type = "present" }
                 year: "2026".to_string(),
             }
         );
+    }
+
+    #[test]
+    fn test_missing_concrete_file_becomes_create_action() {
+        let policy = load_policy_str(
+            r#"
+schema_version = { major = 0, minor = 1 }
+id = "t"
+version = { major = 1, minor = 0 }
+
+[[rules]]
+id = "contributing-present"
+modality = "obligation"
+subject = { type = "repo" }
+resource = { type = "file", path = "CONTRIBUTING.md" }
+action = { type = "present" }
+"#,
+            PolicyFormat::Toml,
+        )
+        .unwrap();
+
+        let eval = evaluate(&policy, &facts(&["README.md"], &[]));
+        let p = plan(&policy, &eval, &ctx());
+        assert!(p.manual.is_empty());
+        assert_eq!(p.actions.len(), 1);
+        match &p.actions[0].action {
+            Action::CreateFile { path, contents } => {
+                assert_eq!(path, "CONTRIBUTING.md");
+                assert!(contents.contains("contributing-present"));
+                assert!(contents.starts_with("# TODO"));
+            }
+            other => panic!("expected CreateFile, got {other:?}"),
+        }
     }
 
     #[test]
